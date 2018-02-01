@@ -1,2 +1,3 @@
-# Senior-Project-VR
+# ARTerrain
 EWU Winter 2018 Senior Project
+
