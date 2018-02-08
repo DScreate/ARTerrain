@@ -4,7 +4,7 @@ using UnityEngine;
 
 using OpenCVForUnity;
 
-public class ARTColorObject : MonoBehaviour {
+public class ARTColorObject {
 
     int xPos, yPos;
     string type;
