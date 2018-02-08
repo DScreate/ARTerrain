@@ -58,6 +58,7 @@ public class ARTWebcamTextureToMatHelper : MonoBehaviour {
 
     /// <summary>
     /// The webcam device.
+	/// NOTE: if not used other than in _Initialize then make it local 
     /// </summary>
     protected WebCamDevice webCamDevice;
 
@@ -171,12 +172,12 @@ public class ARTWebcamTextureToMatHelper : MonoBehaviour {
 
         if (!String.IsNullOrEmpty(requestedDeviceName))
         {
-            webCamTexture = new WebCamTexture(requestedDeviceName, requestedWidth, requestedHeight, requestedFPS);
+			webCamTexture = new WebCamTexture(requestedDeviceName, requestedWidth, requestedHeight, requestedFPS);
         }
         else
         {
             // Checks how many and which cameras are available on the device
-            for (int cameraIndex = 0; cameraIndex < WebCamTexture.devices.Length; cameraIndex++)
+            /*for (int cameraIndex = 0; cameraIndex < WebCamTexture.devices.Length; cameraIndex++)
             {
                 if (WebCamTexture.devices[cameraIndex].isFrontFacing == requestedIsFrontFacing)
                 {
@@ -186,7 +187,7 @@ public class ARTWebcamTextureToMatHelper : MonoBehaviour {
 
                     break;
                 }
-            }
+            }*/
         }
 
         if (webCamTexture == null)
@@ -287,6 +288,19 @@ public class ARTWebcamTextureToMatHelper : MonoBehaviour {
                 onErrorOccurred.Invoke(ErrorCode.TIMEOUT);
         }
     }
+
+	/// <summary>
+	/// Indicates whether this instance has been initialized.
+	/// </summary>
+	/// <returns><c>true</c>, if this instance has been initialized, <c>false</c> otherwise.</returns>
+	public virtual bool IsInitialized() 
+	{
+		return hasInitDone;
+	}
+
+
+
+
 
     // Use this for initialization
     void Start () {
