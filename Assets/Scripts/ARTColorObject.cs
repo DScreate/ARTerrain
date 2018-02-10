@@ -11,6 +11,7 @@ public class ARTColorObject : MonoBehaviour {
     Scalar HSVmin, HSVmax;
     Scalar Color;
 
+
     public ARTColorObject()
     {
         //set values for default constructor

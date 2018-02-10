@@ -109,6 +109,8 @@ namespace ARTScripts
 
         }
 
+
+        /*
         // Update is called once per frame
         protected virtual void Update()
         {
@@ -117,6 +119,7 @@ namespace ARTScripts
                 StartCoroutine(_Initialize());
             }
         }
+        */
 
         /// <summary>
         /// Raises the destroy event.
@@ -258,6 +261,7 @@ namespace ARTScripts
                 }
                 else
                 {
+                    Debug.Log("INSIDE FRAME COUNT INCREMENT");
                     initFrameCount++;
                     yield return 0;
                 }
