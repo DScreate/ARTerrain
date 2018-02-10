@@ -29,8 +29,8 @@ public class ARTColorObject : MonoBehaviour {
             //TODO: use "calibration mode" to find HSV min
             //and HSV max values
 
-            setHSVmin(new Scalar(92, 0, 0));
-            setHSVmax(new Scalar(124, 220, 240));
+            setHSVmin(new Scalar(0, 0, 0));
+            setHSVmax(new Scalar(255, 220, 240));
 
             //BGR value for Blue:
             setColor(new Scalar(0, 0, 255));
