@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
+﻿using UnityEngine;
 using OpenCVForUnity;
 
 public class ARTColorObject : MonoBehaviour {
@@ -10,7 +7,7 @@ public class ARTColorObject : MonoBehaviour {
     string type;
     Scalar HSVmin, HSVmax;
     Scalar Color;
-
+    ColorDefs ColorDefs;
 
     public ARTColorObject()
     {
@@ -29,11 +26,11 @@ public class ARTColorObject : MonoBehaviour {
             //TODO: use "calibration mode" to find HSV min
             //and HSV max values
 
-            setHSVmin(new Scalar(92, 0, 0));
-            setHSVmax(new Scalar(124, 220, 240));
+            setHSVmin(ColorDefs.BlueHSVMin);
+            setHSVmax(ColorDefs.BlueHSVMin);
 
             //BGR value for Blue:
-            setColor(new Scalar(0, 0, 255));
+            setColor(ColorDefs.BlueColor);
 
         }
         if (name == "green")
@@ -42,11 +39,11 @@ public class ARTColorObject : MonoBehaviour {
             //TODO: use "calibration mode" to find HSV min
             //and HSV max values
 
-            setHSVmin(new Scalar(34, 50, 50));
-            setHSVmax(new Scalar(80, 220, 200));
+            setHSVmin(ColorDefs.GreemHSVMin);
+            setHSVmax(ColorDefs.GreenHSVMax);
 
             //BGR value for Green:
-            setColor(new Scalar(0, 255, 0));
+            setColor(ColorDefs.GreenColor);
 
         }
         if (name == "yellow")
@@ -55,11 +52,11 @@ public class ARTColorObject : MonoBehaviour {
             //TODO: use "calibration mode" to find HSV min
             //and HSV max values
 
-            setHSVmin(new Scalar(20, 124, 123));
-            setHSVmax(new Scalar(30, 256, 256));
+            setHSVmin(ColorDefs.YellowHSVMin);
+            setHSVmax(ColorDefs.YellowHSVMax);
 
             //BGR value for Yellow:
-            setColor(new Scalar(255, 255, 0));
+            setColor(ColorDefs.YellowColor);
 
         }
         if (name == "red")
@@ -68,11 +65,11 @@ public class ARTColorObject : MonoBehaviour {
             //TODO: use "calibration mode" to find HSV min
             //and HSV max values
 
-            setHSVmin(new Scalar(102, 0, 0));
-            setHSVmax(new Scalar(255, 188, 142));
+            setHSVmin(ColorDefs.RedHSVMin);
+            setHSVmax(ColorDefs.RedHSVMax);
 
             //BGR value for Red:
-            setColor(new Scalar(255, 0, 0));
+            setColor(ColorDefs.RedColor);
 
         }
     }
