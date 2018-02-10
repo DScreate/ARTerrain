@@ -1,13 +1,15 @@
 ﻿using UnityEngine;
 using OpenCVForUnity;
+using ARTScripts;
 
-public class ARTColorObject : MonoBehaviour {
+public class ARTColorObject {
 
     int xPos, yPos;
     string type;
     Scalar HSVmin, HSVmax;
     Scalar Color;
-    ColorDefs ColorDefs;
+
+    //ColorDefs colorDefs = new ColorDefs();
 
     public ARTColorObject()
     {
@@ -25,7 +27,7 @@ public class ARTColorObject : MonoBehaviour {
 
             //TODO: use "calibration mode" to find HSV min
             //and HSV max values
-
+            
             setHSVmin(ColorDefs.BlueHSVMin);
             setHSVmax(ColorDefs.BlueHSVMin);
 
