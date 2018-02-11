@@ -145,22 +145,22 @@ public class ARTMultiObjectTrackingBasedOnColor : MonoBehaviour {
             Imgproc.cvtColor(rgbMat, hsvMat, Imgproc.COLOR_RGB2HSV);
             Core.inRange(hsvMat, blue.getHSVmin(), blue.getHSVmax(), thresholdMat);
             morphOps(thresholdMat);
-            trackFilteredObject(blue, thresholdMat, hsvMat, rgbMat);
+            trackFilteredObject(blue, thresholdMat, rgbMat);
             //then yellows
-            Imgproc.cvtColor(rgbMat, hsvMat, Imgproc.COLOR_RGB2HSV);
+            //Imgproc.cvtColor(rgbMat, hsvMat, Imgproc.COLOR_RGB2HSV);
             Core.inRange(hsvMat, yellow.getHSVmin(), yellow.getHSVmax(), thresholdMat);
             morphOps(thresholdMat);
-            trackFilteredObject(yellow, thresholdMat, hsvMat, rgbMat);
+            trackFilteredObject(yellow, thresholdMat, rgbMat);
             //then reds
-            Imgproc.cvtColor(rgbMat, hsvMat, Imgproc.COLOR_RGB2HSV);
+            //Imgproc.cvtColor(rgbMat, hsvMat, Imgproc.COLOR_RGB2HSV);
             Core.inRange(hsvMat, red.getHSVmin(), red.getHSVmax(), thresholdMat);
             morphOps(thresholdMat);
-            trackFilteredObject(red, thresholdMat, hsvMat, rgbMat);
+            trackFilteredObject(red, thresholdMat, rgbMat);
             //then greens
-            Imgproc.cvtColor(rgbMat, hsvMat, Imgproc.COLOR_RGB2HSV);
+            //Imgproc.cvtColor(rgbMat, hsvMat, Imgproc.COLOR_RGB2HSV);
             Core.inRange(hsvMat, green.getHSVmin(), green.getHSVmax(), thresholdMat);
             morphOps(thresholdMat);
-            trackFilteredObject(green, thresholdMat, hsvMat, rgbMat);
+            trackFilteredObject(green, thresholdMat, rgbMat);
 
             Imgproc.putText(rgbMat, "W:" + rgbMat.width() + " H:" + rgbMat.height() + " SO:" + Screen.orientation, new Point(5, rgbMat.rows() - 10), Core.FONT_HERSHEY_SIMPLEX, 1.0, new Scalar(255, 255, 255, 255), 2, Imgproc.LINE_AA, false);
 
@@ -235,7 +235,7 @@ public class ARTMultiObjectTrackingBasedOnColor : MonoBehaviour {
         for (int i = 0; i < theColorObjects.Count; i++)
         {
             Imgproc.drawContours(frame, contours, i, theColorObjects[i].getColor(), 3, 8, hierarchy, int.MaxValue, new Point());
-            Imgproc.circle(frame, new Point(theColorObjects[i].getXPos(), theColorObjects[i].getYPos()), 5, theColorObjects[i].getColor());
+            //Imgproc.circle(frame, new Point(theColorObjects[i].getXPos(), theColorObjects[i].getYPos()), 5, theColorObjects[i].getColor());
             //Imgproc.putText(frame, theColorObjects[i].getXPos() + " , " + theColorObjects[i].getYPos(), new Point(theColorObjects[i].getXPos(), theColorObjects[i].getYPos() + 20), 1, 1, theColorObjects[i].getColor(), 2);
             //Imgproc.putText(frame, theColorObjects[i].getType(), new Point(theColorObjects[i].getXPos(), theColorObjects[i].getYPos() - 20), 1, 2, theColorObjects[i].getColor(), 2);
         }
@@ -267,7 +267,8 @@ public class ARTMultiObjectTrackingBasedOnColor : MonoBehaviour {
     /// <param name="threshold">Threshold.</param>
     /// <param name="HSV">HS.</param>
     /// <param name="cameraFeed">Camera feed.</param>
-    private void trackFilteredObject(ARTColorObject theColorObject, Mat threshold, Mat HSV, Mat cameraFeed)
+	//private void trackFilteredObject(ARTColorObject theColorObject, Mat threshold, Mat HSV, Mat cameraFeed)
+	private void trackFilteredObject(ARTColorObject theColorObject, Mat threshold, Mat cameraFeed)
     {
 
         List<ARTColorObject> colorObjects = new List<ARTColorObject>();

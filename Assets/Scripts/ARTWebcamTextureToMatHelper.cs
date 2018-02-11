@@ -231,8 +231,25 @@ namespace ARTScripts
                     isTimeout = true;
                     break;
                 }
-                else if (webCamTexture.didUpdateThisFrame)
-                {
+				// If you want to use webcamTexture.width and webcamTexture.height on iOS, you have to wait until webcamTexture.didUpdateThisFrame == 1, otherwise these two values will be equal to 16. (http://forum.unity3d.com/threads/webcamtexture-and-error-0x0502.123922/)
+				#if UNITY_IOS && !UNITY_EDITOR && (UNITY_4_6_3 || UNITY_4_6_4 || UNITY_5_0_0 || UNITY_5_0_1)
+				else if (webCamTexture.width > 16 && webCamTexture.height > 16) {
+				#else
+				else if (webCamTexture.didUpdateThisFrame) {
+				#if UNITY_IOS && !UNITY_EDITOR && UNITY_5_2
+				while (webCamTexture.width <= 16) {
+				if (initFrameCount > timeoutFrameCount) {
+				isTimeout = true;
+				break;
+				}else {
+				initFrameCount++;
+				}
+				webCamTexture.GetPixels32 ();
+				yield return new WaitForEndOfFrame ();
+				}
+				if (isTimeout) break;
+				#endif
+				#endif
                     Debug.Log("name " + webCamTexture.name + " width " + webCamTexture.width + " height " + webCamTexture.height + " fps " + webCamTexture.requestedFPS);
                     Debug.Log("videoRotationAngle " + webCamTexture.videoRotationAngle + " videoVerticallyMirrored " + webCamTexture.videoVerticallyMirrored + " isWrongFacing " + webCamDevice.isFrontFacing);
 

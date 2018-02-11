@@ -6,8 +6,8 @@ namespace ARTScripts
 
     public class ColorDefs : MonoBehaviour
     {
-        public static Scalar BlueHSVMin = new Scalar(92, 0, 0);
-        public static Scalar BlueHSVMax = new Scalar(124, 220, 240);
+		public static Scalar BlueHSVMin = new Scalar(92, 0, 0);
+		public static Scalar BlueHSVMax = new Scalar(124, 220, 240);
         public static Scalar BlueColor = new Scalar(0, 0, 255);
 
         public static Scalar GreemHSVMin = new Scalar(34, 50, 50);
