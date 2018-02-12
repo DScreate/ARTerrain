@@ -54,6 +54,11 @@ public class ARTMultiObjectTrackingBasedOnColor : MonoBehaviour {
     ARTColorObject red = new ARTColorObject("red");
     ARTColorObject green = new ARTColorObject("green");
 
+    List<ARTColorObject> blueList = new List<ARTColorObject>();
+    List<ARTColorObject> greenList = new List<ARTColorObject>();
+    List<ARTColorObject> yellowList = new List<ARTColorObject>();
+    List<ARTColorObject> redList = new List<ARTColorObject>();
+
     /// <summary>
     /// The webcam texture to mat helper.
     /// </summary>
@@ -145,28 +150,31 @@ public class ARTMultiObjectTrackingBasedOnColor : MonoBehaviour {
             Imgproc.cvtColor(rgbMat, hsvMat, Imgproc.COLOR_RGB2HSV);
             Core.inRange(hsvMat, blue.getHSVmin(), blue.getHSVmax(), thresholdMat);
             morphOps(thresholdMat);
-            trackFilteredObject(blue, thresholdMat, rgbMat);
+            trackFilteredObject(blue, thresholdMat, rgbMat, blueList);
+            //trackFilteredObject(blue, thresholdMat, rgbMat);
             //then yellows
             //Imgproc.cvtColor(rgbMat, hsvMat, Imgproc.COLOR_RGB2HSV);
             Core.inRange(hsvMat, yellow.getHSVmin(), yellow.getHSVmax(), thresholdMat);
             morphOps(thresholdMat);
-            trackFilteredObject(yellow, thresholdMat, rgbMat);
+            trackFilteredObject(yellow, thresholdMat, rgbMat, yellowList);
+            //trackFilteredObject(yellow, thresholdMat, rgbMat);
             //then reds
             //Imgproc.cvtColor(rgbMat, hsvMat, Imgproc.COLOR_RGB2HSV);
             Core.inRange(hsvMat, red.getHSVmin(), red.getHSVmax(), thresholdMat);
             morphOps(thresholdMat);
-            trackFilteredObject(red, thresholdMat, rgbMat);
+            trackFilteredObject(red, thresholdMat, rgbMat, redList);
+            //trackFilteredObject(red, thresholdMat, rgbMat);
             //then greens
             //Imgproc.cvtColor(rgbMat, hsvMat, Imgproc.COLOR_RGB2HSV);
             Core.inRange(hsvMat, green.getHSVmin(), green.getHSVmax(), thresholdMat);
             morphOps(thresholdMat);
-            trackFilteredObject(green, thresholdMat, rgbMat);
+            trackFilteredObject(green, thresholdMat, rgbMat, greenList);
+            //trackFilteredObject(green, thresholdMat, rgbMat);
 
+            //TODO: Remove SO
             Imgproc.putText(rgbMat, "W:" + rgbMat.width() + " H:" + rgbMat.height() + " SO:" + Screen.orientation, new Point(5, rgbMat.rows() - 10), Core.FONT_HERSHEY_SIMPLEX, 1.0, new Scalar(255, 255, 255, 255), 2, Imgproc.LINE_AA, false);
 
-            Utils.matToTexture2D(rgbMat, texture, ARTwebCamTextureToMatHelper.GetBufferColors());
-
-            
+            Utils.matToTexture2D(rgbMat, texture, ARTwebCamTextureToMatHelper.GetBufferColors());            
         }
     }
 
@@ -222,6 +230,7 @@ public class ARTMultiObjectTrackingBasedOnColor : MonoBehaviour {
         ARTwebCamTextureToMatHelper.Initialize(null, ARTwebCamTextureToMatHelper.requestedWidth, ARTwebCamTextureToMatHelper.requestedHeight);
     }
 
+    //TODO: Remove this method, being used to draw colors on image.
     /// <summary>
     /// Draws the object.
     /// </summary>
@@ -259,7 +268,7 @@ public class ARTMultiObjectTrackingBasedOnColor : MonoBehaviour {
         Imgproc.dilate(thresh, thresh, dilateElement);
         Imgproc.dilate(thresh, thresh, dilateElement);
     }
-
+    /*
     /// <summary>
     /// Tracks the filtered object.
     /// </summary>
@@ -334,6 +343,103 @@ public class ARTMultiObjectTrackingBasedOnColor : MonoBehaviour {
                 Imgproc.putText(cameraFeed, "TOO MUCH NOISE!", new Point(5, cameraFeed.rows() - 10), Core.FONT_HERSHEY_SIMPLEX, 1.0, new Scalar(255, 255, 255, 255), 2, Imgproc.LINE_AA, false);
             }
         }
+    } */
+    /// <summary>
+    /// Tracks the filtered object.
+    /// </summary>
+    /// <param name="theColorObject">The color object.</param>
+    /// <param name="threshold">Threshold.</param>
+    /// <param name="HSV">HS.</param>
+    /// <param name="cameraFeed">Camera feed.</param>
+    //private void trackFilteredObject(ARTColorObject theColorObject, Mat threshold, Mat HSV, Mat cameraFeed)
+    private void trackFilteredObject(ARTColorObject theColorObject, Mat threshold, Mat cameraFeed, List<ARTColorObject> colorList)
+    {
+
+        //List<ARTColorObject> colorList = new List<ARTColorObject>();
+        Mat temp = new Mat();
+        threshold.copyTo(temp);
+        //these two vectors needed for output of findContours
+        List<MatOfPoint> contours = new List<MatOfPoint>();
+        Mat hierarchy = new Mat();
+        //find contours of filtered image using openCV findContours function
+        Imgproc.findContours(temp, contours, hierarchy, Imgproc.RETR_CCOMP, Imgproc.CHAIN_APPROX_SIMPLE);
+
+        //use moments method to find our filtered object
+        bool colorObjectFound = false;
+        if (hierarchy.rows() > 0)
+        {
+            int numObjects = hierarchy.rows();
+
+            //                      Debug.Log("hierarchy " + hierarchy.ToString());
+
+            //if number of objects greater than MAX_NUM_OBJECTS we have a noisy filter
+            if (numObjects < MAX_NUM_OBJECTS)
+            {
+                for (int index = 0; index >= 0; index = (int)hierarchy.get(0, index)[0])
+                {
+
+                    Moments moment = Imgproc.moments(contours[index]);
+                    double area = moment.get_m00();
+
+                    //if the area is less than 20 px by 20px then it is probably just noise
+                    //if the area is the same as the 3/2 of the image size, probably just a bad filter
+                    //we only want the object with the largest area so we safe a reference area each
+                    //iteration and compare it to the area in the next iteration.
+                    if (area > MIN_OBJECT_AREA)
+                    {
+
+                        ARTColorObject colorObject = new ARTColorObject();
+
+                        colorObject.setXPos((int)(moment.get_m10() / area));
+                        colorObject.setYPos((int)(moment.get_m01() / area));
+                        colorObject.setType(theColorObject.getType());
+                        colorObject.setColor(theColorObject.getColor());
+
+                        colorList.Add(colorObject);
+
+                        colorObjectFound = true;
+
+                    }
+                    else
+                    {
+                        colorObjectFound = false;
+                    }
+                }
+                //let user know you found an object
+
+                //TODO: delete if statement, not drawing here
+                if (colorObjectFound == true)
+                {
+                    //draw object location on screen
+                    drawObject(colorList, cameraFeed, temp, contours, hierarchy);
+                }
+
+            }
+            else
+            {
+                Imgproc.putText(cameraFeed, "TOO MUCH NOISE!", new Point(5, cameraFeed.rows() - 10), Core.FONT_HERSHEY_SIMPLEX, 1.0, new Scalar(255, 255, 255, 255), 2, Imgproc.LINE_AA, false);
+            }
+        }
+    }
+
+    public List<ARTColorObject> getBlueList()
+    {
+        return blueList;
+    }
+
+    public List<ARTColorObject> getYellowList()
+    {
+        return yellowList;
+    }
+
+    public List<ARTColorObject> getGreenList()
+    {
+        return greenList;
+    }
+
+    public List<ARTColorObject> getRedList()
+    {
+        return redList;
     }
 }
 
