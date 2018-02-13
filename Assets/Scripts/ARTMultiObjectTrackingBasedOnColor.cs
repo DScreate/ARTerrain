@@ -141,40 +141,48 @@ public class ARTMultiObjectTrackingBasedOnColor : MonoBehaviour {
     {
         if (ARTwebCamTextureToMatHelper.IsPlaying() && ARTwebCamTextureToMatHelper.DidUpdateThisFrame())
         {
-
+            //alpha is never used, potentially we can change it so only rgb mat is being generated to save performance
             Mat rgbaMat = ARTwebCamTextureToMatHelper.GetMat();
+            var blueMat = new Mat();
+            var yellowMat = new Mat();
+            var redMat = new Mat();
+            var greenMat = new Mat();
 
             Imgproc.cvtColor(rgbaMat, rgbMat, Imgproc.COLOR_RGBA2RGB);
 
             //first find blue objects
             Imgproc.cvtColor(rgbMat, hsvMat, Imgproc.COLOR_RGB2HSV);
             Core.inRange(hsvMat, blue.getHSVmin(), blue.getHSVmax(), thresholdMat);
-            morphOps(thresholdMat);
-            trackFilteredObject(blue, thresholdMat, rgbMat, blueList);
-            //trackFilteredObject(blue, thresholdMat, rgbMat);
+           // morphOps(thresholdMat);
+            //trackFilteredObject(blue, thresholdMat, rgbMat, blueList);
+    
             //then yellows
             //Imgproc.cvtColor(rgbMat, hsvMat, Imgproc.COLOR_RGB2HSV);
             Core.inRange(hsvMat, yellow.getHSVmin(), yellow.getHSVmax(), thresholdMat);
-            morphOps(thresholdMat);
-            trackFilteredObject(yellow, thresholdMat, rgbMat, yellowList);
-            //trackFilteredObject(yellow, thresholdMat, rgbMat);
+            //Utils.matToTexture2D(thresholdMat, texture, ARTwebCamTextureToMatHelper.GetBufferColors());
+            
+            //Imgproc.threshold(hsvMat, thresholdMat, 0.0, 0.0, 0); Can we use this after Core.inRange to fill in white areas with some grey?
+
+           // morphOps(thresholdMat);
+           // trackFilteredObject(yellow, thresholdMat, rgbMat, yellowList);
+ 
             //then reds
             //Imgproc.cvtColor(rgbMat, hsvMat, Imgproc.COLOR_RGB2HSV);
             Core.inRange(hsvMat, red.getHSVmin(), red.getHSVmax(), thresholdMat);
-            morphOps(thresholdMat);
-            trackFilteredObject(red, thresholdMat, rgbMat, redList);
-            //trackFilteredObject(red, thresholdMat, rgbMat);
+           // morphOps(thresholdMat);
+           // trackFilteredObject(red, thresholdMat, rgbMat, redList);
+  
             //then greens
             //Imgproc.cvtColor(rgbMat, hsvMat, Imgproc.COLOR_RGB2HSV);
             Core.inRange(hsvMat, green.getHSVmin(), green.getHSVmax(), thresholdMat);
-            morphOps(thresholdMat);
-            trackFilteredObject(green, thresholdMat, rgbMat, greenList);
-            //trackFilteredObject(green, thresholdMat, rgbMat);
+           // morphOps(thresholdMat);
+          //  trackFilteredObject(green, thresholdMat, rgbMat, greenList);
+      
 
             //TODO: Remove SO
             Imgproc.putText(rgbMat, "W:" + rgbMat.width() + " H:" + rgbMat.height() + " SO:" + Screen.orientation, new Point(5, rgbMat.rows() - 10), Core.FONT_HERSHEY_SIMPLEX, 1.0, new Scalar(255, 255, 255, 255), 2, Imgproc.LINE_AA, false);
 
-            Utils.matToTexture2D(rgbMat, texture, ARTwebCamTextureToMatHelper.GetBufferColors());            
+           // Utils.matToTexture2D(rgbMat, texture, ARTwebCamTextureToMatHelper.GetBufferColors());            
         }
     }
 
