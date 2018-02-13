@@ -152,37 +152,44 @@ public class ARTMultiObjectTrackingBasedOnColor : MonoBehaviour {
 
             //first find blue objects
             Imgproc.cvtColor(rgbMat, hsvMat, Imgproc.COLOR_RGB2HSV);
-            Core.inRange(hsvMat, blue.getHSVmin(), blue.getHSVmax(), thresholdMat);
-           // morphOps(thresholdMat);
+
+            Core.inRange(hsvMat, blue.getHSVmin(), blue.getHSVmax(), blueMat);
+            Core.inRange(hsvMat, yellow.getHSVmin(), yellow.getHSVmax(), yellowMat);
+            Core.inRange(hsvMat, red.getHSVmin(), red.getHSVmax(), redMat);
+            Core.inRange(hsvMat, green.getHSVmin(), green.getHSVmax(), greenMat);
+            Utils.matToTexture2D(rgbMat, texture, ARTwebCamTextureToMatHelper.GetBufferColors());
+
+            //Core.inRange(hsvMat, blue.getHSVmin(), blue.getHSVmax(), thresholdMat);
+            // morphOps(thresholdMat);
             //trackFilteredObject(blue, thresholdMat, rgbMat, blueList);
-    
+
             //then yellows
             //Imgproc.cvtColor(rgbMat, hsvMat, Imgproc.COLOR_RGB2HSV);
-            Core.inRange(hsvMat, yellow.getHSVmin(), yellow.getHSVmax(), thresholdMat);
+            //Core.inRange(hsvMat, yellow.getHSVmin(), yellow.getHSVmax(), thresholdMat);
             //Utils.matToTexture2D(thresholdMat, texture, ARTwebCamTextureToMatHelper.GetBufferColors());
-            
+
             //Imgproc.threshold(hsvMat, thresholdMat, 0.0, 0.0, 0); Can we use this after Core.inRange to fill in white areas with some grey?
 
-           // morphOps(thresholdMat);
-           // trackFilteredObject(yellow, thresholdMat, rgbMat, yellowList);
- 
+            // morphOps(thresholdMat);
+            // trackFilteredObject(yellow, thresholdMat, rgbMat, yellowList);
+
             //then reds
             //Imgproc.cvtColor(rgbMat, hsvMat, Imgproc.COLOR_RGB2HSV);
-            Core.inRange(hsvMat, red.getHSVmin(), red.getHSVmax(), thresholdMat);
-           // morphOps(thresholdMat);
-           // trackFilteredObject(red, thresholdMat, rgbMat, redList);
-  
+            //Core.inRange(hsvMat, red.getHSVmin(), red.getHSVmax(), thresholdMat);
+            // morphOps(thresholdMat);
+            // trackFilteredObject(red, thresholdMat, rgbMat, redList);
+
             //then greens
             //Imgproc.cvtColor(rgbMat, hsvMat, Imgproc.COLOR_RGB2HSV);
-            Core.inRange(hsvMat, green.getHSVmin(), green.getHSVmax(), thresholdMat);
-           // morphOps(thresholdMat);
-          //  trackFilteredObject(green, thresholdMat, rgbMat, greenList);
-      
+            //Core.inRange(hsvMat, green.getHSVmin(), green.getHSVmax(), thresholdMat);
+            // morphOps(thresholdMat);
+            //  trackFilteredObject(green, thresholdMat, rgbMat, greenList);
+
 
             //TODO: Remove SO
             Imgproc.putText(rgbMat, "W:" + rgbMat.width() + " H:" + rgbMat.height() + " SO:" + Screen.orientation, new Point(5, rgbMat.rows() - 10), Core.FONT_HERSHEY_SIMPLEX, 1.0, new Scalar(255, 255, 255, 255), 2, Imgproc.LINE_AA, false);
-
-           // Utils.matToTexture2D(rgbMat, texture, ARTwebCamTextureToMatHelper.GetBufferColors());            
+            
+            // Utils.matToTexture2D(rgbMat, texture, ARTwebCamTextureToMatHelper.GetBufferColors());            
         }
     }
 
@@ -276,82 +283,6 @@ public class ARTMultiObjectTrackingBasedOnColor : MonoBehaviour {
         Imgproc.dilate(thresh, thresh, dilateElement);
         Imgproc.dilate(thresh, thresh, dilateElement);
     }
-    /*
-    /// <summary>
-    /// Tracks the filtered object.
-    /// </summary>
-    /// <param name="theColorObject">The color object.</param>
-    /// <param name="threshold">Threshold.</param>
-    /// <param name="HSV">HS.</param>
-    /// <param name="cameraFeed">Camera feed.</param>
-	//private void trackFilteredObject(ARTColorObject theColorObject, Mat threshold, Mat HSV, Mat cameraFeed)
-	private void trackFilteredObject(ARTColorObject theColorObject, Mat threshold, Mat cameraFeed)
-    {
-
-        List<ARTColorObject> colorObjects = new List<ARTColorObject>();
-        Mat temp = new Mat();
-        threshold.copyTo(temp);
-        //these two vectors needed for output of findContours
-        List<MatOfPoint> contours = new List<MatOfPoint>();
-        Mat hierarchy = new Mat();
-        //find contours of filtered image using openCV findContours function
-        Imgproc.findContours(temp, contours, hierarchy, Imgproc.RETR_CCOMP, Imgproc.CHAIN_APPROX_SIMPLE);
-
-        //use moments method to find our filtered object
-        bool colorObjectFound = false;
-        if (hierarchy.rows() > 0)
-        {
-            int numObjects = hierarchy.rows();
-
-            //                      Debug.Log("hierarchy " + hierarchy.ToString());
-
-            //if number of objects greater than MAX_NUM_OBJECTS we have a noisy filter
-            if (numObjects < MAX_NUM_OBJECTS)
-            {
-                for (int index = 0; index >= 0; index = (int)hierarchy.get(0, index)[0])
-                {
-
-                    Moments moment = Imgproc.moments(contours[index]);
-                    double area = moment.get_m00();
-
-                    //if the area is less than 20 px by 20px then it is probably just noise
-                    //if the area is the same as the 3/2 of the image size, probably just a bad filter
-                    //we only want the object with the largest area so we safe a reference area each
-                    //iteration and compare it to the area in the next iteration.
-                    if (area > MIN_OBJECT_AREA)
-                    {
-
-                        ARTColorObject colorObject = new ARTColorObject();
-
-                        colorObject.setXPos((int)(moment.get_m10() / area));
-                        colorObject.setYPos((int)(moment.get_m01() / area));
-                        colorObject.setType(theColorObject.getType());
-                        colorObject.setColor(theColorObject.getColor());
-
-                        colorObjects.Add(colorObject);
-
-                        colorObjectFound = true;
-
-                    }
-                    else
-                    {
-                        colorObjectFound = false;
-                    }
-                }
-                //let user know you found an object
-                if (colorObjectFound == true)
-                {
-                    //draw object location on screen
-                    drawObject(colorObjects, cameraFeed, temp, contours, hierarchy);
-                }
-
-            }
-            else
-            {
-                Imgproc.putText(cameraFeed, "TOO MUCH NOISE!", new Point(5, cameraFeed.rows() - 10), Core.FONT_HERSHEY_SIMPLEX, 1.0, new Scalar(255, 255, 255, 255), 2, Imgproc.LINE_AA, false);
-            }
-        }
-    } */
     /// <summary>
     /// Tracks the filtered object.
     /// </summary>
