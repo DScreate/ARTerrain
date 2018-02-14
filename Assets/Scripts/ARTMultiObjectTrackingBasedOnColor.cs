@@ -143,18 +143,28 @@ public class ARTMultiObjectTrackingBasedOnColor : MonoBehaviour {
         {
             //alpha is never used, potentially we can change it so only rgb mat is being generated to save performance
             Mat rgbaMat = ARTwebCamTextureToMatHelper.GetMat();
+            var blueMat = new Mat();
+            var yellowMat = new Mat();
+            var redMat = new Mat();
+            var greenMat = new Mat();
 
             Imgproc.cvtColor(rgbaMat, rgbMat, Imgproc.COLOR_RGBA2RGB);
 
             //first find blue objects
-            //Imgproc.cvtColor(rgbMat, hsvMat, Imgproc.COLOR_RGB2HSV);
+            Imgproc.cvtColor(rgbMat, hsvMat, Imgproc.COLOR_RGB2HSV);
 
-            Core.inRange(rgbaMat, blue.getHSVmin(), blue.getHSVmax(), thresholdMat);
+            /*Core.inRange(hsvMat, blue.getHSVmin(), blue.getHSVmax(), blueMat);
+            Core.inRange(hsvMat, yellow.getHSVmin(), yellow.getHSVmax(), yellowMat);
+            Core.inRange(hsvMat, red.getHSVmin(), red.getHSVmax(), redMat);
+            Core.inRange(hsvMat, green.getHSVmin(), green.getHSVmax(), greenMat);
+            Utils.matToTexture2D(rgbMat, texture, ARTwebCamTextureToMatHelper.GetBufferColors());*/
+
+            Core.inRange(hsvMat, blue.getHSVmin(), blue.getHSVmax(), thresholdMat);
             morphOps(thresholdMat);
             trackFilteredObject(blue, thresholdMat, rgbMat);
             //then yellows
             
-            Core.inRange(rgbaMat, yellow.getHSVmin(), yellow.getHSVmax(), thresholdMat);            
+            Core.inRange(hsvMat, yellow.getHSVmin(), yellow.getHSVmax(), thresholdMat);            
 
           //  Imgproc.threshold(hsvMat, thresholdMat, 0.0, 0.0, 0); //Can we use this after Core.inRange to fill in white areas with some grey?
 
@@ -163,13 +173,13 @@ public class ARTMultiObjectTrackingBasedOnColor : MonoBehaviour {
 
             //then reds
             
-            Core.inRange(rgbMat, red.getHSVmin(), red.getHSVmax(), thresholdMat);
+            Core.inRange(hsvMat, red.getHSVmin(), red.getHSVmax(), thresholdMat);
              morphOps(thresholdMat);
              trackFilteredObject(red, thresholdMat, rgbMat);
 
             //then greens
             
-            Core.inRange(rgbMat, green.getHSVmin(), green.getHSVmax(), thresholdMat);
+            Core.inRange(hsvMat, green.getHSVmin(), green.getHSVmax(), thresholdMat);
              morphOps(thresholdMat);
               trackFilteredObject(green, thresholdMat, rgbMat);
 
