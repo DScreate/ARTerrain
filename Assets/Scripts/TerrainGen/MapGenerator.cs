@@ -5,7 +5,11 @@ using UnityEngine;
 public class MapGenerator : MonoBehaviour {
 
     public enum DrawMode { NoiseMap, ColorMap, Mesh };
+    public enum ImageMode { PureNoise, FromImage };
+
     public DrawMode drawMode;
+
+    public ImageMode imageMode;
 
     public int mapWidth;
     public int mapHeight;
@@ -26,26 +30,31 @@ public class MapGenerator : MonoBehaviour {
 
     public TerrainType[] regions;
 
+
+
     public void GenerateMap()
     {
         float[,] noiseMap = Noise.GenerateNoiseMap(mapWidth, mapHeight, seed, noiseScale, octaves, persistance, lacunarity, offset);
 
         Color[] colorMap = new Color[mapWidth * mapHeight];
-        for ( int y = 0; y < mapHeight; y++)
-        {
-            for ( int x = 0; x < mapWidth; x++)
+
+            for (int y = 0; y < mapHeight; y++)
             {
-                float currentHeight = noiseMap[x, y];
-                for(int i = 0; i < regions.Length; i++)
+                for (int x = 0; x < mapWidth; x++)
                 {
-                    if (currentHeight <= regions [i].height)
+                    float currentHeight = noiseMap[x, y];
+                    for (int i = 0; i < regions.Length; i++)
                     {
-                        colorMap[y * mapWidth + x] = regions[i].color;
-                        break;
+                        if (currentHeight <= regions[i].height)
+                        {
+                            colorMap[y * mapWidth + x] = regions[i].color;
+                            break;
+                        }
                     }
                 }
             }
-        }
+
+
         MapDisplay display = FindObjectOfType<MapDisplay>();
         if(drawMode == DrawMode.NoiseMap)
         {

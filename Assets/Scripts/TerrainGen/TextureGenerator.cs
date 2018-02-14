@@ -4,7 +4,14 @@ using UnityEngine;
 
 public static class TextureGenerator {
 
-	public static Texture2D TextureFromColorMap(Color[] colorMap, int width, int height)
+    public static Texture2D imageTex;
+
+    [Range(0, 1)]
+    public static float NoiseWeight;
+    static WebCamTexture _webCamTex;
+
+
+    public static Texture2D TextureFromColorMap(Color[] colorMap, int width, int height)
     {
         Texture2D texture = new Texture2D(width, height);
         texture.filterMode = FilterMode.Point;
@@ -19,7 +26,7 @@ public static class TextureGenerator {
         int width = heightMap.GetLength(0);
         int height = heightMap.GetLength(1);
 
-        Texture2D texture = new Texture2D(width, height);
+        //Texture2D texture = new Texture2D(width, height);
 
         Color[] colorMap = new Color[width * height];
         for (int y = 0; y < height; y++)
