@@ -5,11 +5,19 @@ using UnityEngine;
 public class MapGenerator : MonoBehaviour {
 
     public enum DrawMode { NoiseMap, ColorMap, Mesh };
-    public enum ImageMode { PureNoise, FromImage };
+    public enum ImageMode { PureNoise, FromImage, FromWebcam }    
 
     public DrawMode drawMode;
 
     public ImageMode imageMode;
+
+    public Texture2D imageTex;
+
+    [Range(0, 1)]
+    public float minGreyValue;
+
+    [Range(0, 1)]
+    public float noiseWeight;
 
     public int mapWidth;
     public int mapHeight;
@@ -30,13 +38,44 @@ public class MapGenerator : MonoBehaviour {
 
     public TerrainType[] regions;
 
+    WebCamTexture _webcamtex;
+    Texture2D _TextureFromCamera;
 
+    private void Start()
+    {
+        if (imageMode == ImageMode.FromWebcam)
+        {
+            _webcamtex = new WebCamTexture(mapWidth, mapHeight);
+            _webcamtex.Play();
+        }
+    }
+
+    private void Update()
+    {
+        if (imageMode == ImageMode.FromWebcam)
+        {
+            _TextureFromCamera = new Texture2D(mapWidth, mapHeight);
+            for (int y = 0; y < mapHeight; y++)
+            {
+                for (int x = 0; x < mapWidth; x++)
+                {
+                    _TextureFromCamera.SetPixel(x, y, _webcamtex.GetPixel(x, y));
+                }
+            }
+            _TextureFromCamera.Apply();
+            GenerateMap();
+        }
+
+
+    }
 
     public void GenerateMap()
     {
         float[,] noiseMap = Noise.GenerateNoiseMap(mapWidth, mapHeight, seed, noiseScale, octaves, persistance, lacunarity, offset);
 
-        Color[] colorMap = new Color[mapWidth * mapHeight];
+        if (imageMode == ImageMode.PureNoise)
+        {
+            Color[] colorMap = new Color[mapWidth * mapHeight];
 
             for (int y = 0; y < mapHeight; y++)
             {
@@ -55,16 +94,91 @@ public class MapGenerator : MonoBehaviour {
             }
 
 
-        MapDisplay display = FindObjectOfType<MapDisplay>();
-        if(drawMode == DrawMode.NoiseMap)
+            MapDisplay display = FindObjectOfType<MapDisplay>();
+            if (drawMode == DrawMode.NoiseMap)
+            {
+                display.DrawTexture(TextureGenerator.TextureFromHeightMap(noiseMap));
+            }
+            else if (drawMode == DrawMode.ColorMap)
+            {
+                display.DrawTexture(TextureGenerator.TextureFromColorMap(colorMap, mapWidth, mapHeight));
+            }
+            else if (drawMode == DrawMode.Mesh)
+            {
+                display.DrawMesh(MeshGenerator.GenerateTerrainMesh(noiseMap, meshHeightMultiplier, meshHeightCurve), TextureGenerator.TextureFromColorMap(colorMap, mapWidth, mapHeight));
+            }
+        }
+        else if (imageMode == ImageMode.FromImage)
         {
-            display.DrawTexture(TextureGenerator.TextureFromHeightMap(noiseMap));
-        } else if (drawMode == DrawMode.ColorMap)
+            Texture2D noisedTex = TextureGenerator.ApplyNoiseToTexture(imageTex, noiseMap, noiseWeight, minGreyValue);
+            MapDisplay display = FindObjectOfType<MapDisplay>();
+
+            Color[] colorMap = new Color[mapWidth * mapHeight];
+
+            for (int y = 0; y < mapHeight; y++)
+            {
+                for (int x = 0; x < mapWidth; x++)
+                {
+                    float currentHeight = noisedTex.GetPixel(x, y).grayscale;
+                    for (int i = 0; i < regions.Length; i++)
+                    {
+                        if (currentHeight <= regions[i].height)
+                        {
+                            colorMap[y * mapWidth + x] = regions[i].color;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (drawMode == DrawMode.NoiseMap)
+            {
+                display.DrawTexture(noisedTex);
+            }
+            else if (drawMode == DrawMode.ColorMap)
+            {
+                display.DrawTexture(TextureGenerator.TextureFromColorMap(colorMap, mapWidth, mapHeight));
+            }
+            else if (drawMode == DrawMode.Mesh)
+            {
+                display.DrawMesh(MeshGenerator.GenerateTerrainMesh(TextureGenerator.TextureToNoise(noisedTex), meshHeightMultiplier, meshHeightCurve), TextureGenerator.TextureFromColorMap(colorMap, mapWidth, mapHeight));
+            }
+        }
+        else if (imageMode == ImageMode.FromWebcam)
         {
-            display.DrawTexture(TextureGenerator.TextureFromColorMap(colorMap, mapWidth, mapHeight));
-        } else if (drawMode == DrawMode.Mesh)
-        {
-            display.DrawMesh(MeshGenerator.GenerateTerrainMesh(noiseMap, meshHeightMultiplier, meshHeightCurve), TextureGenerator.TextureFromColorMap(colorMap, mapWidth, mapHeight));
+            Texture2D noisedTex = TextureGenerator.ApplyNoiseToTexture(_TextureFromCamera, noiseMap, noiseWeight, minGreyValue);
+            MapDisplay display = FindObjectOfType<MapDisplay>();
+
+            Color[] colorMap = new Color[mapWidth * mapHeight];
+
+            for (int y = 0; y < mapHeight; y++)
+            {
+                for (int x = 0; x < mapWidth; x++)
+                {
+                    float currentHeight = noisedTex.GetPixel(x, y).grayscale;
+                    for (int i = 0; i < regions.Length; i++)
+                    {
+                        if (currentHeight <= regions[i].height)
+                        {
+                            colorMap[y * mapWidth + x] = regions[i].color;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (drawMode == DrawMode.NoiseMap)
+            {
+                display.DrawTexture(noisedTex);
+            }
+            else if (drawMode == DrawMode.ColorMap)
+            {
+                display.DrawTexture(TextureGenerator.TextureFromColorMap(colorMap, mapWidth, mapHeight));
+            }
+            else if (drawMode == DrawMode.Mesh)
+            {
+                display.DrawMesh(MeshGenerator.GenerateTerrainMesh(TextureGenerator.TextureToNoise(noisedTex), meshHeightMultiplier, meshHeightCurve), TextureGenerator.TextureFromColorMap(colorMap, mapWidth, mapHeight));
+            }
         }
     }
 
