@@ -55,6 +55,9 @@ public class ARTMultiObjectTrackingBasedOnColor : MonoBehaviour
     ARTColorObject _red = new ARTColorObject("red");
     ARTColorObject _green = new ARTColorObject("green");
 
+    //REMOVE
+    protected Color32[] _colors;
+
     /// <summary>
     /// The webcam texture to mat helper.
     /// </summary>
@@ -100,7 +103,8 @@ public class ARTMultiObjectTrackingBasedOnColor : MonoBehaviour
         Debug.Log("Screen.width " + Screen.width + " Screen.height " + Screen.height + " Screen.orientation " + Screen.orientation);
 
         _rgbMat = new Mat(webCamTextureMat.rows(), webCamTextureMat.cols(), CvType.CV_8UC3);
-        _drawMat = new Mat(webCamTextureMat.rows(), webCamTextureMat.cols(), CvType.CV_8UC3, new Scalar(0,0,0));
+        _drawMat = new Mat(webCamTextureMat.rows(), webCamTextureMat.cols(), CvType.CV_8UC1);
+        _colors = new Color32[webCamTextureMat.rows() * webCamTextureMat.cols()];
         _thresholdMat = new Mat();
         _hsvMat = new Mat();        
     }
@@ -137,35 +141,37 @@ public class ARTMultiObjectTrackingBasedOnColor : MonoBehaviour
         if (webCamTextureToMatHelper.IsPlaying() && webCamTextureToMatHelper.DidUpdateThisFrame())
         {
             Mat rgbaMat = webCamTextureToMatHelper.GetMat();
-            //Mat _drawMat = new Mat(rgbaMat.rows(), rgbaMat.cols(), CvType.CV_8UC3);
+            Mat drawMat = new Mat();
+            _drawMat.copyTo(drawMat);
 
-            Imgproc.cvtColor(rgbaMat, _rgbMat, Imgproc.COLOR_RGBA2RGB);            
+            Imgproc.cvtColor(rgbaMat, _rgbMat, Imgproc.COLOR_RGBA2RGB);          
+            
             Imgproc.cvtColor(_rgbMat, _hsvMat, Imgproc.COLOR_RGB2HSV);
 
             //first find blue objects
             Core.inRange(_hsvMat, _blue.getHSVmin(), _blue.getHSVmax(), _thresholdMat);
             morphOps(_thresholdMat);
-            trackFilteredObject(_blue, _thresholdMat, _rgbMat);
+            trackFilteredObject(_blue, _thresholdMat, drawMat);
             
             //then yellows
             Core.inRange(_hsvMat, _yellow.getHSVmin(), _yellow.getHSVmax(), _thresholdMat);
             morphOps(_thresholdMat);
-            trackFilteredObject(_yellow, _thresholdMat, _rgbMat);
+            trackFilteredObject(_yellow, _thresholdMat, drawMat);
 
             //then reds
             Core.inRange(_hsvMat, _red.getHSVmin(), _red.getHSVmax(), _thresholdMat);
             morphOps(_thresholdMat);
-            trackFilteredObject(_red, _thresholdMat, _rgbMat);
+            trackFilteredObject(_red, _thresholdMat, drawMat);
 
             //then greens
             Core.inRange(_hsvMat, _green.getHSVmin(), _green.getHSVmax(), _thresholdMat);
             morphOps(_thresholdMat);
-            trackFilteredObject(_green, _thresholdMat, _rgbMat);
+            trackFilteredObject(_green, _thresholdMat, drawMat);
 
             //Imgproc.putText(_rgbMat, "W:" + _rgbMat.width() + " H:" + _rgbMat.height() + " SO:" + Screen.orientation, new Point(5, _rgbMat.rows() - 10), Core.FONT_HERSHEY_SIMPLEX, 1.0, new Scalar(255, 255, 255, 255), 2, Imgproc.LINE_AA, false);
 
             //TODO: Change mat so that we are only capturing a grayscale
-            Utils.matToTexture2D(_rgbMat, _texture, webCamTextureToMatHelper.GetBufferColors());
+            Utils.matToTexture2D(drawMat, _texture, _colors);
         }        
     }
     //REMOVE
@@ -230,11 +236,11 @@ public class ARTMultiObjectTrackingBasedOnColor : MonoBehaviour
     /// <param name="temp">Temp.</param>
     /// <param name="contours">Contours.</param>
     /// <param name="hierarchy">Hierarchy.</param>
-    private void drawObject(List<ARTColorObject> theColorObjects, Mat frame, Mat temp, List<MatOfPoint> contours, Mat hierarchy)
+    private void drawObject(List<ARTColorObject> theColorObjects, Mat drawMat, Mat temp, List<MatOfPoint> contours, Mat hierarchy)
     {
         for (int i = 0; i < theColorObjects.Count; i++)
         { 
-            Imgproc.drawContours(frame, contours, i, theColorObjects[i].getColor(), -1, 8, hierarchy, int.MaxValue, new Point());
+            Imgproc.drawContours(drawMat, contours, i, theColorObjects[i].getColor(), -1, 8, hierarchy, int.MaxValue, new Point());
         }
     }
 
@@ -290,14 +296,14 @@ public class ARTMultiObjectTrackingBasedOnColor : MonoBehaviour
         {
             int numObjects = hierarchy.rows();
 
-            //if number of objects greater than MAX_NUM_OBJECTS we have a noisy filter
+            //if number of objects/contours greater than MAX_NUM_OBJECTS we have a noisy filter
             if (numObjects < MAX_NUM_OBJECTS)
             {
                 for (int index = 0; index >= 0; index = (int)hierarchy.get(0, index)[0])
                 {
 
                     Moments moment = Imgproc.moments(contours[index]);
-                    //gets the area of the current object. objects are defined by something that forms a complete contour
+                    //gets the area of the current contour. contours are curves joining all the continuous points, having the same color or intensity. 
                     double area = moment.get_m00();
 
                     //if the area is less than 20 px by 20px then it is probably just noise
@@ -306,7 +312,6 @@ public class ARTMultiObjectTrackingBasedOnColor : MonoBehaviour
                     //iteration and compare it to the area in the next iteration.
                     if (area > MIN_OBJECT_AREA)
                     {
-
                         ARTColorObject colorObject = new ARTColorObject();
 
                         colorObject.setXPos((int)(moment.get_m10() / area));
@@ -317,7 +322,6 @@ public class ARTMultiObjectTrackingBasedOnColor : MonoBehaviour
                         colorObjects.Add(colorObject);
 
                         colorObjectFound = true;
-
                     }
                     else
                     {
