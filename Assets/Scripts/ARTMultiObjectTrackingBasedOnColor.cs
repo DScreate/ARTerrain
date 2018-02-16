@@ -226,8 +226,7 @@ public class ARTMultiObjectTrackingBasedOnColor : MonoBehaviour
     private void drawObject(List<ARTColorObject> theColorObjects, Mat frame, Mat temp, List<MatOfPoint> contours, Mat hierarchy)
     {
         for (int i = 0; i < theColorObjects.Count; i++)
-        {
-            //TODO: Change 3 to a -1. Change the getColor() function so it returns grayscale values. 
+        { 
             Imgproc.drawContours(frame, contours, i, theColorObjects[i].getColor(), -1, 8, hierarchy, int.MaxValue, new Point());
         }
     }
