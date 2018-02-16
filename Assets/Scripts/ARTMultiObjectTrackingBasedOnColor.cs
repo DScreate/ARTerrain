@@ -228,13 +228,7 @@ public class ARTMultiObjectTrackingBasedOnColor : MonoBehaviour
         for (int i = 0; i < theColorObjects.Count; i++)
         {
             //TODO: Change 3 to a -1. Change the getColor() function so it returns grayscale values. 
-            Imgproc.drawContours(frame, contours, i, theColorObjects[i].getColor(), 3, 8, hierarchy, int.MaxValue, new Point());
-
-            //REMOVE
-            Imgproc.circle(frame, new Point(theColorObjects[i].getXPos(), theColorObjects[i].getYPos()), 5, theColorObjects[i].getColor());
-            Imgproc.putText(frame, theColorObjects[i].getXPos() + " , " + theColorObjects[i].getYPos(), new Point(theColorObjects[i].getXPos(), theColorObjects[i].getYPos() + 20), 1, 1, theColorObjects[i].getColor(), 2);
-            Imgproc.putText(frame, theColorObjects[i].getType(), new Point(theColorObjects[i].getXPos(), theColorObjects[i].getYPos() - 20), 1, 2, theColorObjects[i].getColor(), 2);
-            //END REMOVE
+            Imgproc.drawContours(frame, contours, i, theColorObjects[i].getColor(), -1, 8, hierarchy, int.MaxValue, new Point());
         }
     }
 
