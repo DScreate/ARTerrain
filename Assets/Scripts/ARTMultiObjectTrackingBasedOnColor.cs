@@ -63,6 +63,14 @@ public class ARTMultiObjectTrackingBasedOnColor : MonoBehaviour
     /// </summary>
     ARTWebcamTextureToMatHelper webCamTextureToMatHelper;
 
+    /// <summary>
+    /// Gets the 2dTexture used for terrain generation
+    /// </summary>
+    public Texture GetTexture()
+    {        
+        return _texture;
+    }
+
     // Use this for initialization
     void Start()
     {
@@ -151,30 +159,29 @@ public class ARTMultiObjectTrackingBasedOnColor : MonoBehaviour
             //first find blue objects
             Core.inRange(_hsvMat, _blue.getHSVmin(), _blue.getHSVmax(), _thresholdMat);
             morphOps(_thresholdMat);
-            trackFilteredObject(_blue, _thresholdMat, _rgbMat);
+            trackFilteredObject(_blue, _thresholdMat, drawMat);
             
             //then yellows
             Core.inRange(_hsvMat, _yellow.getHSVmin(), _yellow.getHSVmax(), _thresholdMat);
             morphOps(_thresholdMat);
-            trackFilteredObject(_yellow, _thresholdMat, _rgbMat);
+            trackFilteredObject(_yellow, _thresholdMat, drawMat);
 
             //then reds
             Core.inRange(_hsvMat, _red.getHSVmin(), _red.getHSVmax(), _thresholdMat);
             morphOps(_thresholdMat);
-            trackFilteredObject(_red, _thresholdMat, _rgbMat);
+            trackFilteredObject(_red, _thresholdMat, drawMat);
 
             //then greens
             Core.inRange(_hsvMat, _green.getHSVmin(), _green.getHSVmax(), _thresholdMat);
             morphOps(_thresholdMat);
-            trackFilteredObject(_green, _thresholdMat, _rgbMat);
+            trackFilteredObject(_green, _thresholdMat, drawMat);
 
             //Imgproc.putText(_rgbMat, "W:" + _rgbMat.width() + " H:" + _rgbMat.height() + " SO:" + Screen.orientation, new Point(5, _rgbMat.rows() - 10), Core.FONT_HERSHEY_SIMPLEX, 1.0, new Scalar(255, 255, 255, 255), 2, Imgproc.LINE_AA, false);
 
             //TODO: Change mat so that we are only capturing a grayscale
-            Utils.matToTexture2D(_rgbMat, _texture, _colors);
+            Utils.matToTexture2D(drawMat, _texture, _colors);
         }        
-    }
-    //REMOVE
+    }       
     /// <summary>
     /// Raises the destroy event.
     /// </summary>
@@ -182,7 +189,7 @@ public class ARTMultiObjectTrackingBasedOnColor : MonoBehaviour
     {
         webCamTextureToMatHelper.Dispose();
     }
-
+    //REMOVE
     /// <summary>
     /// Raises the back button click event.
     /// </summary>
