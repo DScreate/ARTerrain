@@ -1,139 +1,121 @@
 ﻿using UnityEngine;
+using System.Collections;
+
 using OpenCVForUnity;
-using ARTScripts;
 
-public class ARTColorObject {
-
-    int xPos, yPos;
-    string type;
-    Scalar HSVmin, HSVmax;
-    Scalar Color;
-
-    //ColorDefs colorDefs = new ColorDefs();
-
-    public ARTColorObject()
+namespace ARTScripts
+{
+    public class ARTColorObject
     {
-        //set values for default constructor
-        setType("Object");
-        setColor(new Scalar(0, 0, 0));
-    }
+        int xPos, yPos;
+        string type;
+        Scalar HSVmin, HSVmax;
+        Scalar Color;
 
-    public ARTColorObject(string name)
-    {
-        setType(name);
-
-        if (name == "blue")
+        public ARTColorObject()
         {
-
-            //TODO: use "calibration mode" to find HSV min
-            //and HSV max values
-            
-            setHSVmin(ColorDefs.BlueHSVMin);
-            setHSVmax(ColorDefs.BlueHSVMin);
-
-            //BGR value for Blue:
-            setColor(ColorDefs.BlueColor);
-
+            //set values for default constructor
+            setType("Object");
+            setColor(new Scalar(0, 0, 0));
         }
-        if (name == "green")
+
+        public ARTColorObject(string name)
         {
+            setType(name);
 
-            //TODO: use "calibration mode" to find HSV min
-            //and HSV max values
+            if (name == "blue")
+            {
+                setHSVmin(new Scalar(105, 100, 100));
+                setHSVmax(new Scalar(128, 256, 256));
 
-            setHSVmin(ColorDefs.GreemHSVMin);
-            setHSVmax(ColorDefs.GreenHSVMax);
+                //setColor (new Scalar (0, 0, 255));
+                setColor(new Scalar(96, 96, 96));
 
-            //BGR value for Green:
-            setColor(ColorDefs.GreenColor);
+            }
+            if (name == "green")
+            {
+                setHSVmin(new Scalar(40, 100, 100));
+                setHSVmax(new Scalar(80, 256, 256));
 
+                //setColor (new Scalar (0, 255, 0));
+                setColor(new Scalar(224, 224, 224));
+            }
+            if (name == "yellow")
+            {
+                setHSVmin(new Scalar(20, 124, 123));
+                setHSVmax(new Scalar(30, 256, 256));
+
+                //setColor (new Scalar (255, 255, 0));
+                setColor(new Scalar(160, 160, 160));
+            }
+            if (name == "red")
+            {
+                setHSVmin(new Scalar(0, 100, 100));
+                setHSVmax(new Scalar(10, 256, 256));
+
+                //setColor (new Scalar (255, 0, 0));
+                setColor(new Scalar(255, 255, 255));
+            }
         }
-        if (name == "yellow")
+
+        public int getXPos()
         {
-
-            //TODO: use "calibration mode" to find HSV min
-            //and HSV max values
-
-            setHSVmin(ColorDefs.YellowHSVMin);
-            setHSVmax(ColorDefs.YellowHSVMax);
-
-            //BGR value for Yellow:
-            setColor(ColorDefs.YellowColor);
-
+            return xPos;
         }
-        if (name == "red")
+
+        public void setXPos(int x)
         {
-
-            //TODO: use "calibration mode" to find HSV min
-            //and HSV max values
-
-            setHSVmin(ColorDefs.RedHSVMin);
-            setHSVmax(ColorDefs.RedHSVMax);
-
-            //BGR value for Red:
-            setColor(ColorDefs.RedColor);
-
+            xPos = x;
         }
-    }
 
-    public int getXPos()
-    {
-        return xPos;
-    }
+        public int getYPos()
+        {
+            return yPos;
+        }
 
-    public void setXPos(int x)
-    {
-        xPos = x;
-    }
+        public void setYPos(int y)
+        {
+            yPos = y;
+        }
 
-    public int getYPos()
-    {
-        return yPos;
-    }
+        public Scalar getHSVmin()
+        {
+            return HSVmin;
+        }
 
-    public void setYPos(int y)
-    {
-        yPos = y;
-    }
+        public Scalar getHSVmax()
+        {
+            return HSVmax;
+        }
 
-    public Scalar getHSVmin()
-    {
-        return HSVmin;
-    }
+        public void setHSVmin(Scalar min)
+        {
+            HSVmin = min;
+        }
 
-    public Scalar getHSVmax()
-    {
-        return HSVmax;
-    }
+        public void setHSVmax(Scalar max)
+        {
+            HSVmax = max;
+        }
 
-    public void setHSVmin(Scalar min)
-    {
-        HSVmin = min;
-    }
+        public string getType()
+        {
+            return type;
+        }
 
-    public void setHSVmax(Scalar max)
-    {
-        HSVmax = max;
-    }
+        public void setType(string t)
+        {
+            type = t;
+        }
 
-    public string getType()
-    {
-        return type;
-    }
+        public Scalar getColor()
+        {
+            return Color;
+        }
 
-    public void setType(string t)
-    {
-        type = t;
-    }
-
-    public Scalar getColor()
-    {
-        return Color;
-    }
-
-    public void setColor(Scalar c)
-    {
-        Color = c;
+        public void setColor(Scalar c)
+        {
+            Color = c;
+        }
     }
 }
-
