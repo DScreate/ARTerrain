@@ -5,7 +5,7 @@ using UnityEngine;
 public class MapGenerator : MonoBehaviour {
 
     public enum DrawMode { NoiseMap, ColorMap, Mesh };
-    public enum ImageMode { PureNoise, FromImage, FromWebcam }    
+    public enum ImageMode { PureNoise, FromImage, FromWebcam, FromOpenCV }    
 
     public DrawMode drawMode;
 
@@ -40,6 +40,7 @@ public class MapGenerator : MonoBehaviour {
 
     WebCamTexture _webcamtex;
     Texture2D _TextureFromCamera;
+    ARTMultiObjectTrackingBasedOnColor _ARTMultiObjectTrackingBasedOnColor;
 
     private void Start()
     {
@@ -47,6 +48,11 @@ public class MapGenerator : MonoBehaviour {
         {
             _webcamtex = new WebCamTexture(mapWidth, mapHeight);
             _webcamtex.Play();
+        }
+        if (imageMode == ImageMode.FromOpenCV)
+        {
+            _ARTMultiObjectTrackingBasedOnColor = gameObject.GetComponent<ARTMultiObjectTrackingBasedOnColor>();
+            _ARTMultiObjectTrackingBasedOnColor.Initialize();
         }
     }
 
@@ -63,6 +69,12 @@ public class MapGenerator : MonoBehaviour {
                 }
             }
             _TextureFromCamera.Apply();
+            GenerateMap();
+        }
+
+        if (imageMode == ImageMode.FromOpenCV)
+        {
+            _TextureFromCamera = _ARTMultiObjectTrackingBasedOnColor.GetTexture();
             GenerateMap();
         }
 
@@ -144,7 +156,7 @@ public class MapGenerator : MonoBehaviour {
                 display.DrawMesh(MeshGenerator.GenerateTerrainMesh(TextureGenerator.TextureToNoise(noisedTex), meshHeightMultiplier, meshHeightCurve), TextureGenerator.TextureFromColorMap(colorMap, mapWidth, mapHeight));
             }
         }
-        else if (imageMode == ImageMode.FromWebcam)
+        else if (imageMode == ImageMode.FromWebcam || imageMode == ImageMode.FromOpenCV)
         {
             Texture2D noisedTex = TextureGenerator.ApplyNoiseToTexture(_TextureFromCamera, noiseMap, noiseWeight, minGreyValue);
             MapDisplay display = FindObjectOfType<MapDisplay>();

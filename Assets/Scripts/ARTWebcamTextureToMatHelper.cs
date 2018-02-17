@@ -11,6 +11,7 @@ using System;
 
 namespace ARTScripts
 {
+    [RequireComponent(typeof(ARTMultiObjectTrackingBasedOnColor))]
     public class ARTWebcamTextureToMatHelper : MonoBehaviour
     {
 
@@ -24,13 +25,13 @@ namespace ARTScripts
         /// Set the width of WebCamTexture.
         /// </summary>
         [TooltipAttribute("Set the width of WebCamTexture.")]
-        public int requestedWidth = 640;
+        public int requestedWidth = 200;
 
         /// <summary>
         /// Set the height of WebCamTexture.
         /// </summary>
         [TooltipAttribute("Set the height of WebCamTexture.")]
-        public int requestedHeight = 480;
+        public int requestedHeight = 150;
 
         /// <summary>
         /// Set FPS of WebCamTexture.

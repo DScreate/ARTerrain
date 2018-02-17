@@ -66,13 +66,13 @@ public class ARTMultiObjectTrackingBasedOnColor : MonoBehaviour
     /// <summary>
     /// Gets the 2dTexture used for terrain generation
     /// </summary>
-    public Texture GetTexture()
+    public Texture2D GetTexture()
     {        
         return _texture;
     }
 
     // Use this for initialization
-    void Start()
+    public void Initialize()
     {
         webCamTextureToMatHelper = gameObject.GetComponent<ARTWebcamTextureToMatHelper>();
         webCamTextureToMatHelper.Initialize();
@@ -83,6 +83,9 @@ public class ARTMultiObjectTrackingBasedOnColor : MonoBehaviour
     /// </summary>
     public void OnWebCamTextureToMatHelperInitialized()
     {
+        webCamTextureToMatHelper = gameObject.GetComponent<ARTWebcamTextureToMatHelper>();
+        webCamTextureToMatHelper.Initialize();
+
         Debug.Log("OnWebCamTextureToMatHelperInitialized");
 
         Mat webCamTextureMat = webCamTextureToMatHelper.GetMat();
@@ -90,7 +93,7 @@ public class ARTMultiObjectTrackingBasedOnColor : MonoBehaviour
         _texture = new Texture2D(webCamTextureMat.cols(), webCamTextureMat.rows(), TextureFormat.RGBA32, false);
 
         //REMOVE
-        gameObject.GetComponent<Renderer>().material.mainTexture = _texture;
+       /* gameObject.GetComponent<Renderer>().material.mainTexture = _texture;
         gameObject.transform.localScale = new Vector3(webCamTextureMat.cols(), webCamTextureMat.rows(), 1);      
         
         float width = webCamTextureMat.width();
@@ -105,7 +108,7 @@ public class ARTMultiObjectTrackingBasedOnColor : MonoBehaviour
         else
         {
             Camera.main.orthographicSize = height / 2;
-        }
+        }*/
         //END REMOVE
 
         Debug.Log("Screen.width " + Screen.width + " Screen.height " + Screen.height + " Screen.orientation " + Screen.orientation);
