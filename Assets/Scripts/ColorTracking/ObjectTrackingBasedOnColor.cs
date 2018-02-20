@@ -72,12 +72,12 @@ namespace ColorTracking
 
             Utils.webCamTextureToMat(webCamStream, _webCamMat, _colorsUsedToSaveMemory);            
 
-            _grayscale = new Mat(webCamStream.height, webCamStream.height, CvType.CV_8UC3);
+            _grayscale = new Mat(webCamStream.height, webCamStream.width, CvType.CV_8UC3);
 
             _threshold = new Mat();
             _hsv = new Mat();
 
-            _grayscaleTexture = new Texture2D(webCamStream.height, webCamStream.height, TextureFormat.RGB24, false);
+            _grayscaleTexture = new Texture2D(webCamStream.width, webCamStream.height, TextureFormat.RGB24, false);
         }
 
         #region Update grayscale texture
