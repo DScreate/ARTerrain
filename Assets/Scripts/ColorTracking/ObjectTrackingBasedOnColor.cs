@@ -80,42 +80,11 @@ namespace ColorTracking
             _grayscaleTexture = new Texture2D(webCamStream.height, webCamStream.height, TextureFormat.RGB24, false);
         }
 
-        public Texture2D GetAndUpdateGrayScale(WebCamTexture src)
-        {
-            Utils.webCamTextureToMat(src, _webCamMat, _colorsUsedToSaveMemory);
-                        
-            Imgproc.cvtColor(_webCamMat, _hsv, Imgproc.COLOR_RGB2HSV);
-
-            var tempGrayscale = new Mat();
-            _grayscale.copyTo(tempGrayscale);
-
-            //first find blue contours
-            Core.inRange(_hsv, _blue.getHSVmin(), _blue.getHSVmax(), _threshold);
-            morphOps(_threshold);
-            trackFilteredObject(_blue, _threshold, tempGrayscale);
-
-            //then yellows
-            Core.inRange(_hsv, _yellow.getHSVmin(), _yellow.getHSVmax(), _threshold);
-            morphOps(_threshold);
-            trackFilteredObject(_yellow, _threshold, tempGrayscale);
-
-            //then reds
-            Core.inRange(_hsv, _red.getHSVmin(), _red.getHSVmax(), _threshold);
-            morphOps(_threshold);
-            trackFilteredObject(_red, _threshold, tempGrayscale);
-
-            //then greens
-            Core.inRange(_hsv, _green.getHSVmin(), _green.getHSVmax(), _threshold);
-            morphOps(_threshold);
-            trackFilteredObject(_green, _threshold, tempGrayscale);
-
-            //TODO: Change mat so that we are only capturing a tempGrayscale
-            Utils.matToTexture2D(tempGrayscale, _grayscaleTexture, _colorsUsedToSaveMemory);
-
-            return _grayscaleTexture;
-        }
-
-        public Texture2D GetAndUpdateGrayScale()
+        #region Update grayscale texture
+        /// <summary>
+        /// Returns Texture2D that contains a grayscale of _webCamStream based off colors we are detecting and displaying.
+        /// </summary>
+        public Texture2D UpdateGrayScale()
         {
             Utils.webCamTextureToMat(_webCamStream, _webCamMat, _colorsUsedToSaveMemory);
 
@@ -150,38 +119,94 @@ namespace ColorTracking
             return _grayscaleTexture;
         }
 
-        public void GetAndUpdateGrayScale(WebCamTexture src, Texture2D dst)
+        /// <summary>
+        /// Returns Texture2D that contains a grayscale of src based off colors we are detecting and displaying.
+        /// </summary>
+        /// <param name="src"></param>
+        public Texture2D UpdateGrayScale(WebCamTexture src)
         {
-            Utils.webCamTextureToMat(src, _webCamMat);
+            if (_webCamMat.cols() != src.width || _webCamMat.rows() != src.height)
+                _webCamMat = new Mat(src.height, src.width, CvType.CV_8UC3);
 
-            //  Imgproc.cvtColor(_webCamMat, _hsv, Imgproc.COLOR_RGB2HSV);
+            if (_colorsUsedToSaveMemory.Length != src.width * src.height)
+                _colorsUsedToSaveMemory = new Color32[src.width * src.height];
 
-            // var tempGrayscale = new Mat();
-            //_grayscale.copyTo(tempGrayscale);
+            Utils.webCamTextureToMat(src, _webCamMat, _colorsUsedToSaveMemory);
+
+            Imgproc.cvtColor(_webCamMat, _hsv, Imgproc.COLOR_RGB2HSV);
+
+            var tempGrayscale = new Mat();
+            _grayscale.copyTo(tempGrayscale);
 
             //first find blue contours
-            /* Core.inRange(_hsv, _blue.getHSVmin(), _blue.getHSVmax(), _threshold);
-             morphOps(_threshold);
-             trackFilteredObject(_blue, _threshold, tempGrayscale);
+            Core.inRange(_hsv, _blue.getHSVmin(), _blue.getHSVmax(), _threshold);
+            morphOps(_threshold);
+            trackFilteredObject(_blue, _threshold, tempGrayscale);
 
-             //then yellows
-             Core.inRange(_hsv, _yellow.getHSVmin(), _yellow.getHSVmax(), _threshold);
-             morphOps(_threshold);
-             trackFilteredObject(_yellow, _threshold, tempGrayscale);
+            //then yellows
+            Core.inRange(_hsv, _yellow.getHSVmin(), _yellow.getHSVmax(), _threshold);
+            morphOps(_threshold);
+            trackFilteredObject(_yellow, _threshold, tempGrayscale);
 
-             //then reds
-             Core.inRange(_hsv, _red.getHSVmin(), _red.getHSVmax(), _threshold);
-             morphOps(_threshold);
-             trackFilteredObject(_red, _threshold, tempGrayscale);
+            //then reds
+            Core.inRange(_hsv, _red.getHSVmin(), _red.getHSVmax(), _threshold);
+            morphOps(_threshold);
+            trackFilteredObject(_red, _threshold, tempGrayscale);
 
-             //then greens
-             Core.inRange(_hsv, _green.getHSVmin(), _green.getHSVmax(), _threshold);
-             morphOps(_threshold);
-             trackFilteredObject(_green, _threshold, tempGrayscale); */
+            //then greens
+            Core.inRange(_hsv, _green.getHSVmin(), _green.getHSVmax(), _threshold);
+            morphOps(_threshold);
+            trackFilteredObject(_green, _threshold, tempGrayscale);
 
             //TODO: Change mat so that we are only capturing a tempGrayscale
-            Utils.matToTexture2D(_webCamMat, dst);
+            Utils.matToTexture2D(tempGrayscale, _grayscaleTexture, _colorsUsedToSaveMemory);
+
+            return _grayscaleTexture;
         }
+
+        /// <summary>
+        /// Modifies dst so that it contains a grayscale of src based off colors we are detecting and displaying.
+        /// </summary>
+        public void UpdateGrayScale(WebCamTexture src, Texture2D dst)
+        {
+            if (_webCamMat.cols() != src.width || _webCamMat.rows() != src.height)
+                _webCamMat = new Mat(src.height, src.width, CvType.CV_8UC3);
+
+            if (_colorsUsedToSaveMemory.Length != src.width * src.height)
+                _colorsUsedToSaveMemory = new Color32[src.width * src.height];
+
+            Utils.webCamTextureToMat(src, _webCamMat, _colorsUsedToSaveMemory);
+
+            Imgproc.cvtColor(_webCamMat, _hsv, Imgproc.COLOR_RGB2HSV);
+
+            var tempGrayscale = new Mat();
+            _grayscale.copyTo(tempGrayscale);
+
+            //first find blue contours
+            Core.inRange(_hsv, _blue.getHSVmin(), _blue.getHSVmax(), _threshold);
+            morphOps(_threshold);
+            trackFilteredObject(_blue, _threshold, tempGrayscale);
+
+            //then yellows
+            Core.inRange(_hsv, _yellow.getHSVmin(), _yellow.getHSVmax(), _threshold);
+            morphOps(_threshold);
+            trackFilteredObject(_yellow, _threshold, tempGrayscale);
+
+            //then reds
+            Core.inRange(_hsv, _red.getHSVmin(), _red.getHSVmax(), _threshold);
+            morphOps(_threshold);
+            trackFilteredObject(_red, _threshold, tempGrayscale);
+
+            //then greens
+            Core.inRange(_hsv, _green.getHSVmin(), _green.getHSVmax(), _threshold);
+            morphOps(_threshold);
+            trackFilteredObject(_green, _threshold, tempGrayscale);
+
+            //TODO: Change mat so that we are only capturing a tempGrayscale
+            Utils.matToTexture2D(tempGrayscale, dst, _colorsUsedToSaveMemory);
+        }
+        #endregion
+
         /// <summary>
         /// Draws the object.
         /// </summary>
@@ -200,7 +225,7 @@ namespace ColorTracking
 
 
         /// <summary>
-        /// Morphs the ops.
+        /// Morph operations.
         /// </summary>
         /// <param name="thresh">Thresh.</param>
         private void morphOps(Mat thresh)
