@@ -76,7 +76,8 @@ public class MapGenerator : MonoBehaviour {
         if (imageMode == ImageMode.FromOpenCV)
         {
             _TextureFromCamera = _trackObjectsBasedOnColor.UpdateGrayScale();
-            //_TextureFromCamera = new Texture2D(mapWidth, mapHeight, TextureFormat.RGB24, false);
+            //_TextureFromCamera = _trackObjectsBasedOnColor.UpdateGrayScale(_webcamtex);
+            //_TextureFromCamera = new Texture2D(_webcamtex.width, _webcamtex.height, TextureFormat.RGB24, false);
             //_trackObjectsBasedOnColor.UpdateGrayScale(_webcamtex, _TextureFromCamera);
             GenerateMap();
         }

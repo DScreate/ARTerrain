@@ -72,7 +72,7 @@ namespace ColorTracking
 
             Utils.webCamTextureToMat(webCamStream, _webCamMat, _colorsUsedToSaveMemory);            
 
-            _grayscale = new Mat(webCamStream.height, webCamStream.width, CvType.CV_8UC3);
+            _grayscale = new Mat(webCamStream.height, webCamStream.width, CvType.CV_8UC3, new Scalar(0,0,0));
 
             _threshold = new Mat();
             _hsv = new Mat();
@@ -135,6 +135,9 @@ namespace ColorTracking
 
             Imgproc.cvtColor(_webCamMat, _hsv, Imgproc.COLOR_RGB2HSV);
 
+            if (_grayscale.cols() != src.width || _grayscale.rows() != src.height)
+                _grayscale = new Mat(src.height, src.width, CvType.CV_8UC3);
+
             var tempGrayscale = new Mat();
             _grayscale.copyTo(tempGrayscale);
 
@@ -178,6 +181,9 @@ namespace ColorTracking
             Utils.webCamTextureToMat(src, _webCamMat, _colorsUsedToSaveMemory);
 
             Imgproc.cvtColor(_webCamMat, _hsv, Imgproc.COLOR_RGB2HSV);
+
+            if (_grayscale.cols() != src.width || _grayscale.rows() != src.height)
+                _grayscale = new Mat(src.height, src.width, CvType.CV_8UC3);
 
             var tempGrayscale = new Mat();
             _grayscale.copyTo(tempGrayscale);
