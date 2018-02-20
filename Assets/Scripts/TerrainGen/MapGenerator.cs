@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using ColorTracking;
 
 public class MapGenerator : MonoBehaviour {
 
@@ -40,20 +41,20 @@ public class MapGenerator : MonoBehaviour {
 
     WebCamTexture _webcamtex;
     Texture2D _TextureFromCamera;
-    ARTMultiObjectTrackingBasedOnColor _ARTMultiObjectTrackingBasedOnColor;
+    ObjectTrackingBasedOnColor _trackObjectsBasedOnColor;
 
     private void Start()
     {
-        if (imageMode == ImageMode.FromWebcam)
+        if (imageMode == ImageMode.FromWebcam || imageMode == ImageMode.FromOpenCV)
         {
             _webcamtex = new WebCamTexture(mapWidth, mapHeight);
             _webcamtex.Play();
-        }
-        if (imageMode == ImageMode.FromOpenCV)
-        {
-            _ARTMultiObjectTrackingBasedOnColor = gameObject.GetComponent<ARTMultiObjectTrackingBasedOnColor>();
-            _ARTMultiObjectTrackingBasedOnColor.Initialize();
-        }
+
+            if (imageMode == ImageMode.FromOpenCV)
+            {
+                _trackObjectsBasedOnColor = new ObjectTrackingBasedOnColor(_webcamtex);
+            }
+        }        
     }
 
     private void Update()
@@ -74,7 +75,7 @@ public class MapGenerator : MonoBehaviour {
 
         if (imageMode == ImageMode.FromOpenCV)
         {
-            _TextureFromCamera = _ARTMultiObjectTrackingBasedOnColor.GetTexture();
+            _TextureFromCamera = _trackObjectsBasedOnColor.GetAndUpdateGrayScale(_webcamtex);
             GenerateMap();
         }
 

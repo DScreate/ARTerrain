@@ -3,23 +3,23 @@ using System.Collections;
 
 using OpenCVForUnity;
 
-namespace ARTScripts
+namespace ColorTracking
 {
-    public class ARTColorObject
+    public class ARTColor
     {
         int xPos, yPos;
         string type;
         Scalar HSVmin, HSVmax;
         Scalar Color;
 
-        public ARTColorObject()
+        public ARTColor()
         {
             //set values for default constructor
             setType("Object");
             setColor(new Scalar(0, 0, 0));
         }
 
-        public ARTColorObject(string name)
+        public ARTColor(string name)
         {
             setType(name);
 
