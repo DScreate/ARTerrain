@@ -79,7 +79,28 @@ namespace ColorTracking
 
             _grayscaleTexture = new Texture2D(webCamStream.width, webCamStream.height, TextureFormat.RGB24, false);
         }
+        //This will be used for returning a specific texture that only detects colors depending type passed in
+        public Texture2D GetTerrainTexture(String type)
+        {
+            //TODO: create methods that will update textures for each type
+            if (type == "Sand")
+                return null;
 
+            else if (type == "Grass")
+                return null;
+
+            else if (type == "Mountain")
+                return null;
+
+            else if (type == "Sand")
+                return null;
+
+            else
+            {
+                Debug.Log("Incorrect type.");
+                return new Texture2D(_webCamMat.cols(), _webCamMat.rows());
+            }
+        }
         #region Update grayscale texture
         /// <summary>
         /// Returns Texture2D that contains a grayscale of _webCamStream based off colors we are detecting and displaying.

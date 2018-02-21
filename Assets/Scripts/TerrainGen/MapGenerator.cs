@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 using ColorTracking;
+using System;
 
 public class MapGenerator : MonoBehaviour {
 
     public enum DrawMode { NoiseMap, ColorMap, Mesh };
-    public enum ImageMode { PureNoise, FromImage, FromWebcam, FromOpenCV }    
-
+    public enum ImageMode { PureNoise, FromImage, FromWebcam, FromOpenCV }
+    [TooltipAttribute("Set the name of the device to use.")]
+    public string requestedDeviceName = null;
     public DrawMode drawMode;
 
     public ImageMode imageMode;
@@ -47,13 +49,16 @@ public class MapGenerator : MonoBehaviour {
     {
         if (imageMode == ImageMode.FromWebcam || imageMode == ImageMode.FromOpenCV)
         {
-            _webcamtex = new WebCamTexture(mapWidth, mapHeight);
+            if (!String.IsNullOrEmpty(requestedDeviceName))            
+                _webcamtex = new WebCamTexture(requestedDeviceName, mapWidth, mapHeight);
+            
+            else
+                _webcamtex = new WebCamTexture(mapWidth, mapHeight);
+
             _webcamtex.Play();
 
-            if (imageMode == ImageMode.FromOpenCV)
-            {
-                _trackObjectsBasedOnColor = new ObjectTrackingBasedOnColor(_webcamtex);
-            }
+            if (imageMode == ImageMode.FromOpenCV)            
+                _trackObjectsBasedOnColor = new ObjectTrackingBasedOnColor(_webcamtex);            
         }        
     }
 
