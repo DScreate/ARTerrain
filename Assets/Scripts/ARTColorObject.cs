@@ -42,16 +42,16 @@ namespace ARTScripts
             }
             if (name == "yellow")
             {
-                setHSVmin(new Scalar(20, 124, 123));
-                setHSVmax(new Scalar(30, 256, 256));
+                setHSVmin(new Scalar(0, 40, 123));
+                setHSVmax(new Scalar(9, 256, 256));
 
                 setColor (new Scalar (255, 255, 0));
                 //setColor(new Scalar(160, 160, 160));
             }
             if (name == "red")
             {
-                setHSVmin(new Scalar(0, 100, 100));
-                setHSVmax(new Scalar(10, 256, 256));
+                setHSVmin(new Scalar(160, 100, 100));
+                setHSVmax(new Scalar(180, 256, 256));
 
                 setColor (new Scalar (255, 0, 0));
                 //setColor(new Scalar(255, 255, 255));
