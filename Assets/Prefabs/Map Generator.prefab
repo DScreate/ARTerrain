@@ -1,0 +1,130 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &100100000
+Prefab:
+  m_ObjectHideFlags: 1
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications: []
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 0}
+  m_RootGameObject: {fileID: 1231789537484076}
+  m_IsPrefabParent: 1
+--- !u!1 &1231789537484076
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4638291822813144}
+  - component: {fileID: 114238476302585630}
+  - component: {fileID: 114077141770475036}
+  m_Layer: 0
+  m_Name: Map Generator
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4638291822813144
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1231789537484076}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -259, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &114077141770475036
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1231789537484076}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1800ed2ef76f4dd45a3dc59d67d06009, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  textureRenderer: {fileID: 0}
+  meshFilter: {fileID: 0}
+  meshRenderer: {fileID: 0}
+--- !u!114 &114238476302585630
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1231789537484076}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6326357151b24438a3dbf15572c9e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  requestedDeviceName: 
+  drawMode: 0
+  imageMode: 0
+  imageTex: {fileID: 2800000, guid: d7e2efc270020314ea3420a8bbde05c3, type: 3}
+  minGreyValue: 0.187
+  noiseWeight: 0
+  mapWidth: 200
+  mapHeight: 200
+  noiseScale: 58.2
+  octaves: 50
+  persistance: 0.314
+  lacunarity: 1
+  seed: 0
+  offset: {x: 0.26, y: 0}
+  meshHeightMultiplier: 39.4
+  meshHeightCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0.004760742
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 1
+      value: 1
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+  autoUpdate: 1
+  regions:
+  - name: Deep Water
+    height: 0.15
+    color: {r: 0.090567894, g: 0, b: 0.2794118, a: 0}
+  - name: Weird Water
+    height: 0.2
+    color: {r: 0.32166508, g: 0.27551904, b: 0.6691177, a: 1}
+  - name: Water
+    height: 0.35
+    color: {r: 0.02155155, g: 0, b: 0.625, a: 1}
+  - name: Sand
+    height: 0.45
+    color: {r: 0.9558824, g: 0.85748273, b: 0.7098832, a: 1}
+  - name: Grass
+    height: 0.55
+    color: {r: 0.007677343, g: 0.52205884, b: 0.0325096, a: 1}
+  - name: Forest
+    height: 0.65
+    color: {r: 0.026136504, g: 0.19117647, b: 0.004217132, a: 1}
+  - name: Mountain
+    height: 0.85
+    color: {r: 0.21323532, g: 0, b: 0, a: 1}
+  - name: Snow
+    height: 0.93
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - name: Ice
+    height: 1
+    color: {r: 0.5294118, g: 0.8831642, b: 1, a: 1}
