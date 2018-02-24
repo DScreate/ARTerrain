@@ -12,7 +12,7 @@ namespace ColorTracking
         /// <summary>
         /// Grayscale Mat that is converted to a Texture2D, which Unity can use.
         /// </summary>
-        Texture2D _grayscaleTexture;
+        Texture2D _grayscaleTex;
 
         /// <summary>
         /// max number of objects to be detected in frame
@@ -27,7 +27,7 @@ namespace ColorTracking
         /// <summary>
         /// Mat that stores the WebCamTexture
         /// </summary>
-        Mat _webCamMat;
+        Mat _srcMat;
 
         /// <summary>
         /// The threshold mat.
@@ -42,12 +42,12 @@ namespace ColorTracking
         /// <summary>
         /// Used to set the grayscale Mat in UpdateGrayScaleTexture()
         /// </summary>
-        Mat _grayscale;
+        Mat _grayscaleMat;
 
         /// <summary>
         /// Webcam stream
         /// </summary>
-        WebCamTexture _webCamStream;
+        WebCamTexture _srcWebcam;
 
         ARTColor _blue = new ARTColor("blue");
         ARTColor _yellow = new ARTColor("yellow");
@@ -59,30 +59,52 @@ namespace ColorTracking
         /// </summary>
         Color32[] _colorsUsedToSaveMemory;
 
-        public ObjectTrackingBasedOnColor(WebCamTexture webCamStream)
+        public ObjectTrackingBasedOnColor(WebCamTexture src)
         {
-            if (webCamStream == null)
+            if (src == null)
                 throw new ArgumentNullException("WebCamTexture cannot be null");
 
-            _webCamStream = webCamStream;            
+            _srcWebcam = src;            
 
-            _webCamMat = new Mat(webCamStream.height, webCamStream.width, CvType.CV_8UC3);
+            _srcMat = new Mat(src.height, src.width, CvType.CV_8UC3);
 
-            _colorsUsedToSaveMemory = new Color32[webCamStream.width * webCamStream.height];
+            _colorsUsedToSaveMemory = new Color32[src.width * src.height];
 
-            Utils.webCamTextureToMat(webCamStream, _webCamMat, _colorsUsedToSaveMemory);            
+            Utils.webCamTextureToMat(src, _srcMat, _colorsUsedToSaveMemory);            
 
-            _grayscale = new Mat(webCamStream.height, webCamStream.width, CvType.CV_8UC3, new Scalar(0,0,0));
+            _grayscaleMat = new Mat(src.height, src.width, CvType.CV_8UC3, new Scalar(0,0,0));
 
             _threshold = new Mat();
             _hsv = new Mat();
 
-            _grayscaleTexture = new Texture2D(webCamStream.width, webCamStream.height, TextureFormat.RGB24, false);
+            _grayscaleTex = new Texture2D(src.width, src.height, TextureFormat.RGB24, false);
         }
+        /// <summary>
+        /// Constructor used for testing static images
+        /// </summary>
+        /// <param name="src">Image we're testing</param>
+        private ObjectTrackingBasedOnColor(Texture2D src)
+        {
+            if (src == null)
+                throw new ArgumentNullException("Image cannot be null");            
+
+            _colorsUsedToSaveMemory = new Color32[src.width * src.height];
+
+            _srcMat = new Mat(src.height, src.width, CvType.CV_8UC3);
+
+            Utils.texture2DToMat(src, _srcMat);
+
+            _grayscaleMat = new Mat(src.height, src.width, CvType.CV_8UC3, new Scalar(0, 0, 0));
+
+            _threshold = new Mat();
+            _hsv = new Mat();
+
+            _grayscaleTex = new Texture2D(src.width, src.height, TextureFormat.RGB24, false);
+        }        
         //This will be used for returning a specific texture that only detects colors depending type passed in
         public Texture2D GetTerrainTexture(String type)
         {
-            //TODO: create methods that will update textures for each type
+            //TODO: create methods that will update textures for each type and create class variables for each texture type
             if (type == "Sand")
                 return null;
 
@@ -98,21 +120,57 @@ namespace ColorTracking
             else
             {
                 Debug.Log("Incorrect type.");
-                return new Texture2D(_webCamMat.cols(), _webCamMat.rows());
+                return new Texture2D(_srcMat.cols(), _srcMat.rows());
             }
         }
+        /// <summary>
+        /// Used to create a grayscale texture from a static image
+        /// </summary>
+        /// <param name="src">Static image being converted to grayscale</param>
+        /// <returns></returns>
+        public static Texture2D GrayScaleFromTexture(Texture2D src)
+        {
+            var colorTracker = new ObjectTrackingBasedOnColor(src);
+
+            Imgproc.cvtColor(colorTracker._srcMat, colorTracker._hsv, Imgproc.COLOR_RGB2HSV);
+
+            //first find blue contours
+            Core.inRange(colorTracker._hsv, colorTracker._blue.getHSVmin(), colorTracker._blue.getHSVmax(), colorTracker._threshold);
+            colorTracker.morphOps(colorTracker._threshold);
+            colorTracker.trackFilteredObject(colorTracker._blue, colorTracker._threshold, colorTracker._grayscaleMat);
+
+            //then yellows
+            Core.inRange(colorTracker._hsv, colorTracker._yellow.getHSVmin(), colorTracker._yellow.getHSVmax(), colorTracker._threshold);
+            colorTracker.morphOps(colorTracker._threshold);
+            colorTracker.trackFilteredObject(colorTracker._yellow, colorTracker._threshold, colorTracker._grayscaleMat);
+
+            //then reds
+            Core.inRange(colorTracker._hsv, colorTracker._red.getHSVmin(), colorTracker._red.getHSVmax(), colorTracker._threshold);
+            colorTracker.morphOps(colorTracker._threshold);
+            colorTracker.trackFilteredObject(colorTracker._red, colorTracker._threshold, colorTracker._grayscaleMat);
+
+            //then greens
+            Core.inRange(colorTracker._hsv, colorTracker._green.getHSVmin(), colorTracker._green.getHSVmax(), colorTracker._threshold);
+            colorTracker.morphOps(colorTracker._threshold);
+            colorTracker.trackFilteredObject(colorTracker._green, colorTracker._threshold, colorTracker._grayscaleMat);
+
+            //TODO: Change mat so that we are only capturing a tempGrayscale
+            Utils.matToTexture2D(colorTracker._grayscaleMat, colorTracker._grayscaleTex, colorTracker._colorsUsedToSaveMemory);
+
+            return colorTracker._grayscaleTex;
+        }        
         #region Update grayscale texture
         /// <summary>
         /// Returns Texture2D that contains a grayscale of _webCamStream based off colors we are detecting and displaying.
         /// </summary>
         public Texture2D UpdateGrayScale()
         {
-            Utils.webCamTextureToMat(_webCamStream, _webCamMat, _colorsUsedToSaveMemory);
+            Utils.webCamTextureToMat(_srcWebcam, _srcMat, _colorsUsedToSaveMemory);
 
-            Imgproc.cvtColor(_webCamMat, _hsv, Imgproc.COLOR_RGB2HSV);
+            Imgproc.cvtColor(_srcMat, _hsv, Imgproc.COLOR_RGB2HSV);
 
             var tempGrayscale = new Mat();
-            _grayscale.copyTo(tempGrayscale);
+            _grayscaleMat.copyTo(tempGrayscale);
 
             //first find blue contours
             Core.inRange(_hsv, _blue.getHSVmin(), _blue.getHSVmax(), _threshold);
@@ -135,9 +193,9 @@ namespace ColorTracking
             trackFilteredObject(_green, _threshold, tempGrayscale);
 
             //TODO: Change mat so that we are only capturing a tempGrayscale
-            Utils.matToTexture2D(tempGrayscale, _grayscaleTexture, _colorsUsedToSaveMemory);
+            Utils.matToTexture2D(tempGrayscale, _grayscaleTex, _colorsUsedToSaveMemory);
 
-            return _grayscaleTexture;
+            return _grayscaleTex;
         }
 
         /// <summary>
@@ -146,21 +204,21 @@ namespace ColorTracking
         /// <param name="src"></param>
         public Texture2D UpdateGrayScale(WebCamTexture src)
         {
-            if (_webCamMat.cols() != src.width || _webCamMat.rows() != src.height)
-                _webCamMat = new Mat(src.height, src.width, CvType.CV_8UC3);
+            if (_srcMat.cols() != src.width || _srcMat.rows() != src.height)
+                _srcMat = new Mat(src.height, src.width, CvType.CV_8UC3);
 
             if (_colorsUsedToSaveMemory.Length != src.width * src.height)
                 _colorsUsedToSaveMemory = new Color32[src.width * src.height];
 
-            Utils.webCamTextureToMat(src, _webCamMat, _colorsUsedToSaveMemory);
+            Utils.webCamTextureToMat(src, _srcMat, _colorsUsedToSaveMemory);
 
-            Imgproc.cvtColor(_webCamMat, _hsv, Imgproc.COLOR_RGB2HSV);
+            Imgproc.cvtColor(_srcMat, _hsv, Imgproc.COLOR_RGB2HSV);
 
-            if (_grayscale.cols() != src.width || _grayscale.rows() != src.height)
-                _grayscale = new Mat(src.height, src.width, CvType.CV_8UC3);
+            if (_grayscaleMat.cols() != src.width || _grayscaleMat.rows() != src.height)
+                _grayscaleMat = new Mat(src.height, src.width, CvType.CV_8UC3);
 
             var tempGrayscale = new Mat();
-            _grayscale.copyTo(tempGrayscale);
+            _grayscaleMat.copyTo(tempGrayscale);
 
             //first find blue contours
             Core.inRange(_hsv, _blue.getHSVmin(), _blue.getHSVmax(), _threshold);
@@ -183,9 +241,9 @@ namespace ColorTracking
             trackFilteredObject(_green, _threshold, tempGrayscale);
 
             //TODO: Change mat so that we are only capturing a tempGrayscale
-            Utils.matToTexture2D(tempGrayscale, _grayscaleTexture, _colorsUsedToSaveMemory);
+            Utils.matToTexture2D(tempGrayscale, _grayscaleTex, _colorsUsedToSaveMemory);
 
-            return _grayscaleTexture;
+            return _grayscaleTex;
         }
 
         /// <summary>
@@ -193,21 +251,21 @@ namespace ColorTracking
         /// </summary>
         public void UpdateGrayScale(WebCamTexture src, Texture2D dst)
         {
-            if (_webCamMat.cols() != src.width || _webCamMat.rows() != src.height)
-                _webCamMat = new Mat(src.height, src.width, CvType.CV_8UC3);
+            if (_srcMat.cols() != src.width || _srcMat.rows() != src.height)
+                _srcMat = new Mat(src.height, src.width, CvType.CV_8UC3);
 
             if (_colorsUsedToSaveMemory.Length != src.width * src.height)
                 _colorsUsedToSaveMemory = new Color32[src.width * src.height];
 
-            Utils.webCamTextureToMat(src, _webCamMat, _colorsUsedToSaveMemory);
+            Utils.webCamTextureToMat(src, _srcMat, _colorsUsedToSaveMemory);
 
-            Imgproc.cvtColor(_webCamMat, _hsv, Imgproc.COLOR_RGB2HSV);
+            Imgproc.cvtColor(_srcMat, _hsv, Imgproc.COLOR_RGB2HSV);
 
-            if (_grayscale.cols() != src.width || _grayscale.rows() != src.height)
-                _grayscale = new Mat(src.height, src.width, CvType.CV_8UC3);
+            if (_grayscaleMat.cols() != src.width || _grayscaleMat.rows() != src.height)
+                _grayscaleMat = new Mat(src.height, src.width, CvType.CV_8UC3);
 
             var tempGrayscale = new Mat();
-            _grayscale.copyTo(tempGrayscale);
+            _grayscaleMat.copyTo(tempGrayscale);
 
             //first find blue contours
             Core.inRange(_hsv, _blue.getHSVmin(), _blue.getHSVmax(), _threshold);
