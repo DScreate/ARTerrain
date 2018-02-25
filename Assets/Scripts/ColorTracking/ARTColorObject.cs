@@ -25,8 +25,8 @@ namespace ColorTracking
 
             if (name == "blue")
             {
-                setHSVmin(new Scalar(120, 100, 100));
-                setHSVmax(new Scalar(130, 256, 256));
+                setHSVmin(new Scalar(105, 100, 100));
+                setHSVmax(new Scalar(128, 256, 256));
 
                 //setColor (new Scalar (0, 0, 255));
                 setColor(new Scalar(96, 96, 96));
@@ -34,24 +34,24 @@ namespace ColorTracking
             }
             if (name == "green")
             {
-                setHSVmin(new Scalar(50, 100, 100));
-                setHSVmax(new Scalar(60, 256, 256));
+                setHSVmin(new Scalar(40, 100, 100));
+                setHSVmax(new Scalar(80, 256, 256));
 
                 //setColor (new Scalar (0, 255, 0));
                 setColor(new Scalar(224, 224, 224));
             }
             if (name == "yellow")
             {
-                setHSVmin(new Scalar(28, 100, 100));
-                setHSVmax(new Scalar(33, 256, 256));
+                setHSVmin(new Scalar(20, 124, 123));
+                setHSVmax(new Scalar(30, 256, 256));
 
                 //setColor (new Scalar (255, 255, 0));
                 setColor(new Scalar(160, 160, 160));
             }
             if (name == "red")
             {
-                setHSVmin(new Scalar(172, 100, 100));
-                setHSVmax(new Scalar(182, 256, 256));
+                setHSVmin(new Scalar(0, 100, 100));
+                setHSVmax(new Scalar(10, 256, 256));
 
                 //setColor (new Scalar (255, 0, 0));
                 setColor(new Scalar(255, 255, 255));

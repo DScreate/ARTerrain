@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class MapDisplay : MonoBehaviour {
 
@@ -18,5 +16,12 @@ public class MapDisplay : MonoBehaviour {
     {
         meshFilter.sharedMesh = meshData.CreateMesh();
         meshRenderer.sharedMaterial.mainTexture = texture;
+    }
+    
+    public void DrawMesh(MeshData meshData, Texture2D texture, WebCamTexture webCam)
+    {
+        meshFilter.sharedMesh = meshData.CreateMesh();
+        meshRenderer.sharedMaterial.mainTexture = texture;
+        textureRenderer.sharedMaterial.mainTexture = webCam;
     }
 }
