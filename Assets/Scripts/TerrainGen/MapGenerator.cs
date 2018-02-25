@@ -1,8 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using ColorTracking;
 using System;
+using TerrainGenData;
 
 public class MapGenerator : MonoBehaviour {
 
@@ -12,8 +11,10 @@ public class MapGenerator : MonoBehaviour {
     public string requestedDeviceName = null;
     public DrawMode drawMode;
 
-    public ImageMode imageMode;
+    public DataForTerrain terrainData;
+    public NoiseData noiseData;
 
+    public ImageMode imageMode;
     public Texture2D imageTex;
 
     [Range(0, 1)]
@@ -24,26 +25,22 @@ public class MapGenerator : MonoBehaviour {
 
     public int mapWidth;
     public int mapHeight;
-    public float noiseScale;
-
-    public int octaves;
-    [Range(0,1)]
-    public float persistance;
-    public float lacunarity;
-
-    public int seed;
-    public Vector2 offset;
-
-    public float meshHeightMultiplier;
-    public AnimationCurve meshHeightCurve;
 
     public bool autoUpdate;
 
-    public TerrainType[] regions;
+    //public TerrainType[] regions;
 
     WebCamTexture _webcamtex;
     Texture2D _TextureFromCamera;
     ObjectTrackingBasedOnColor _trackObjectsBasedOnColor;
+
+    void OnValuesUpdate()
+    {
+        if (!Application.isPlaying)
+        {
+            GenerateMap();
+        }
+    }
 
     private void Start()
     {
@@ -95,7 +92,7 @@ public class MapGenerator : MonoBehaviour {
 
     public void GenerateMap()
     {
-        float[,] noiseMap = Noise.GenerateNoiseMap(mapWidth, mapHeight, seed, noiseScale, octaves, persistance, lacunarity, offset);
+        float[,] noiseMap = Noise.GenerateNoiseMap(mapWidth, mapHeight, noiseData.seed, noiseData.noiseScale, noiseData.octaves, noiseData.persistance, noiseData.lacunarity, noiseData.offset);
 
         if (imageMode == ImageMode.PureNoise)
         {
@@ -106,14 +103,14 @@ public class MapGenerator : MonoBehaviour {
                 for (int x = 0; x < mapWidth; x++)
                 {
                     float currentHeight = noiseMap[x, y];
-                    for (int i = 0; i < regions.Length; i++)
+                    /*for (int i = 0; i < regions.Length; i++)
                     {
                         if (currentHeight <= regions[i].height)
                         {
                             colorMap[y * mapWidth + x] = regions[i].color;
                             break;
                         }
-                    }
+                    }*/
                 }
             }
 
@@ -129,7 +126,7 @@ public class MapGenerator : MonoBehaviour {
             }
             else if (drawMode == DrawMode.Mesh)
             {
-                display.DrawMesh(MeshGenerator.GenerateTerrainMesh(noiseMap, meshHeightMultiplier, meshHeightCurve), TextureGenerator.TextureFromColorMap(colorMap, mapWidth, mapHeight));
+                display.DrawMesh(MeshGenerator.GenerateTerrainMesh(noiseMap, terrainData.meshHeightMultiplier, terrainData.meshHeightCurve), TextureGenerator.TextureFromColorMap(colorMap, mapWidth, mapHeight));
             }
         }
         else if (imageMode == ImageMode.FromImage)
@@ -144,14 +141,14 @@ public class MapGenerator : MonoBehaviour {
                 for (int x = 0; x < mapWidth; x++)
                 {
                     float currentHeight = noisedTex.GetPixel(x, y).grayscale;
-                    for (int i = 0; i < regions.Length; i++)
+                    /*for (int i = 0; i < regions.Length; i++)
                     {
                         if (currentHeight <= regions[i].height)
                         {
                             colorMap[y * mapWidth + x] = regions[i].color;
                             break;
                         }
-                    }
+                    }*/
                 }
             }
 
@@ -165,7 +162,7 @@ public class MapGenerator : MonoBehaviour {
             }
             else if (drawMode == DrawMode.Mesh)
             {
-                display.DrawMesh(MeshGenerator.GenerateTerrainMesh(TextureGenerator.TextureToNoise(noisedTex), meshHeightMultiplier, meshHeightCurve), TextureGenerator.TextureFromColorMap(colorMap, mapWidth, mapHeight));
+                display.DrawMesh(MeshGenerator.GenerateTerrainMesh(TextureGenerator.TextureToNoise(noisedTex), terrainData.meshHeightMultiplier, terrainData.meshHeightCurve), TextureGenerator.TextureFromColorMap(colorMap, mapWidth, mapHeight));
             }
         }
         else if (imageMode == ImageMode.FromWebcam || imageMode == ImageMode.FromOpenCV)
@@ -180,14 +177,14 @@ public class MapGenerator : MonoBehaviour {
                 for (int x = 0; x < mapWidth; x++)
                 {
                     float currentHeight = noisedTex.GetPixel(x, y).grayscale;
-                    for (int i = 0; i < regions.Length; i++)
+                    /*for (int i = 0; i < regions.Length; i++)
                     {
                         if (currentHeight <= regions[i].height)
                         {
                             colorMap[y * mapWidth + x] = regions[i].color;
                             break;
                         }
-                    }
+                    }*/
                 }
             }
 
@@ -201,7 +198,7 @@ public class MapGenerator : MonoBehaviour {
             }
             else if (drawMode == DrawMode.Mesh)
             {
-                display.DrawMesh(MeshGenerator.GenerateTerrainMesh(TextureGenerator.TextureToNoise(noisedTex), meshHeightMultiplier, meshHeightCurve), TextureGenerator.TextureFromColorMap(colorMap, mapWidth, mapHeight));
+                display.DrawMesh(MeshGenerator.GenerateTerrainMesh(TextureGenerator.TextureToNoise(noisedTex), terrainData.meshHeightMultiplier, terrainData.meshHeightCurve), TextureGenerator.TextureFromColorMap(colorMap, mapWidth, mapHeight));
             }
         }
     }
@@ -212,13 +209,20 @@ public class MapGenerator : MonoBehaviour {
             mapWidth = 1;
         if (mapHeight < 1)
             mapHeight = 1;
-        if (lacunarity < 1)
-            lacunarity = 1;
-        if (octaves < 0)
-            octaves = 0;
+        if (terrainData != null)
+        {
+            terrainData.OnValuesUpdated -= OnValuesUpdate;
+            terrainData.OnValuesUpdated += OnValuesUpdate;
+        }
+        if (noiseData != null)
+        {
+            noiseData.OnValuesUpdated -= OnValuesUpdate;
+            noiseData.OnValuesUpdated += OnValuesUpdate;
+        }
     }
 }
 
+/*
 [System.Serializable]
 public struct TerrainType
 {
@@ -226,3 +230,4 @@ public struct TerrainType
     public float height;
     public Color color;
 }
+*/
