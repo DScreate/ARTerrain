@@ -24,4 +24,10 @@ public class MapDisplay : MonoBehaviour {
         meshRenderer.sharedMaterial.mainTexture = texture;
         textureRenderer.sharedMaterial.mainTexture = webCam;
     }
+    public void DrawMesh(MeshData meshData, Texture2D texture, Texture2D plane)
+    {
+        meshFilter.sharedMesh = meshData.CreateMesh();
+        meshRenderer.sharedMaterial.mainTexture = texture;
+        textureRenderer.sharedMaterial.mainTexture = plane;
+    }
 }

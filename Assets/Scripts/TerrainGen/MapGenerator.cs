@@ -172,7 +172,7 @@ public class MapGenerator : MonoBehaviour {
             }
             else if (drawMode == DrawMode.Mesh)
             {
-                display.DrawMesh(MeshGenerator.GenerateTerrainMesh(TextureGenerator.TextureToNoise(noisedTex), meshHeightMultiplier, meshHeightCurve), TextureGenerator.TextureFromColorMap(colorMap, mapWidth, mapHeight));
+                display.DrawMesh(MeshGenerator.GenerateTerrainMesh(TextureGenerator.TextureToNoise(noisedTex), meshHeightMultiplier, meshHeightCurve), TextureGenerator.TextureFromColorMap(colorMap, mapWidth, mapHeight), imageTex);
             }
         }
         else if (imageMode == ImageMode.FromWebcam || imageMode == ImageMode.FromWebcamUsingOpenCV)
@@ -208,11 +208,15 @@ public class MapGenerator : MonoBehaviour {
             }
             else if (drawMode == DrawMode.Mesh)
             {
-                if(imageMode == ImageMode.FromWebcam)
+                if (imageMode == ImageMode.FromWebcam)
                     display.DrawMesh(MeshGenerator.GenerateTerrainMesh(TextureGenerator.TextureToNoise(noisedTex), meshHeightMultiplier, meshHeightCurve), TextureGenerator.TextureFromColorMap(colorMap, mapWidth, mapHeight));
 
                 else
+                {
                     display.DrawMesh(MeshGenerator.GenerateTerrainMesh(TextureGenerator.TextureToNoise(noisedTex), meshHeightMultiplier, meshHeightCurve), TextureGenerator.TextureFromColorMap(colorMap, mapWidth, mapHeight), _webcamtex);
+                    //display.DrawMesh(MeshGenerator.GenerateTerrainMesh(TextureGenerator.TextureToNoise(noisedTex), meshHeightMultiplier, meshHeightCurve), TextureGenerator.TextureFromColorMap(colorMap, mapWidth, mapHeight), noisedTex);
+
+                }
             }
         }
     }
