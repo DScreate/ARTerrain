@@ -3,58 +3,58 @@ using System.Collections;
 
 using OpenCVForUnity;
 
-namespace ARTScripts
+namespace ColorTracking
 {
-    public class ARTColorObject
+    public class ARTColor
     {
         int xPos, yPos;
         string type;
         Scalar HSVmin, HSVmax;
         Scalar Color;
 
-        public ARTColorObject()
+        public ARTColor()
         {
             //set values for default constructor
             setType("Object");
             setColor(new Scalar(0, 0, 0));
         }
 
-        public ARTColorObject(string name)
+        public ARTColor(string name)
         {
             setType(name);
 
             if (name == "blue")
             {
-                setHSVmin(new Scalar(100, 150, 0));
-                setHSVmax(new Scalar(140, 255, 255));
+                setHSVmin(new Scalar(105, 100, 100));
+                setHSVmax(new Scalar(128, 256, 256));
 
-                setColor (new Scalar (0, 0, 255));
-                //setColor(new Scalar(96, 96, 96));
+                //setColor (new Scalar (0, 0, 255));
+                setColor(new Scalar(96, 96, 96));
 
             }
             if (name == "green")
             {
-                setHSVmin(new Scalar(34, 50, 50));
-                setHSVmax(new Scalar(80, 220, 200));
+                setHSVmin(new Scalar(40, 100, 100));
+                setHSVmax(new Scalar(80, 256, 256));
 
-                setColor (new Scalar (0, 255, 0));
-                //setColor(new Scalar(224, 224, 224));
+                //setColor (new Scalar (0, 255, 0));
+                setColor(new Scalar(224, 224, 224));
             }
             if (name == "yellow")
             {
                 setHSVmin(new Scalar(20, 124, 123));
                 setHSVmax(new Scalar(30, 256, 256));
 
-                setColor (new Scalar (255, 255, 0));
-                //setColor(new Scalar(160, 160, 160));
+                //setColor (new Scalar (255, 255, 0));
+                setColor(new Scalar(160, 160, 160));
             }
             if (name == "red")
             {
                 setHSVmin(new Scalar(0, 100, 100));
-                setHSVmax(new Scalar(10, 255, 255));
+                setHSVmax(new Scalar(10, 256, 256));
 
-                setColor (new Scalar (255, 0, 0));
-                //setColor(new Scalar(255, 255, 255));
+                //setColor (new Scalar (255, 0, 0));
+                setColor(new Scalar(255, 255, 255));
             }
         }
 

@@ -48,7 +48,7 @@ public class ARTMultiObjectTrackingBasedOnColor : MonoBehaviour
     /// <summary>
     /// Used for converting detected colors to a grayscale that can be used by Terrain Generator.
     /// </summary>
-    Mat _drawMat;
+    //Mat _drawMat;
 
     ARTColorObject _blue = new ARTColorObject("blue");
     ARTColorObject _yellow = new ARTColorObject("yellow");
@@ -111,7 +111,7 @@ public class ARTMultiObjectTrackingBasedOnColor : MonoBehaviour
         Debug.Log("Screen.width " + Screen.width + " Screen.height " + Screen.height + " Screen.orientation " + Screen.orientation);
 
         _rgbMat = new Mat(webCamTextureMat.rows(), webCamTextureMat.cols(), CvType.CV_8UC3);
-        _drawMat = new Mat(webCamTextureMat.rows(), webCamTextureMat.cols(), CvType.CV_8UC3);
+        //_drawMat = new Mat(webCamTextureMat.rows(), webCamTextureMat.cols(), CvType.CV_8UC3);
         _colors = new Color32[webCamTextureMat.rows() * webCamTextureMat.cols()];
         _thresholdMat = new Mat();
         _hsvMat = new Mat();        
@@ -130,8 +130,8 @@ public class ARTMultiObjectTrackingBasedOnColor : MonoBehaviour
             _thresholdMat.Dispose();
         if (_hsvMat != null)
             _hsvMat.Dispose();
-        if (_drawMat != null)
-            _drawMat.Dispose();
+        //if (_drawMat != null)
+           // _drawMat.Dispose();
     }
 
     /// <summary>
@@ -149,8 +149,8 @@ public class ARTMultiObjectTrackingBasedOnColor : MonoBehaviour
         if (webCamTextureToMatHelper.IsPlaying() && webCamTextureToMatHelper.DidUpdateThisFrame())
         {
             Mat rgbaMat = webCamTextureToMatHelper.GetMat();
-            Mat drawMat = new Mat();
-            _drawMat.copyTo(drawMat);
+            //Mat drawMat = new Mat();
+            //_drawMat.copyTo(drawMat);
 
             Imgproc.cvtColor(rgbaMat, _rgbMat, Imgproc.COLOR_RGBA2RGB);          
             
@@ -159,27 +159,30 @@ public class ARTMultiObjectTrackingBasedOnColor : MonoBehaviour
             //first find blue objects
             Core.inRange(_hsvMat, _blue.getHSVmin(), _blue.getHSVmax(), _thresholdMat);
             morphOps(_thresholdMat);
-            trackFilteredObject(_blue, _thresholdMat, drawMat);
+			trackFilteredObject(_blue, _thresholdMat, _rgbMat);
             
             //then yellows
+			Imgproc.cvtColor(_rgbMat, _hsvMat, Imgproc.COLOR_RGB2HSV);
             Core.inRange(_hsvMat, _yellow.getHSVmin(), _yellow.getHSVmax(), _thresholdMat);
             morphOps(_thresholdMat);
-            trackFilteredObject(_yellow, _thresholdMat, drawMat);
+			trackFilteredObject(_yellow, _thresholdMat, _rgbMat);
 
             //then reds
+			Imgproc.cvtColor(_rgbMat, _hsvMat, Imgproc.COLOR_RGB2HSV);
             Core.inRange(_hsvMat, _red.getHSVmin(), _red.getHSVmax(), _thresholdMat);
             morphOps(_thresholdMat);
-            trackFilteredObject(_red, _thresholdMat, drawMat);
+			trackFilteredObject(_red, _thresholdMat, _rgbMat);
 
             //then greens
+			Imgproc.cvtColor(_rgbMat, _hsvMat, Imgproc.COLOR_RGB2HSV);
             Core.inRange(_hsvMat, _green.getHSVmin(), _green.getHSVmax(), _thresholdMat);
             morphOps(_thresholdMat);
-            trackFilteredObject(_green, _thresholdMat, drawMat);
+			trackFilteredObject(_green, _thresholdMat, _rgbMat);
 
             //Imgproc.putText(_rgbMat, "W:" + _rgbMat.width() + " H:" + _rgbMat.height() + " SO:" + Screen.orientation, new Point(5, _rgbMat.rows() - 10), Core.FONT_HERSHEY_SIMPLEX, 1.0, new Scalar(255, 255, 255, 255), 2, Imgproc.LINE_AA, false);
 
             //TODO: Change mat so that we are only capturing a grayscale
-            Utils.matToTexture2D(drawMat, _texture, _colors);
+			Utils.matToTexture2D(_rgbMat, _texture, _colors);
         }        
     }       
     /// <summary>

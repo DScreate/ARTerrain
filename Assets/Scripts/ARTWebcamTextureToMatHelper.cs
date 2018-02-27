@@ -18,7 +18,7 @@ namespace ARTScripts
         /// Set the name of the device to use.
         /// </summary>
         [TooltipAttribute("Set the name of the device to use.")]
-        public string requestedDeviceName = null;
+        public string requestedDeviceName = "HD Pro Webcam C920 #2";
 
         /// <summary>
         /// Set the width of WebCamTexture.
