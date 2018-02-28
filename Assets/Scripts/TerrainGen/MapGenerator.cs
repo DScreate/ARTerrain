@@ -138,7 +138,7 @@ public class MapGenerator : MonoBehaviour {
 
             else
             {                
-                Texture2D image = ObjectTrackingBasedOnColor.GrayScaleFromTexture(imageTex);
+                Texture2D image = ObjectTrackingBasedOnColor.GrayScaleFromTexture(imageTex, gameObject.GetComponent<ARTColorDefs>());
                 noisedTex = TextureGenerator.ApplyNoiseToTexture(image, noiseMap, noiseWeight, minGreyValue);
             }
 

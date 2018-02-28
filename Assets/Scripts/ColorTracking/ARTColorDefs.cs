@@ -4,12 +4,12 @@ using UnityEngine;
 using OpenCVForUnity;
 namespace ColorTracking { 
     public class ARTColorDefs : MonoBehaviour {
-        public Scalar BlueHSVmin = new Scalar(105, 100, 100);
-        public Scalar BlueHSVmax = new Scalar(128, 256, 256);
+        public Scalar BlueHSVmin = new Scalar(100, 150, 0);
+        public Scalar BlueHSVmax = new Scalar(140, 255, 255);
         Scalar BlueRGB = new Scalar(96, 96, 96);
 
-        public Scalar GreenHSVmin = new Scalar(40, 100, 100);
-        public Scalar GreenHSVmax = new Scalar(80, 256, 256);
+        public Scalar GreenHSVmin = new Scalar(34, 50, 50);
+        public Scalar GreenHSVmax = new Scalar(80, 220, 200);
         Scalar GreenRGB = new Scalar(224, 224, 224);
 
         public Scalar YellowHSVmin = new Scalar(20, 124, 123);
@@ -17,7 +17,7 @@ namespace ColorTracking {
         Scalar YellowRGB = new Scalar(160, 160, 160);
 
         public Scalar RedHSVmin = new Scalar(0, 100, 100);
-        public Scalar RedHSVmax = new Scalar(10, 256, 256);
+        public Scalar RedHSVmax = new Scalar(10, 255, 255);
         Scalar RedRGB = new Scalar(255, 255, 255);   
         
         public Scalar getHSVMin(string type)

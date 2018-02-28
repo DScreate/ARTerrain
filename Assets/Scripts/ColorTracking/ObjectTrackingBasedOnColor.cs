@@ -87,7 +87,7 @@ namespace ColorTracking
         /// Constructor used for testing static images
         /// </summary>
         /// <param name="src">Image we're testing</param>
-        private ObjectTrackingBasedOnColor(Texture2D src)
+        private ObjectTrackingBasedOnColor(Texture2D src, ARTColorDefs colorDefs)
         {
             if (src == null)
                 throw new ArgumentNullException("Image cannot be null");            
@@ -104,6 +104,8 @@ namespace ColorTracking
             _hsv = new Mat();
 
             _grayscaleTex = new Texture2D(src.width, src.height, TextureFormat.RGB24, false);
+
+            _colorDefs = colorDefs;
         }        
         //This will be used for returning a specific texture that only detects colors depending type passed in
         public Texture2D GetTerrainTexture(String type)
@@ -132,29 +134,29 @@ namespace ColorTracking
         /// </summary>
         /// <param name="src">Static image being converted to grayscale</param>
         /// <returns></returns>
-        public static Texture2D GrayScaleFromTexture(Texture2D src)
+        public static Texture2D GrayScaleFromTexture(Texture2D src, ARTColorDefs colorDefs)
         {
-            var colorTracker = new ObjectTrackingBasedOnColor(src);
+            var colorTracker = new ObjectTrackingBasedOnColor(src, colorDefs);
 
             Imgproc.cvtColor(colorTracker._srcMat, colorTracker._hsv, Imgproc.COLOR_RGB2HSV);
 
             //first find blue contours
-            Core.inRange(colorTracker._hsv, colorTracker._blue.getHSVmin(), colorTracker._blue.getHSVmax(), colorTracker._threshold);
+            Core.inRange(colorTracker._hsv, colorTracker._colorDefs.BlueHSVmin, colorTracker._colorDefs.BlueHSVmax, colorTracker._threshold);
             colorTracker.morphOps(colorTracker._threshold);
             colorTracker.trackFilteredObject(colorTracker._blue, colorTracker._threshold, colorTracker._grayscaleMat);
 
             //then yellows
-            Core.inRange(colorTracker._hsv, colorTracker._yellow.getHSVmin(), colorTracker._yellow.getHSVmax(), colorTracker._threshold);
+            Core.inRange(colorTracker._hsv, colorTracker._colorDefs.YellowHSVmin, colorTracker._colorDefs.YellowHSVmax, colorTracker._threshold);
             colorTracker.morphOps(colorTracker._threshold);
             colorTracker.trackFilteredObject(colorTracker._yellow, colorTracker._threshold, colorTracker._grayscaleMat);
 
             //then reds
-            Core.inRange(colorTracker._hsv, colorTracker._red.getHSVmin(), colorTracker._red.getHSVmax(), colorTracker._threshold);
+            Core.inRange(colorTracker._hsv, colorTracker._colorDefs.RedHSVmin, colorTracker._colorDefs.RedHSVmax, colorTracker._threshold);
             colorTracker.morphOps(colorTracker._threshold);
             colorTracker.trackFilteredObject(colorTracker._red, colorTracker._threshold, colorTracker._grayscaleMat);
 
             //then greens
-            Core.inRange(colorTracker._hsv, colorTracker._green.getHSVmin(), colorTracker._green.getHSVmax(), colorTracker._threshold);
+            Core.inRange(colorTracker._hsv, colorTracker._colorDefs.GreenHSVmin, colorTracker._colorDefs.GreenHSVmax, colorTracker._threshold);
             colorTracker.morphOps(colorTracker._threshold);
             colorTracker.trackFilteredObject(colorTracker._green, colorTracker._threshold, colorTracker._grayscaleMat);
 
@@ -169,30 +171,32 @@ namespace ColorTracking
         /// </summary>
         public Texture2D UpdateGrayScale()
         {
-            Utils.webCamTextureToMat(_srcWebcam, _srcMat, _colorsUsedToSaveMemory);
-
-            Imgproc.cvtColor(_srcMat, _hsv, Imgproc.COLOR_RGB2HSV);
+            Utils.webCamTextureToMat(_srcWebcam, _srcMat, _colorsUsedToSaveMemory);            
 
             var tempGrayscale = new Mat();
             _grayscaleMat.copyTo(tempGrayscale);
 
             //first find blue contours
-            Core.inRange(_hsv, _blue.getHSVmin(), _blue.getHSVmax(), _threshold);
+            Imgproc.cvtColor(_srcMat, _hsv, Imgproc.COLOR_RGB2HSV);
+            Core.inRange(_hsv, _colorDefs.BlueHSVmin, _colorDefs.BlueHSVmax, _threshold);
             morphOps(_threshold);
             trackFilteredObject(_blue, _threshold, tempGrayscale);
 
             //then yellows
-            Core.inRange(_hsv, _yellow.getHSVmin(), _yellow.getHSVmax(), _threshold);
+            Imgproc.cvtColor(_srcMat, _hsv, Imgproc.COLOR_RGB2HSV);
+            Core.inRange(_hsv, _colorDefs.YellowHSVmin, _colorDefs.YellowHSVmax, _threshold);
             morphOps(_threshold);
             trackFilteredObject(_yellow, _threshold, tempGrayscale);
 
             //then reds
-            Core.inRange(_hsv, _red.getHSVmin(), _red.getHSVmax(), _threshold);
+            Imgproc.cvtColor(_srcMat, _hsv, Imgproc.COLOR_RGB2HSV);
+            Core.inRange(_hsv, _colorDefs.RedHSVmin, _colorDefs.RedHSVmax, _threshold);
             morphOps(_threshold);
             trackFilteredObject(_red, _threshold, tempGrayscale);
 
             //then greens
-            Core.inRange(_hsv, _green.getHSVmin(), _green.getHSVmax(), _threshold);
+            Imgproc.cvtColor(_srcMat, _hsv, Imgproc.COLOR_RGB2HSV);
+            Core.inRange(_hsv, _colorDefs.GreenHSVmin, _colorDefs.GreenHSVmax, _threshold);
             morphOps(_threshold);
             trackFilteredObject(_green, _threshold, tempGrayscale);
 
@@ -201,7 +205,7 @@ namespace ColorTracking
 
             return _grayscaleTex;
         }
-
+        /*
         /// <summary>
         /// Returns Texture2D that contains a grayscale of src based off colors we are detecting and displaying.
         /// </summary>
@@ -293,7 +297,7 @@ namespace ColorTracking
 
             //TODO: Change mat so that we are only capturing a tempGrayscale
             Utils.matToTexture2D(tempGrayscale, dst, _colorsUsedToSaveMemory);
-        }
+        }*/
         #endregion
 
         /// <summary>
