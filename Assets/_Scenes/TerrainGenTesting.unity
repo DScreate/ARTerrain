@@ -293,7 +293,7 @@ Prefab:
     - target: {fileID: 114238476302585630, guid: 7d4af787aadbad741842d2f850d26132,
         type: 2}
       propertyPath: noiseScale
-      value: 30.7
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 114238476302585630, guid: 7d4af787aadbad741842d2f850d26132,
         type: 2}
