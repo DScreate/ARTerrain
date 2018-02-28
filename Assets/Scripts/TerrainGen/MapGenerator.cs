@@ -46,9 +46,7 @@ public class MapGenerator : MonoBehaviour {
     private void Start()
     {
         if (imageMode == ImageMode.FromWebcam || imageMode == ImageMode.FromWebcamUsingOpenCV)
-        {
-            _TextureFromCamera = new Texture2D(mapWidth, mapHeight);
-
+        {          
             if (!String.IsNullOrEmpty(requestedDeviceName))
             {
                 _webcamtex = new WebCamTexture(requestedDeviceName, mapWidth, mapHeight);
@@ -58,6 +56,11 @@ public class MapGenerator : MonoBehaviour {
                 _webcamtex = new WebCamTexture(mapWidth, mapHeight);
 
             _webcamtex.Play();
+
+            mapWidth = _webcamtex.width;
+            mapHeight = _webcamtex.height;
+
+            _TextureFromCamera = new Texture2D(mapWidth, mapHeight);
 
             if (imageMode == ImageMode.FromWebcamUsingOpenCV)
                 _trackObjectsBasedOnColor = new ObjectTrackingBasedOnColor(_webcamtex);
