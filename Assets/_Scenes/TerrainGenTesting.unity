@@ -112,6 +112,69 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &392375 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1231789537484076, guid: 7d4af787aadbad741842d2f850d26132,
+    type: 2}
+  m_PrefabInternal: {fileID: 221693653}
+--- !u!114 &392376
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 392375}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26714f1bf76d759409b98c23be15f00d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BlueHSVmin:
+    val:
+    - 105.12
+    - 100
+    - 100
+  BlueHSVmax:
+    val:
+    - 128
+    - 256
+    - 256
+    - 0
+  GreenHSVmin:
+    val:
+    - 40
+    - 100
+    - 100
+    - 0
+  GreenHSVmax:
+    val:
+    - 80
+    - 256
+    - 256
+    - 0
+  YellowHSVmin:
+    val:
+    - 20
+    - 124
+    - 123
+    - 0
+  YellowHSVmax:
+    val:
+    - 30
+    - 256
+    - 256
+    - 0
+  RedHSVmin:
+    val:
+    - 0
+    - 100
+    - 100
+    - 0
+  RedHSVmax:
+    val:
+    - 10
+    - 256
+    - 256
+    - 0
 --- !u!23 &199942463 stripped
 MeshRenderer:
   m_PrefabParentObject: {fileID: 23300872360429324, guid: 33c80bf9cd3a19842a0de13f61f4a986,

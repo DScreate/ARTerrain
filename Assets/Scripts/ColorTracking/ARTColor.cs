@@ -1,7 +1,4 @@
-﻿using UnityEngine;
-using System.Collections;
-
-using OpenCVForUnity;
+﻿using OpenCVForUnity;
 
 namespace ColorTracking
 {
@@ -9,8 +6,12 @@ namespace ColorTracking
     {
         int xPos, yPos;
         string type;
-        Scalar HSVmin, HSVmax;
         Scalar Color;
+
+        public const string BLUE = "blue";
+        public const string GREEN = "green";
+        public const string YELLOW = "yellow";
+        public const string RED = "red";
 
         public ARTColor()
         {
@@ -23,36 +24,24 @@ namespace ColorTracking
         {
             setType(name);
 
-            if (name == "blue")
+            if (name == BLUE)
             {
-                setHSVmin(new Scalar(105, 100, 100));
-                setHSVmax(new Scalar(128, 256, 256));
-
                 //setColor (new Scalar (0, 0, 255));
                 setColor(new Scalar(96, 96, 96));
 
             }
-            if (name == "green")
+            if (name == GREEN)
             {
-                setHSVmin(new Scalar(40, 100, 100));
-                setHSVmax(new Scalar(80, 256, 256));
-
-                //setColor (new Scalar (0, 255, 0));
+                   //setColor (new Scalar (0, 255, 0));
                 setColor(new Scalar(224, 224, 224));
             }
-            if (name == "yellow")
+            if (name == YELLOW)
             {
-                setHSVmin(new Scalar(20, 124, 123));
-                setHSVmax(new Scalar(30, 256, 256));
-
                 //setColor (new Scalar (255, 255, 0));
                 setColor(new Scalar(160, 160, 160));
             }
-            if (name == "red")
+            if (name == RED)
             {
-                setHSVmin(new Scalar(0, 100, 100));
-                setHSVmax(new Scalar(10, 256, 256));
-
                 //setColor (new Scalar (255, 0, 0));
                 setColor(new Scalar(255, 255, 255));
             }
@@ -77,27 +66,6 @@ namespace ColorTracking
         {
             yPos = y;
         }
-
-        public Scalar getHSVmin()
-        {
-            return HSVmin;
-        }
-
-        public Scalar getHSVmax()
-        {
-            return HSVmax;
-        }
-
-        public void setHSVmin(Scalar min)
-        {
-            HSVmin = min;
-        }
-
-        public void setHSVmax(Scalar max)
-        {
-            HSVmax = max;
-        }
-
         public string getType()
         {
             return type;

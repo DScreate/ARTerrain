@@ -61,23 +61,14 @@ public class MapGenerator : MonoBehaviour {
             _TextureFromCamera = new Texture2D(mapWidth, mapHeight);
 
             if (imageMode == ImageMode.FromWebcamUsingOpenCV)
-                _trackObjectsBasedOnColor = new ObjectTrackingBasedOnColor(_webcamtex);
+                _trackObjectsBasedOnColor = new ObjectTrackingBasedOnColor(_webcamtex, gameObject.GetComponent<ARTColorDefs>());
         }
     }
 
     private void Update()
     {
-        if (imageMode == ImageMode.FromWebcam || imageMode == ImageMode.FromImageUsingOpenCV)
+        if (imageMode == ImageMode.FromWebcam)
         {
-            if (!String.IsNullOrEmpty(requestedDeviceName))
-                _webcamtex = new WebCamTexture(requestedDeviceName, mapWidth, mapHeight);
-
-            else
-                _webcamtex = new WebCamTexture(mapWidth, mapHeight);
-
-            mapWidth = _webcamtex.width;
-            mapHeight = _webcamtex.height;
-
             for (int y = 0; y < mapHeight; y++)
             {
                 for (int x = 0; x < mapWidth; x++)
@@ -86,9 +77,6 @@ public class MapGenerator : MonoBehaviour {
                 }
             }
             _TextureFromCamera.Apply();
-
-            if (imageMode == ImageMode.FromWebcamUsingOpenCV)
-                _trackObjectsBasedOnColor = new ObjectTrackingBasedOnColor(_webcamtex);
 
             GenerateMap();
         }
@@ -101,8 +89,6 @@ public class MapGenerator : MonoBehaviour {
             //_trackObjectsBasedOnColor.UpdateGrayScale(_webcamtex, _TextureFromCamera);
             GenerateMap();
         }
-
-
     }
 
     public void GenerateMap()

@@ -59,7 +59,9 @@ namespace ColorTracking
         /// </summary>
         Color32[] _colorsUsedToSaveMemory;
 
-        public ObjectTrackingBasedOnColor(WebCamTexture src)
+        ARTColorDefs _colorDefs;
+
+        public ObjectTrackingBasedOnColor(WebCamTexture src, ARTColorDefs colorDefs)
         {
             if (src == null)
                 throw new ArgumentNullException("WebCamTexture cannot be null");
@@ -78,6 +80,8 @@ namespace ColorTracking
             _hsv = new Mat();
 
             _grayscaleTex = new Texture2D(src.width, src.height, TextureFormat.RGB24, false);
+
+            _colorDefs = colorDefs;
         }
         /// <summary>
         /// Constructor used for testing static images
