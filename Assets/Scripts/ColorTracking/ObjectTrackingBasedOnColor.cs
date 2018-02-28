@@ -165,13 +165,49 @@ namespace ColorTracking
 
             return colorTracker._grayscaleTex;
         }        
-        #region Update grayscale texture
+        #region Update texture
         /// <summary>
         /// Returns Texture2D that contains a grayscale of _webCamStream based off colors we are detecting and displaying.
         /// </summary>
         public Texture2D UpdateGrayScale()
         {
             Utils.webCamTextureToMat(_srcWebcam, _srcMat, _colorsUsedToSaveMemory);            
+
+            var tempGrayscale = new Mat();
+            _grayscaleMat.copyTo(tempGrayscale);
+
+            //first find blue contours
+            Imgproc.cvtColor(_srcMat, _hsv, Imgproc.COLOR_RGB2HSV);
+            Core.inRange(_hsv, _colorDefs.BlueHSVmin, _colorDefs.BlueHSVmax, _threshold);
+            morphOps(_threshold);
+            trackFilteredObject(_blue, _threshold, tempGrayscale);
+
+            //then yellows
+            Imgproc.cvtColor(_srcMat, _hsv, Imgproc.COLOR_RGB2HSV);
+            Core.inRange(_hsv, _colorDefs.YellowHSVmin, _colorDefs.YellowHSVmax, _threshold);
+            morphOps(_threshold);
+            trackFilteredObject(_yellow, _threshold, tempGrayscale);
+
+            //then reds
+            Imgproc.cvtColor(_srcMat, _hsv, Imgproc.COLOR_RGB2HSV);
+            Core.inRange(_hsv, _colorDefs.RedHSVmin, _colorDefs.RedHSVmax, _threshold);
+            morphOps(_threshold);
+            trackFilteredObject(_red, _threshold, tempGrayscale);
+
+            //then greens
+            Imgproc.cvtColor(_srcMat, _hsv, Imgproc.COLOR_RGB2HSV);
+            Core.inRange(_hsv, _colorDefs.GreenHSVmin, _colorDefs.GreenHSVmax, _threshold);
+            morphOps(_threshold);
+            trackFilteredObject(_green, _threshold, tempGrayscale);
+
+            //TODO: Change mat so that we are only capturing a tempGrayscale
+            Utils.matToTexture2D(tempGrayscale, _grayscaleTex, _colorsUsedToSaveMemory);
+
+            return _grayscaleTex;
+        }
+        public Texture2D UpdateHSV()
+        {
+            Utils.webCamTextureToMat(_srcWebcam, _srcMat, _colorsUsedToSaveMemory);
 
             var tempGrayscale = new Mat();
             _grayscaleMat.copyTo(tempGrayscale);

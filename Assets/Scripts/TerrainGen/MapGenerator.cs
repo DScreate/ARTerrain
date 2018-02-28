@@ -4,7 +4,7 @@ using System;
 
 public class MapGenerator : MonoBehaviour {
 
-    public enum DrawMode { NoiseMap, ColorMap, Mesh };
+    public enum DrawMode { NoiseMap, ColorMap, Mesh, HSVTesting };
     public enum ImageMode { PureNoise, FromImage, FromWebcam, FromWebcamUsingOpenCV, FromImageUsingOpenCV }
     [TooltipAttribute("Set the name of the device to use.")]
     public string requestedDeviceName = null;
@@ -53,6 +53,12 @@ public class MapGenerator : MonoBehaviour {
             else
                 _webcamtex = new WebCamTexture(mapWidth, mapHeight);
 
+            if (_webcamtex == null)
+            {
+                _webcamtex = new WebCamTexture(mapWidth, mapHeight);
+                requestedDeviceName = "";
+            }
+
             _webcamtex.Play();
 
             mapWidth = _webcamtex.width;
@@ -83,10 +89,17 @@ public class MapGenerator : MonoBehaviour {
 
         if (imageMode == ImageMode.FromWebcamUsingOpenCV)
         {
-            _TextureFromCamera = _trackObjectsBasedOnColor.UpdateGrayScale();
-            //_TextureFromCamera = _trackObjectsBasedOnColor.UpdateGrayScale(_webcamtex);
-            //_TextureFromCamera = new Texture2D(_webcamtex.width, _webcamtex.height, TextureFormat.RGB24, false);
-            //_trackObjectsBasedOnColor.UpdateGrayScale(_webcamtex, _TextureFromCamera);
+            if (drawMode != DrawMode.HSVTesting)
+            {
+                _TextureFromCamera = _trackObjectsBasedOnColor.UpdateGrayScale();
+                //_TextureFromCamera = _trackObjectsBasedOnColor.UpdateGrayScale(_webcamtex);
+                //_TextureFromCamera = new Texture2D(_webcamtex.width, _webcamtex.height, TextureFormat.RGB24, false);
+                //_trackObjectsBasedOnColor.UpdateGrayScale(_webcamtex, _TextureFromCamera);
+            }
+            else
+            {
+                _TextureFromCamera = _trackObjectsBasedOnColor.UpdateHSV();
+            }
             GenerateMap();
         }
     }
@@ -202,6 +215,10 @@ public class MapGenerator : MonoBehaviour {
             {
                 display.DrawTexture(noisedTex);
             }
+            else if(drawMode == DrawMode.HSVTesting)
+            {
+                display.DrawTexture(_TextureFromCamera, _webcamtex);
+            }
             else if (drawMode == DrawMode.ColorMap)
             {
                 display.DrawTexture(TextureGenerator.TextureFromColorMap(colorMap, mapWidth, mapHeight));
@@ -211,7 +228,7 @@ public class MapGenerator : MonoBehaviour {
                 if (imageMode == ImageMode.FromWebcam)
                     display.DrawMesh(MeshGenerator.GenerateTerrainMesh(TextureGenerator.TextureToNoise(noisedTex), meshHeightMultiplier, meshHeightCurve), TextureGenerator.TextureFromColorMap(colorMap, mapWidth, mapHeight));
 
-                else
+                else if(imageMode == ImageMode.FromWebcamUsingOpenCV)
                 {
                     //display.DrawMesh(MeshGenerator.GenerateTerrainMesh(TextureGenerator.TextureToNoise(noisedTex), meshHeightMultiplier, meshHeightCurve), TextureGenerator.TextureFromColorMap(colorMap, mapWidth, mapHeight), _webcamtex);
                     display.DrawMesh(MeshGenerator.GenerateTerrainMesh(TextureGenerator.TextureToNoise(noisedTex), meshHeightMultiplier, meshHeightCurve), TextureGenerator.TextureFromColorMap(colorMap, mapWidth, mapHeight), noisedTex);
