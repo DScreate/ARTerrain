@@ -298,7 +298,7 @@ Prefab:
     - target: {fileID: 114238476302585630, guid: 7d4af787aadbad741842d2f850d26132,
         type: 2}
       propertyPath: requestedDeviceName
-      value: 
+      value: HD Pro Webcam C920
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 7d4af787aadbad741842d2f850d26132, type: 2}
