@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TerrainGen;
 using UnityEngine;
 using UnityEditor;
 
