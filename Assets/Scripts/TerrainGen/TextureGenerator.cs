@@ -54,6 +54,7 @@ public static class TextureGenerator {
 
                 if (texSample.grayscale > minGreyValue)
                 {
+                    
                     newTex.SetPixel(x, y, new Color(Mathf.Lerp(texSample.grayscale, sample, noiseWeight),
                         Mathf.Lerp(texSample.grayscale, sample, noiseWeight),
                         Mathf.Lerp(texSample.grayscale, sample, noiseWeight)));
@@ -69,9 +70,44 @@ public static class TextureGenerator {
         return newTex;
     }
 
-    public static float[,] TextureToNoise(Texture2D texture)
+    public static float[,] TextureToNoise(Texture2D texture, float[,] noiseMap, float noiseWeight)
     {
 
+        int width = texture.width;
+        int height = texture.height;
+
+        noiseMap = new float[width, height];
+
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                noiseMap[x, y] = texture.GetPixel(x, y).grayscale;
+            }
+        }
+
+        return noiseMap;
+    }
+
+
+    public static float[,] ConvertTextureToFloats(WebCamTexture texture)
+    {
+        float[,] floatMap = new float[texture.width, texture.height];
+        
+        for (int y = 0; y < texture.height; y++)
+        {
+            for (int x = 0; x < texture.width; x++)
+            {
+                floatMap[x, y] = texture.GetPixel(x, y).grayscale;
+            }
+        }
+
+        return floatMap;
+    }
+    
+    /*
+    public static float[,] MergeTextureIntoNoise(Texture2D texture)
+    {
         int width = texture.width;
         int height = texture.height;
 
@@ -84,7 +120,35 @@ public static class TextureGenerator {
                 noiseMap[x, y] = texture.GetPixel(x, y).grayscale;
             }
         }
+        
+        float sample;
+        Color texSample;
+        
+        //iterate through texture by x and y
+        //iterate through noiseMap by x and y
+        
+        //at x,y of texture, lerp between texture.grayscale and noise value based on noiseWeight-> set into new float[,]
+        
+        //return new float
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                sample = noiseMap[x,y];
+                texSample = texture.GetPixel(x, y);
 
-        return noiseMap;
+                if (texSample.grayscale > minGreyValue)
+                {
+                    newTex.SetPixel(x, y, new Color(Mathf.Lerp(texSample.grayscale, sample, noiseWeight),
+                        Mathf.Lerp(texSample.grayscale, sample, noiseWeight),
+                        Mathf.Lerp(texSample.grayscale, sample, noiseWeight)));
+                } else
+                {
+                    newTex.SetPixel(x, y, new Color(texSample.r, texSample.b, texSample.g));
+                }
+                    
+            }
+        }
     }
+    */
 }
