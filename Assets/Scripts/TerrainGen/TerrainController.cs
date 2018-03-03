@@ -25,21 +25,29 @@ public class TerrainController : MonoBehaviour
 
 
 	public Terrain _terrain;
+	public int HeightMapResolution;
 
 
 	// Update is called once per frame
 	public void GenerateTerrain()
 	{
 		float[,] noiseMap = Noise.GenerateNoiseMap(mapWidth, mapHeight, seed, noiseScale, octaves, persistance, lacunarity,
-			new Vector2(0, 0));
+			new Vector2(0, 0) + offset);
 
 		TerrainData terrainData = new TerrainData();
+		
+		
+		terrainData.heightmapResolution = HeightMapResolution;
+		//terrainData.baseMapResolution = 1024;
+		//terrainData.SetDetailResolution(1024,terrainData.detailResolution);
 
 		terrainData.size = new Vector3(mapWidth,meshHeightMultiplier, mapHeight);
 		terrainData.SetHeights(0, 0, noiseMap);
 
+		
 
 		_terrain.terrainData = terrainData;
+		_terrain.GetComponent<TerrainCollider>().terrainData = _terrain.terrainData;
 
 	}
 
