@@ -51,7 +51,7 @@ namespace ARTScripts
             if (name == "red")
             {
                 setHSVmin(new Scalar(0, 100, 100));
-                setHSVmax(new Scalar(10, 255, 255));
+                setHSVmax(new Scalar(20, 255, 255));
 
                 setColor (new Scalar (255, 0, 0));
                 //setColor(new Scalar(255, 255, 255));

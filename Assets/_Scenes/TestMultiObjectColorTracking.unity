@@ -435,10 +435,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 637331952}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 56db8604840ad494ba90062b73f24265, type: 3}
+  m_Script: {fileID: 11500000, guid: 11caded46619e435ebd8471986740634, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  requestedDeviceName: 'HD Pro Webcam C920 #2'
+  requestedDeviceName: HD Pro Webcam C920
   requestedWidth: 640
   requestedHeight: 480
   requestedFPS: 30
@@ -499,7 +499,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 637331952}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dcdd2e341ea1c4e8fa83ff43a0c1bce4, type: 3}
+  m_Script: {fileID: 11500000, guid: a2367b03586fc4f47b0bc77051a8c216, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!23 &637331955
