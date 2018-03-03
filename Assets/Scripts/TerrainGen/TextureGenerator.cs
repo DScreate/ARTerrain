@@ -98,7 +98,7 @@ public static class TextureGenerator {
         {
             for (int x = 0; x < texture.width; x++)
             {
-                floatMap[x, y] = texture.GetPixel(x, y).grayscale;
+                floatMap[texture.width - x - 1, y] = 1 - texture.GetPixel(x, y).grayscale;
             }
         }
 
