@@ -68,8 +68,8 @@ public class MapGenerator : MonoBehaviour {
             if (imageMode == ImageMode.FromOpenCV)            
                 _trackObjectsBasedOnColor = new ObjectTrackingBasedOnColor(_webcamtex);
 
-            double terrX;
-            double terrY;
+            int terrX;
+            int terrY;
             int counterOne = 1 , counterTwo = 1;
            while ((terrX = _webcamtex.width / counterOne) > 250)
             {
@@ -80,6 +80,8 @@ public class MapGenerator : MonoBehaviour {
                 counterTwo++;
             }
 
+            mapHeight = terrY;
+            mapWidth = terrX;
 
 
         }        
@@ -114,7 +116,7 @@ public class MapGenerator : MonoBehaviour {
 
     public void GenerateMap()
     {
-        float[,] noiseMap = Noise.GenerateNoiseMap(mapWidth, mapHeight, noiseData.seed, noiseData.noiseScale, noiseData.octaves, noiseData.persistance, noiseData.lacunarity, noiseData.offset);
+        float[,] noiseMap = Noise.GenerateNoiseMap(mapWidth, mapHeight, noiseData.seed, noiseData.noiseScale, noiseData.octaves, noiseData.persistance, noiseData.lacunarity, noiseData.offset, noiseData.normalizeMode);
 
         if (imageMode == ImageMode.PureNoise)
         {
@@ -244,8 +246,8 @@ public class MapGenerator : MonoBehaviour {
         }
         if (textureData != null)
         {
-            textureData.OnValuesUpdated -= OnValuesUpdate;
-            textureData.OnValuesUpdated += OnValuesUpdate;
+            textureData.OnValuesUpdated -= OnTextureValuesUpdated;
+            textureData.OnValuesUpdated += OnTextureValuesUpdated;
         }
 
     }
