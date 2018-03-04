@@ -66,7 +66,22 @@ public class MapGenerator : MonoBehaviour {
             _webcamtex.Play();
 
             if (imageMode == ImageMode.FromOpenCV)            
-                _trackObjectsBasedOnColor = new ObjectTrackingBasedOnColor(_webcamtex);            
+                _trackObjectsBasedOnColor = new ObjectTrackingBasedOnColor(_webcamtex);
+
+            double terrX;
+            double terrY;
+            int counterOne = 1 , counterTwo = 1;
+           while ((terrX = _webcamtex.width / counterOne) > 250)
+            {
+                counterOne++;
+            }
+            while ((terrY = _webcamtex.height / counterTwo) > 250)
+            {
+                counterTwo++;
+            }
+
+
+
         }        
     }
 
