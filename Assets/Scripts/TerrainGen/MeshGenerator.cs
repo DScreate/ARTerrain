@@ -4,10 +4,12 @@ using UnityEngine;
 
 public static class MeshGenerator {
 
-    public static MeshData GenerateTerrainMesh(float[,] heightMap, float heightMultiplier, AnimationCurve heightCurve, float ScaleFactor)
+    public static MeshData GenerateTerrainMesh(float[,] heightMap, float heightMultiplier, AnimationCurve heightCurve, Vector2 scaleFactor, Vector2 position)
     {
-        int width = (int) (heightMap.GetLength(0) / ScaleFactor);
-        int height = (int) (heightMap.GetLength(1) / ScaleFactor);
+        //dimensions of each chunk needs to be determined by the ratio of total size / (totalsize / individualsize)
+        //this means that for a map of total width 1600 and height 1200, mesh chunks could be 160x120 and the scale factor would be 10 (though scalefactors for different XxY possible)
+        int width = (int) (heightMap.GetLength(0) / scaleFactor.x);
+        int height = (int) (heightMap.GetLength(1) / scaleFactor.y);
         float topLeftX = (width - 1) / 2f;
         float topLeftZ = (height - 1) / 2f;
 
@@ -18,7 +20,13 @@ public static class MeshGenerator {
         {
             for (int x = 0; x < width; x++)
             {
-                meshData.vertices[vertexIndex] = new Vector3(topLeftX - x, heightCurve.Evaluate(heightMap[x, y]) * heightMultiplier, topLeftZ - y);
+                //at evaluate heightmap call, the x and y need to be scaled by the appropriate scalefactor so that they "land inside" the correct mesh within the 2d array
+
+                int heightX = (int) (width * position.x) + x;
+                int heightY = (int) (height * position.y) + y;
+                
+                
+                meshData.vertices[vertexIndex] = new Vector3(topLeftX - x, heightCurve.Evaluate(heightMap[heightX, heightY]) * heightMultiplier, topLeftZ - y);
                 meshData.uvs[vertexIndex] = new Vector2(x / (float)width, y / (float)height);
 
                 if(x < width - 1 && y < height - 1)

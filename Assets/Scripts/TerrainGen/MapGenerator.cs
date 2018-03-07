@@ -6,7 +6,7 @@ using TerrainGenData;
 public class MapGenerator : MonoBehaviour {
 
     public enum DrawMode { NoiseMap, ColorMap, Mesh };
-    public enum ImageMode { PureNoise, FromImage, FromWebcam, FromOpenCV }
+    public enum ImageMode { PureNoise, FromImage, FromWebcam }
     [TooltipAttribute("Set the name of the device to use.")]
     public string requestedDeviceName = null;
     public DrawMode drawMode;
@@ -31,6 +31,8 @@ public class MapGenerator : MonoBehaviour {
 
     public bool autoUpdate;
 
+    private MeshData[,] MeshDatas;
+
     private int MeshRatioWidth;
     private int MeshRatioHeight;
 
@@ -38,7 +40,6 @@ public class MapGenerator : MonoBehaviour {
 
     WebCamTexture _webcamtex;
     Texture2D _TextureFromCamera;
-    ObjectTrackingBasedOnColor _trackObjectsBasedOnColor;
 
     void OnValuesUpdate()
     {
@@ -54,7 +55,7 @@ public class MapGenerator : MonoBehaviour {
 
     private void Start()
     {
-        if (imageMode == ImageMode.FromWebcam || imageMode == ImageMode.FromOpenCV)
+        if (imageMode == ImageMode.FromWebcam)
         {
             _TextureFromCamera = new Texture2D(mapWidth, mapHeight);
 
@@ -67,9 +68,6 @@ public class MapGenerator : MonoBehaviour {
                 _webcamtex = new WebCamTexture(mapWidth, mapHeight);
 
             _webcamtex.Play();
-
-            if (imageMode == ImageMode.FromOpenCV)            
-                _trackObjectsBasedOnColor = new ObjectTrackingBasedOnColor(_webcamtex);
 
             int terrX , terrY;
             int counterX = 1 , counterY = 1;
@@ -86,7 +84,13 @@ public class MapGenerator : MonoBehaviour {
             mapWidth = terrX;
             MeshRatioWidth = counterX - 1;
             MeshRatioHeight = counterY - 1;
-        }        
+            
+            MeshDatas = new MeshData[MeshRatioWidth,MeshRatioHeight];
+        }
+        else
+        {
+            MeshDatas = new MeshData[MeshRatioWidth,MeshRatioHeight];
+        }
     }
 
     private void Update()
@@ -103,21 +107,31 @@ public class MapGenerator : MonoBehaviour {
             _TextureFromCamera.Apply();
             GenerateMap();
         }
-
-        if (imageMode == ImageMode.FromOpenCV)
-        {
-            _TextureFromCamera = _trackObjectsBasedOnColor.UpdateGrayScale();
-            //_TextureFromCamera = _trackObjectsBasedOnColor.UpdateGrayScale(_webcamtex);
-            //_TextureFromCamera = new Texture2D(_webcamtex.width, _webcamtex.height, TextureFormat.RGB24, false);
-            //_trackObjectsBasedOnColor.UpdateGrayScale(_webcamtex, _TextureFromCamera);
-            GenerateMap();
-        }
-
-
     }
 
     public void GenerateMap()
     {
+
+            int terrX , terrY;
+            int counterX = 1 , counterY = 1;
+            while ((terrX = mapWidth / counterX) > 250)
+            {
+                counterX++;
+            }
+            while ((terrY = mapHeight / counterY) > 250)
+            {
+                counterY++;
+            }
+
+            mapHeight = terrY;
+            mapWidth = terrX;
+            MeshRatioWidth = counterX - 1;
+            MeshRatioHeight = counterY - 1;
+            
+            
+            Debug.Log("MeshRationWidth: " + MeshRatioWidth + " MeshRatioHeight: " + MeshRatioHeight);
+            MeshDatas = new MeshData[MeshRatioWidth,MeshRatioHeight];
+        
         float[,] noiseMap = Noise.GenerateNoiseMap(mapWidth, mapHeight, noiseData.seed, noiseData.noiseScale, noiseData.octaves, noiseData.persistance, noiseData.lacunarity, noiseData.offset, noiseData.normalizeMode);
 
         if (imageMode == ImageMode.PureNoise)
@@ -152,7 +166,15 @@ public class MapGenerator : MonoBehaviour {
             }
             else if (drawMode == DrawMode.Mesh)
             {
-                display.DrawMesh(MeshGenerator.GenerateTerrainMesh(noiseMap, terrainData.meshHeightMultiplier, terrainData.meshHeightCurve));
+                for (int y = 0; y < MeshDatas.GetLength(1); y++)
+                {
+                    for (int x = 0; x < MeshDatas.GetLength(0); x++)
+                    {
+                        float currentHeight = noiseMap[x, y];
+                        display.DrawMesh(MeshGenerator.GenerateTerrainMesh(noiseMap, terrainData.meshHeightMultiplier, terrainData.meshHeightCurve, new Vector2(MeshRatioWidth, MeshRatioHeight), new Vector2(x,y)));
+
+                    }
+                }
             }
         }
         else if (imageMode == ImageMode.FromImage)
@@ -188,10 +210,10 @@ public class MapGenerator : MonoBehaviour {
             }
             else if (drawMode == DrawMode.Mesh)
             {
-                display.DrawMesh(MeshGenerator.GenerateTerrainMesh(TextureGenerator.TextureToNoise(noisedTex), terrainData.meshHeightMultiplier, terrainData.meshHeightCurve) /*, TextureGenerator.TextureFromColorMap(colorMap, mapWidth, mapHeight)*/);
+                //display.DrawMesh(MeshGenerator.GenerateTerrainMesh(TextureGenerator.TextureToNoise(noisedTex), terrainData.meshHeightMultiplier, terrainData.meshHeightCurve) /*, TextureGenerator.TextureFromColorMap(colorMap, mapWidth, mapHeight)*/);
             }
         }
-        else if (imageMode == ImageMode.FromWebcam || imageMode == ImageMode.FromOpenCV)
+        else if (imageMode == ImageMode.FromWebcam)
         {
             Texture2D noisedTex = TextureGenerator.ApplyNoiseToTexture(_TextureFromCamera, noiseMap, noiseWeight, minGreyValue);
             MapDisplay display = FindObjectOfType<MapDisplay>();
@@ -224,7 +246,7 @@ public class MapGenerator : MonoBehaviour {
             }
             else if (drawMode == DrawMode.Mesh)
             {
-                display.DrawMesh(MeshGenerator.GenerateTerrainMesh(TextureGenerator.TextureToNoise(noisedTex), terrainData.meshHeightMultiplier, terrainData.meshHeightCurve)/*, TextureGenerator.TextureFromColorMap(colorMap, mapWidth, mapHeight)*/);
+                //display.DrawMesh(MeshGenerator.GenerateTerrainMesh(TextureGenerator.TextureToNoise(noisedTex), terrainData.meshHeightMultiplier, terrainData.meshHeightCurve)/*, TextureGenerator.TextureFromColorMap(colorMap, mapWidth, mapHeight)*/);
             }
         }
         textureData.UpdateMeshHeights(terrainMaterial, terrainData.minHeight, terrainData.maxHeight);
@@ -254,13 +276,3 @@ public class MapGenerator : MonoBehaviour {
 
     }
 }
-
-/*
-[System.Serializable]
-public struct TerrainType
-{
-    public string name;
-    public float height;
-    public Color color;
-}
-*/
