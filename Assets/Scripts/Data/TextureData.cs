@@ -8,6 +8,9 @@ namespace TerrainGenData
     [CreateAssetMenu()]
     public class TextureData : UpdatableData
     {
+        const int textureSize = 512;
+        const TextureFormat textureFormat = TextureFormat.RGB565;
+
         public Layer[] layers;
 
         float savedMinHeight;
@@ -21,6 +24,8 @@ namespace TerrainGenData
             material.SetFloatArray("baseBlends", layers.Select(x => x.blendStrength).ToArray());
             material.SetFloatArray("baseColorStrength", layers.Select(x => x.tintStrength).ToArray());
             material.SetFloatArray("baseTextureScales", layers.Select(x => x.textureScale).ToArray());
+            Texture2DArray texturesArray = GenerateTextureArray(layers.Select(x => x.texture).ToArray());
+            material.SetTexture("baseTextures", texturesArray);
 
             UpdateMeshHeights(material , savedMinHeight,savedMaxHeight);
         }
@@ -34,10 +39,21 @@ namespace TerrainGenData
 
         }
 
+        Texture2DArray GenerateTextureArray(Texture2D[] textures)
+        {
+            Texture2DArray textureArray = new Texture2DArray(textureSize, textureSize, textures.Length, textureFormat, true);
+            for(int i = 0; i < textures.Length; i++)
+            {
+                textureArray.SetPixels(textures[i].GetPixels(), i);               
+            }
+            textureArray.Apply();
+            return textureArray;
+        }
+
         [System.Serializable]
         public class Layer
         {
-            public Texture texture;
+            public Texture2D texture;
             public Color tint;
             [Range(0,1)]
             public float tintStrength;
