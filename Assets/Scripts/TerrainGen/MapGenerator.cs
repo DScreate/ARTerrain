@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using ColorTracking;
 using System;
+using System.Collections.Generic;
 using TerrainGenData;
 
 public class MapGenerator : MonoBehaviour {
@@ -33,6 +34,8 @@ public class MapGenerator : MonoBehaviour {
 
     private MeshData[,] MeshDatas;
 
+    private Dictionary<Vector2, GameObject> meshDictionary = new Dictionary<Vector2, GameObject>();
+
     private int MeshRatioWidth;
     private int MeshRatioHeight;
 
@@ -40,6 +43,8 @@ public class MapGenerator : MonoBehaviour {
 
     WebCamTexture _webcamtex;
     Texture2D _TextureFromCamera;
+
+    public GameObject MapMesh;
 
     void OnValuesUpdate()
     {
@@ -114,17 +119,17 @@ public class MapGenerator : MonoBehaviour {
 
             int terrX , terrY;
             int counterX = 1 , counterY = 1;
-            while ((terrX = mapWidth / counterX) > 250)
+            while ((terrX = mapWidth / counterX) >= 80)
             {
                 counterX++;
             }
-            while ((terrY = mapHeight / counterY) > 250)
+            while ((terrY = mapHeight / counterY) >= 80)
             {
                 counterY++;
             }
 
-            mapHeight = terrY;
-            mapWidth = terrX;
+            //mapHeight = terrY;
+            //mapWidth = terrX;
             MeshRatioWidth = counterX - 1;
             MeshRatioHeight = counterY - 1;
             
@@ -170,8 +175,23 @@ public class MapGenerator : MonoBehaviour {
                 {
                     for (int x = 0; x < MeshDatas.GetLength(0); x++)
                     {
+                        Vector2 key = new Vector2(x,y);
+                        GameObject mapHolder;
+                        if (meshDictionary.ContainsKey(key))
+                        {
+                            mapHolder = meshDictionary[key];
+                        }
+                        else
+                        {
+                            mapHolder = Instantiate(MapMesh);
+                            meshDictionary.Add(key, mapHolder);
+                        }
+
+                        mapHolder.transform.parent = transform;
+                        mapHolder.transform.position = new Vector3(x * mapWidth, 0, y * mapHeight);
                         float currentHeight = noiseMap[x, y];
-                        display.DrawMesh(MeshGenerator.GenerateTerrainMesh(noiseMap, terrainData.meshHeightMultiplier, terrainData.meshHeightCurve, new Vector2(MeshRatioWidth, MeshRatioHeight), new Vector2(x,y)));
+                        
+                        MapDisplay.DrawMesh(mapHolder,  MeshGenerator.GenerateTerrainMesh(noiseMap, terrainData.meshHeightMultiplier, terrainData.meshHeightCurve, new Vector2(MeshRatioWidth, MeshRatioHeight), new Vector2(x,y)));
 
                     }
                 }
@@ -250,6 +270,18 @@ public class MapGenerator : MonoBehaviour {
             }
         }
         textureData.UpdateMeshHeights(terrainMaterial, terrainData.minHeight, terrainData.maxHeight);
+    }
+
+    public void ClearDictionaries()
+    {
+        foreach (KeyValuePair<Vector2, GameObject> kvp in meshDictionary)
+        {
+            if (kvp.Value != null)
+            {
+                DestroyImmediate(kvp.Value);
+            }
+        }
+        meshDictionary.Clear();
     }
 
     private void OnValidate()
