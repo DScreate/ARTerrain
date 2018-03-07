@@ -31,6 +31,9 @@ public class MapGenerator : MonoBehaviour {
 
     public bool autoUpdate;
 
+    private int MeshRatioWidth;
+    private int MeshRatioHeight;
+
     //public TerrainType[] regions;
 
     WebCamTexture _webcamtex;
@@ -68,22 +71,21 @@ public class MapGenerator : MonoBehaviour {
             if (imageMode == ImageMode.FromOpenCV)            
                 _trackObjectsBasedOnColor = new ObjectTrackingBasedOnColor(_webcamtex);
 
-            int terrX;
-            int terrY;
-            int counterOne = 1 , counterTwo = 1;
-           while ((terrX = _webcamtex.width / counterOne) > 250)
+            int terrX , terrY;
+            int counterX = 1 , counterY = 1;
+           while ((terrX = _webcamtex.width / counterX) > 250)
             {
-                counterOne++;
+                counterX++;
             }
-            while ((terrY = _webcamtex.height / counterTwo) > 250)
+            while ((terrY = _webcamtex.height / counterY) > 250)
             {
-                counterTwo++;
+                counterY++;
             }
 
             mapHeight = terrY;
             mapWidth = terrX;
-
-
+            MeshRatioWidth = counterX - 1;
+            MeshRatioHeight = counterY - 1;
         }        
     }
 
@@ -150,7 +152,7 @@ public class MapGenerator : MonoBehaviour {
             }
             else if (drawMode == DrawMode.Mesh)
             {
-                display.DrawMesh(MeshGenerator.GenerateTerrainMesh(noiseMap, terrainData.meshHeightMultiplier, terrainData.meshHeightCurve)/*, TextureGenerator.TextureFromColorMap(colorMap, mapWidth, mapHeight)*/);
+                display.DrawMesh(MeshGenerator.GenerateTerrainMesh(noiseMap, terrainData.meshHeightMultiplier, terrainData.meshHeightCurve));
             }
         }
         else if (imageMode == ImageMode.FromImage)
