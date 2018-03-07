@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Name: DefaultTerrain
   m_EditorClassIdentifier: 
   autoUpdate: 1
-  uniformScale: 2.5
+  uniformScale: 5.39
   meshHeightMultiplier: 20
   meshHeightCurve:
     serializedVersion: 2
@@ -22,6 +22,30 @@ MonoBehaviour:
       value: 0
       inSlope: 0
       outSlope: 0
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.06403696
+      value: 0.013685767
+      inSlope: 0.123255886
+      outSlope: 0.123255886
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.1579671
+      value: 0.024953606
+      inSlope: 0.20936714
+      outSlope: 0.20936714
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.25805557
+      value: 0.039873164
+      inSlope: 0.39942828
+      outSlope: 0.39942828
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.36846378
+      value: 0.11408212
+      inSlope: 0.66559345
+      outSlope: 0.66559345
       tangentMode: 0
     - serializedVersion: 2
       time: 1

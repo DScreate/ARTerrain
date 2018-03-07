@@ -15,6 +15,7 @@ public class UpdateDataEditor : Editor {
         if (GUILayout.Button("Update"))
         {
             data.NotifyOfUpdatedValues();
+            EditorUtility.SetDirty(target);
         }
     }
 }

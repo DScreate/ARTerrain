@@ -10,6 +10,8 @@ namespace TerrainGenData
         public Color[] baseColor;
         [Range(0, 1)]
         public float[] baseStartHeights;
+        [Range(0,1)]
+        public float[] baseBlends;
 
         float savedMinHeight;
         float savedMaxHeight;
@@ -19,6 +21,7 @@ namespace TerrainGenData
             material.SetInt("baseColorCount", baseColor.Length);
             material.SetColorArray("baseColors", baseColor);
             material.SetFloatArray("baseStartHeights", baseStartHeights);
+            material.SetFloatArray("baseBlends", baseBlends);
 
             UpdateMeshHeights(material , savedMinHeight,savedMaxHeight);
         }
