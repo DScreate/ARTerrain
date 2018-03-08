@@ -9,6 +9,7 @@ namespace TerrainGenData
         public event System.Action OnValuesUpdated;
         public bool autoUpdate;
 
+#if     UNITY_EDITOR
         protected virtual void OnValidate()
         {
             if (autoUpdate)
@@ -23,5 +24,6 @@ namespace TerrainGenData
             if (OnValuesUpdated != null)
                 OnValuesUpdated();
         }
+ #endif 
     }
 }
