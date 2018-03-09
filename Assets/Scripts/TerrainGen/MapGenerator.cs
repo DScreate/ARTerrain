@@ -35,16 +35,13 @@ public class MapGenerator : MonoBehaviour {
 
     public bool autoUpdate;
 
-    //public TerrainType[] regions;
-
     WebCamTexture webcamtex;
-    //Texture2D textureFromCamera;
 
     void OnValuesUpdate()
     {
         if (!Application.isPlaying)
         {
-            GenerateMapData();
+            DrawMapInEditor();
         }
     }
     void OnTextureValuesUpdated()
@@ -56,8 +53,6 @@ public class MapGenerator : MonoBehaviour {
     {
         if (imageMode == ImageMode.FromWebcam)
         {
-            //textureFromCamera = new Texture2D(mapChunkSize, mapChunkSize);
-
             if (!String.IsNullOrEmpty(requestedDeviceName))
             {
                 webcamtex = new WebCamTexture(requestedDeviceName, mapChunkSize, mapChunkSize);
@@ -78,7 +73,7 @@ public class MapGenerator : MonoBehaviour {
 
     public void DrawMapInEditor()
     {
-        MapData mapData = GenerateMapData();
+        MapData mapData = GenerateMapData(Vector2.zero);
         MapDisplay display = FindObjectOfType<MapDisplay>();
         if (drawMode == DrawMode.NoiseMap)
         {
@@ -94,22 +89,22 @@ public class MapGenerator : MonoBehaviour {
         }        
     }
 
-    public MeshData RequestMeshData()
+    public MeshData RequestMeshData(Vector2 center)
     {
-        MapData mapData = GenerateMapData();
+        MapData mapData = GenerateMapData(center);
 
         return MeshGenerator.GenerateTerrainMesh(mapData.heightMap, terrainData.meshHeightMultiplier, terrainData.meshHeightCurve, levelOfDetail);
     }
 
-    MapData GenerateMapData()
+    MapData GenerateMapData(Vector2 center)
     {
-        float[,] noiseMap = Noise.GenerateNoiseMap(mapChunkSize, mapChunkSize, noiseData.seed, noiseData.noiseScale, noiseData.octaves, noiseData.persistance, noiseData.lacunarity, noiseData.offset, noiseData.normalizeMode);
+        float[,] noiseMap = Noise.GenerateNoiseMap(mapChunkSize, mapChunkSize, noiseData.seed, noiseData.noiseScale, noiseData.octaves, noiseData.persistance, noiseData.lacunarity, center + noiseData.offset, noiseData.normalizeMode);
         Color[] colorMap = new Color[mapChunkSize * mapChunkSize];
 
-        if (imageMode == ImageMode.FromWebcam)
+        if (imageMode == ImageMode.FromWebcam && Application.isPlaying)
         {
             Texture2D texture2DFromCamera = new Texture2D(mapChunkSize, mapChunkSize);
-
+            
             for (int y = 0; y < mapChunkSize; y++)
             {
                 for (int x = 0; x < mapChunkSize; x++)
@@ -119,7 +114,12 @@ public class MapGenerator : MonoBehaviour {
             }
             texture2DFromCamera.Apply();
 
+            dfdf //I want to try removing this next line and just pass in texture2DFromCamera to TextureToNoise and see what happens
+            //Intent: simplify things while I'm trying to figure out how to get the mesh's to only display a portion of the webcam feed
+            //instead of all of it at once
             Texture2D noisedTex = TextureGenerator.ApplyNoiseToTexture(texture2DFromCamera, noiseMap, noiseWeight, minGreyValue);
+
+            //Need to somehow translate the center + offset in GenerateNoiseMap to the noiseMap generated here
             noiseMap = TextureGenerator.TextureToNoise(noisedTex);
         }
 
