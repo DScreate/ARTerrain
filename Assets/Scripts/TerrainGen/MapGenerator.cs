@@ -1,12 +1,13 @@
 ﻿using UnityEngine;
-using ColorTracking;
 using System;
 using TerrainGenData;
 
+
+//I think we can delete colormap?
 public class MapGenerator : MonoBehaviour {
 
     public enum DrawMode { NoiseMap, ColorMap, Mesh };
-    public enum ImageMode { PureNoise, FromImage, FromWebcam, FromOpenCV }
+    public enum ImageMode { PureNoise, FromImage, FromWebcam}
     [TooltipAttribute("Set the name of the device to use.")]
     public string requestedDeviceName = null;
     public DrawMode drawMode;
@@ -26,22 +27,24 @@ public class MapGenerator : MonoBehaviour {
     [Range(0, 1)]
     public float noiseWeight;
 
-    public int mapWidth;
-    public int mapHeight;
+    public const int mapChunkSize = 241;
+    [Range(0,6)]
+    public int levelOfDetail;
+    //public int mapWidth;
+    //public int mapHeight;
 
     public bool autoUpdate;
 
     //public TerrainType[] regions;
 
-    WebCamTexture _webcamtex;
-    Texture2D _TextureFromCamera;
-    ObjectTrackingBasedOnColor _trackObjectsBasedOnColor;
+    WebCamTexture webcamtex;
+    //Texture2D textureFromCamera;
 
     void OnValuesUpdate()
     {
         if (!Application.isPlaying)
         {
-            GenerateMap();
+            GenerateMapData();
         }
     }
     void OnTextureValuesUpdated()
@@ -51,189 +54,92 @@ public class MapGenerator : MonoBehaviour {
 
     private void Start()
     {
-        if (imageMode == ImageMode.FromWebcam || imageMode == ImageMode.FromOpenCV)
+        if (imageMode == ImageMode.FromWebcam)
         {
-            _TextureFromCamera = new Texture2D(mapWidth, mapHeight);
+            //textureFromCamera = new Texture2D(mapChunkSize, mapChunkSize);
 
             if (!String.IsNullOrEmpty(requestedDeviceName))
             {
-                _webcamtex = new WebCamTexture(requestedDeviceName, mapWidth, mapHeight);
+                webcamtex = new WebCamTexture(requestedDeviceName, mapChunkSize, mapChunkSize);
             }
 
             else
-                _webcamtex = new WebCamTexture(mapWidth, mapHeight);
+                webcamtex = new WebCamTexture(mapChunkSize, mapChunkSize);
 
-            _webcamtex.Play();
-
-            if (imageMode == ImageMode.FromOpenCV)            
-                _trackObjectsBasedOnColor = new ObjectTrackingBasedOnColor(_webcamtex);
-
-            int terrX;
-            int terrY;
-            int counterOne = 1 , counterTwo = 1;
-           while ((terrX = _webcamtex.width / counterOne) > 250)
-            {
-                counterOne++;
-            }
-            while ((terrY = _webcamtex.height / counterTwo) > 250)
-            {
-                counterTwo++;
-            }
-
-            mapHeight = terrY;
-            mapWidth = terrX;
-
-
+            Debug.Log("Webcam width: " + webcamtex.width + ". Webcam height: " + webcamtex.height);
+            webcamtex.Play();        
         }        
     }
 
     private void Update()
     {
-        if (imageMode == ImageMode.FromWebcam)
-        {
-            for (int y = 0; y < mapHeight; y++)
-            {
-                for (int x = 0; x < mapWidth; x++)
-                {
-                    _TextureFromCamera.SetPixel(x, y, _webcamtex.GetPixel(x, y));
-                }
-            }
-            _TextureFromCamera.Apply();
-            GenerateMap();
-        }
-
-        if (imageMode == ImageMode.FromOpenCV)
-        {
-            _TextureFromCamera = _trackObjectsBasedOnColor.UpdateGrayScale();
-            //_TextureFromCamera = _trackObjectsBasedOnColor.UpdateGrayScale(_webcamtex);
-            //_TextureFromCamera = new Texture2D(_webcamtex.width, _webcamtex.height, TextureFormat.RGB24, false);
-            //_trackObjectsBasedOnColor.UpdateGrayScale(_webcamtex, _TextureFromCamera);
-            GenerateMap();
-        }
-
-
+        //DrawMapInEditor();
     }
 
-    public void GenerateMap()
+    public void DrawMapInEditor()
     {
-        float[,] noiseMap = Noise.GenerateNoiseMap(mapWidth, mapHeight, noiseData.seed, noiseData.noiseScale, noiseData.octaves, noiseData.persistance, noiseData.lacunarity, noiseData.offset, noiseData.normalizeMode);
-
-        if (imageMode == ImageMode.PureNoise)
+        MapData mapData = GenerateMapData();
+        MapDisplay display = FindObjectOfType<MapDisplay>();
+        if (drawMode == DrawMode.NoiseMap)
         {
-            Color[] colorMap = new Color[mapWidth * mapHeight];
+            display.DrawTexture(TextureGenerator.TextureFromHeightMap(mapData.heightMap));
+        }
+        else if (drawMode == DrawMode.ColorMap)
+        {
+            display.DrawTexture(TextureGenerator.TextureFromColorMap(mapData.colorMap, mapChunkSize, mapChunkSize));
+        }
+        else if (drawMode == DrawMode.Mesh)
+        {
+            display.DrawMesh(MeshGenerator.GenerateTerrainMesh(mapData.heightMap, terrainData.meshHeightMultiplier, terrainData.meshHeightCurve, levelOfDetail)/*, TextureGenerator.TextureFromColorMap(colorMap, mapChunkSize, mapChunkSize)*/);
+        }        
+    }
 
-            for (int y = 0; y < mapHeight; y++)
+    public MeshData RequestMeshData()
+    {
+        MapData mapData = GenerateMapData();
+
+        return MeshGenerator.GenerateTerrainMesh(mapData.heightMap, terrainData.meshHeightMultiplier, terrainData.meshHeightCurve, levelOfDetail);
+    }
+
+    MapData GenerateMapData()
+    {
+        float[,] noiseMap = Noise.GenerateNoiseMap(mapChunkSize, mapChunkSize, noiseData.seed, noiseData.noiseScale, noiseData.octaves, noiseData.persistance, noiseData.lacunarity, noiseData.offset, noiseData.normalizeMode);
+        Color[] colorMap = new Color[mapChunkSize * mapChunkSize];
+
+        if (imageMode == ImageMode.FromWebcam)
+        {
+            Texture2D texture2DFromCamera = new Texture2D(mapChunkSize, mapChunkSize);
+
+            for (int y = 0; y < mapChunkSize; y++)
             {
-                for (int x = 0; x < mapWidth; x++)
+                for (int x = 0; x < mapChunkSize; x++)
                 {
-                    float currentHeight = noiseMap[x, y];
-                    /*for (int i = 0; i < regions.Length; i++)
-                    {
-                        if (currentHeight <= regions[i].height)
-                        {
-                            colorMap[y * mapWidth + x] = regions[i].color;
-                            break;
-                        }
-                    }*/
+                    texture2DFromCamera.SetPixel(x, y, webcamtex.GetPixel(x, y));
                 }
             }
+            texture2DFromCamera.Apply();
 
-
-            MapDisplay display = FindObjectOfType<MapDisplay>();
-            if (drawMode == DrawMode.NoiseMap)
-            {
-                display.DrawTexture(TextureGenerator.TextureFromHeightMap(noiseMap));
-            }
-            else if (drawMode == DrawMode.ColorMap)
-            {
-                display.DrawTexture(TextureGenerator.TextureFromColorMap(colorMap, mapWidth, mapHeight));
-            }
-            else if (drawMode == DrawMode.Mesh)
-            {
-                display.DrawMesh(MeshGenerator.GenerateTerrainMesh(noiseMap, terrainData.meshHeightMultiplier, terrainData.meshHeightCurve)/*, TextureGenerator.TextureFromColorMap(colorMap, mapWidth, mapHeight)*/);
-            }
+            Texture2D noisedTex = TextureGenerator.ApplyNoiseToTexture(texture2DFromCamera, noiseMap, noiseWeight, minGreyValue);
+            noiseMap = TextureGenerator.TextureToNoise(noisedTex);
         }
+
         else if (imageMode == ImageMode.FromImage)
         {
             Texture2D noisedTex = TextureGenerator.ApplyNoiseToTexture(imageTex, noiseMap, noiseWeight, minGreyValue);
-            MapDisplay display = FindObjectOfType<MapDisplay>();
-
-            Color[] colorMap = new Color[mapWidth * mapHeight];
-
-            for (int y = 0; y < mapHeight; y++)
-            {
-                for (int x = 0; x < mapWidth; x++)
-                {
-                    float currentHeight = noisedTex.GetPixel(x, y).grayscale;
-                    /*for (int i = 0; i < regions.Length; i++)
-                    {
-                        if (currentHeight <= regions[i].height)
-                        {
-                            colorMap[y * mapWidth + x] = regions[i].color;
-                            break;
-                        }
-                    }*/
-                }
-            }
-
-            if (drawMode == DrawMode.NoiseMap)
-            {
-                display.DrawTexture(noisedTex);
-            }
-            else if (drawMode == DrawMode.ColorMap)
-            {
-                display.DrawTexture(TextureGenerator.TextureFromColorMap(colorMap, mapWidth, mapHeight));
-            }
-            else if (drawMode == DrawMode.Mesh)
-            {
-                display.DrawMesh(MeshGenerator.GenerateTerrainMesh(TextureGenerator.TextureToNoise(noisedTex), terrainData.meshHeightMultiplier, terrainData.meshHeightCurve) /*, TextureGenerator.TextureFromColorMap(colorMap, mapWidth, mapHeight)*/);
-            }
-        }
-        else if (imageMode == ImageMode.FromWebcam || imageMode == ImageMode.FromOpenCV)
-        {
-            Texture2D noisedTex = TextureGenerator.ApplyNoiseToTexture(_TextureFromCamera, noiseMap, noiseWeight, minGreyValue);
-            MapDisplay display = FindObjectOfType<MapDisplay>();
-
-            Color[] colorMap = new Color[mapWidth * mapHeight];
-
-            for (int y = 0; y < mapHeight; y++)
-            {
-                for (int x = 0; x < mapWidth; x++)
-                {
-                    float currentHeight = noisedTex.GetPixel(x, y).grayscale;
-                    /*for (int i = 0; i < regions.Length; i++)
-                    {
-                        if (currentHeight <= regions[i].height)
-                        {
-                            colorMap[y * mapWidth + x] = regions[i].color;
-                            break;
-                        }
-                    }*/
-                }
-            }
-
-            if (drawMode == DrawMode.NoiseMap)
-            {
-                display.DrawTexture(noisedTex);
-            }
-            else if (drawMode == DrawMode.ColorMap)
-            {
-                display.DrawTexture(TextureGenerator.TextureFromColorMap(colorMap, mapWidth, mapHeight));
-            }
-            else if (drawMode == DrawMode.Mesh)
-            {
-                display.DrawMesh(MeshGenerator.GenerateTerrainMesh(TextureGenerator.TextureToNoise(noisedTex), terrainData.meshHeightMultiplier, terrainData.meshHeightCurve)/*, TextureGenerator.TextureFromColorMap(colorMap, mapWidth, mapHeight)*/);
-            }
-        }
+            noiseMap = TextureGenerator.TextureToNoise(noisedTex);
+        }        
+       
         textureData.UpdateMeshHeights(terrainMaterial, terrainData.minHeight, terrainData.maxHeight);
+
+        return new MapData(noiseMap, colorMap);
     }
 
     private void OnValidate()
     {
-        if (mapWidth < 1)
+        /*if (mapChunkSize < 1)
             mapWidth = 1;
-        if (mapHeight < 1)
-            mapHeight = 1;
+        if (mapChunkSize < 1)
+            mapHeight = 1;*/
         if (terrainData != null)
         {
             terrainData.OnValuesUpdated -= OnValuesUpdate;
@@ -249,7 +155,17 @@ public class MapGenerator : MonoBehaviour {
             textureData.OnValuesUpdated -= OnTextureValuesUpdated;
             textureData.OnValuesUpdated += OnTextureValuesUpdated;
         }
+    }
+}
 
+public struct MapData
+{
+    public readonly float[,] heightMap;
+    public readonly Color[] colorMap;
+    public MapData(float[,] heightMap, Color[] colorMap)
+    {
+        this.heightMap = heightMap;
+        this.colorMap = colorMap;
     }
 }
 
