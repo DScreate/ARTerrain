@@ -101,14 +101,14 @@ public class EndlessTerrain : MonoBehaviour
 
             //Need to get mapData?
 
-            MeshData meshData = mapGenerator.RequestMeshData();
+            MeshData meshData = mapGenerator.RequestMeshData(position);
 
             meshFilter.mesh = meshData.CreateMesh();
         }
 
         public void UpdateTerrainChunk()
         {
-            MeshData meshData = mapGenerator.RequestMeshData();
+            MeshData meshData = mapGenerator.RequestMeshData(position);
             meshFilter.mesh = meshData.CreateMesh();
         }
     }

@@ -114,13 +114,15 @@ public class MapGenerator : MonoBehaviour {
             }
             texture2DFromCamera.Apply();
 
-            dfdf //I want to try removing this next line and just pass in texture2DFromCamera to TextureToNoise and see what happens
+            //I want to try removing this next line and just pass in texture2DFromCamera to TextureToNoise and see what happens
             //Intent: simplify things while I'm trying to figure out how to get the mesh's to only display a portion of the webcam feed
             //instead of all of it at once
-            Texture2D noisedTex = TextureGenerator.ApplyNoiseToTexture(texture2DFromCamera, noiseMap, noiseWeight, minGreyValue);
+            //Texture2D noisedTex = TextureGenerator.ApplyNoiseToTexture(texture2DFromCamera, noiseMap, noiseWeight, minGreyValue);
 
             //Need to somehow translate the center + offset in GenerateNoiseMap to the noiseMap generated here
-            noiseMap = TextureGenerator.TextureToNoise(noisedTex);
+            //noiseMap = TextureGenerator.TextureToNoise(noisedTex);
+
+            noiseMap = TextureGenerator.TextureToNoise(texture2DFromCamera);
         }
 
         else if (imageMode == ImageMode.FromImage)
