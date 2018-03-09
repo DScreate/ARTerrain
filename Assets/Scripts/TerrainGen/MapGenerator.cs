@@ -29,8 +29,10 @@ public class MapGenerator : MonoBehaviour {
     public int levelOfDetail;
 
     //need to create getters? need to make it so these values can't be changed once they're set in Start()
-    //public int mapChunkWidth;
-    //public int mapChunkHeight;
+    public int mapChunkWidth = 241;
+    public int mapChunkHeight = 241;
+
+    //public Vector2 numberOfChunks;
 
     public bool autoUpdate;
 
@@ -64,26 +66,42 @@ public class MapGenerator : MonoBehaviour {
             webcamtex.Play();        
         }
 
-        /*else if(imageMode == ImageMode.FromImage)
+        else if(imageMode == ImageMode.FromImage)
         {
             int width = imageTex.width;
             int height = imageTex.height;
+
+            //always have at least 1 chunk
+            //numberOfChunks = new Vector2(1, 1);
 
             while(width > 250 || height > 250)
             {
                 if(width > 250)
                 {
+                    if (width % 2 != 0)
+                        Debug.Log("Width is not evenly divisble by 2");
+
                     width /= 2;
+
+                    //increase number of chunks along the x-axis
+                    //numberOfChunks.x++;
                 }
                 if(height > 250)
                 {
+                    if (height % 2 != 0)
+                        Debug.Log("Height is not evenly divisble by 2");
+
                     height /= 2;
+
+                    //increase number of chunks along the y-axis
+                    //numberOfChunks.y++;
                 }
             }
 
-            mapChunkWidth = width;
-            mapChunkHeight = height;
-        }*/
+            //I forget why, but Sebastion explains in a video that these variables need to be chunk size + 1
+            mapChunkWidth = width + 1;
+            mapChunkHeight = height + 1;
+        }
     }
 
     private void Update()
@@ -146,7 +164,7 @@ public class MapGenerator : MonoBehaviour {
             noiseMap = TextureGenerator.TextureToNoise(texture2DFromCamera);
         }
 
-        else if (imageMode == ImageMode.FromImage /*&& Application.isPlaying*/)
+        else if (imageMode == ImageMode.FromImage && Application.isPlaying)
         {
             //Texture2D noisedTex = TextureGenerator.ApplyNoiseToTexture(imageTex, noiseMap, noiseWeight, minGreyValue);
             //noiseMap = TextureGenerator.TextureToNoise(noisedTex);
