@@ -87,4 +87,19 @@ public static class TextureGenerator {
 
         return noiseMap;
     }
+
+    public static float[,] TextureToNoiseAndCrop(Texture2D texture, int mapWidth, int mapHeight)
+    {
+        float[,] noiseMap = new float[mapWidth, mapHeight];
+
+        for (int y = 0; y < mapHeight; y++)
+        {
+            for (int x = 0; x < mapWidth; x++)
+            {
+                noiseMap[x, y] = texture.GetPixel(x, y).grayscale;
+            }
+        }
+
+        return noiseMap;
+    }
 }

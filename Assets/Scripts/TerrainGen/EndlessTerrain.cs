@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class EndlessTerrain : MonoBehaviour
 {
 
-    //max size of the Mesh's combined? change to size of webcam?
+    //determines number of mesh's created around viewer
     public const float maxViewDst = 250;
 
     //this needs to change, maybe removed. It's used to attach a viewer tranform to the script but we don't have a viwer

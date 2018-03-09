@@ -24,14 +24,13 @@ public class MapGenerator : MonoBehaviour {
     [Range(0, 1)]
     public float minGreyValue;
 
-    [Range(0, 1)]
-    public float noiseWeight;
-
     public const int mapChunkSize = 241;
     [Range(0,6)]
     public int levelOfDetail;
-    //public int mapWidth;
-    //public int mapHeight;
+
+    //need to create getters? need to make it so these values can't be changed once they're set in Start()
+    //public int mapChunkWidth;
+    //public int mapChunkHeight;
 
     public bool autoUpdate;
 
@@ -63,7 +62,28 @@ public class MapGenerator : MonoBehaviour {
 
             Debug.Log("Webcam width: " + webcamtex.width + ". Webcam height: " + webcamtex.height);
             webcamtex.Play();        
-        }        
+        }
+
+        /*else if(imageMode == ImageMode.FromImage)
+        {
+            int width = imageTex.width;
+            int height = imageTex.height;
+
+            while(width > 250 || height > 250)
+            {
+                if(width > 250)
+                {
+                    width /= 2;
+                }
+                if(height > 250)
+                {
+                    height /= 2;
+                }
+            }
+
+            mapChunkWidth = width;
+            mapChunkHeight = height;
+        }*/
     }
 
     private void Update()
@@ -98,6 +118,7 @@ public class MapGenerator : MonoBehaviour {
 
     MapData GenerateMapData(Vector2 center)
     {
+        //Change this so it only create noise map if ImageMode is PureNoise?
         float[,] noiseMap = Noise.GenerateNoiseMap(mapChunkSize, mapChunkSize, noiseData.seed, noiseData.noiseScale, noiseData.octaves, noiseData.persistance, noiseData.lacunarity, center + noiseData.offset, noiseData.normalizeMode);
         Color[] colorMap = new Color[mapChunkSize * mapChunkSize];
 
@@ -125,10 +146,11 @@ public class MapGenerator : MonoBehaviour {
             noiseMap = TextureGenerator.TextureToNoise(texture2DFromCamera);
         }
 
-        else if (imageMode == ImageMode.FromImage)
+        else if (imageMode == ImageMode.FromImage /*&& Application.isPlaying*/)
         {
-            Texture2D noisedTex = TextureGenerator.ApplyNoiseToTexture(imageTex, noiseMap, noiseWeight, minGreyValue);
-            noiseMap = TextureGenerator.TextureToNoise(noisedTex);
+            //Texture2D noisedTex = TextureGenerator.ApplyNoiseToTexture(imageTex, noiseMap, noiseWeight, minGreyValue);
+            //noiseMap = TextureGenerator.TextureToNoise(noisedTex);
+            noiseMap = TextureGenerator.TextureToNoiseAndCrop(imageTex, mapChunkSize, mapChunkSize);
         }        
        
         textureData.UpdateMeshHeights(terrainMaterial, terrainData.minHeight, terrainData.maxHeight);
