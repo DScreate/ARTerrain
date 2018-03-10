@@ -105,4 +105,22 @@ public static class TextureGenerator {
 
         return noiseMap;
     }
+
+    public static float[,] WebcamTextureToNoiseChunk(WebCamTexture webCamTexture, Vector2 position, int width, int height)
+    {
+        float[,] noiseMap = new float[width, height];
+
+        int xOffset = (int)position.x * width;
+        int yOffset = (int)position.y * height;
+
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                noiseMap[x, y] = webCamTexture.GetPixel(x + xOffset, y + yOffset).grayscale;
+            }
+        }
+
+        return noiseMap;
+    }
 }

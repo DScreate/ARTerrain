@@ -6,7 +6,7 @@ using TerrainGenData;
 //I think we can delete colormap?
 public class MapGenerator : MonoBehaviour {
 
-    public enum DrawMode { NoiseMap, ColorMap, Mesh };
+    public enum DrawMode { NoiseMap, Mesh };
     public enum ImageMode { PureNoise, FromImage, FromWebcam}
     [TooltipAttribute("Set the name of the device to use.")]
     public string requestedDeviceName = null;
@@ -40,7 +40,10 @@ public class MapGenerator : MonoBehaviour {
 
     public bool autoUpdate;
 
-    WebCamTexture webcamtex;
+    public WebCamTexture webcamtex;
+
+    private float[,] noiseMap;
+
 
     void OnValuesUpdate()
     {
@@ -63,15 +66,16 @@ public class MapGenerator : MonoBehaviour {
 
             if (imageMode == ImageMode.FromWebcam)
             {
-                /*if (!String.IsNullOrEmpty(requestedDeviceName))
+                
+                if (!String.IsNullOrEmpty(requestedDeviceName))
                 {
                     webcamtex = new WebCamTexture(requestedDeviceName, webcamRequestedWidth, webcamRequestedHeight);
                 }
 
                 else
-                    webcamtex = new WebCamTexture(webcamRequestedWidth, webcamRequestedHeight);*/
-
-                webcamtex = new WebCamTexture(640, 480);
+                    webcamtex = new WebCamTexture(640, 480);
+                
+                //webcamtex = new WebCamTexture(640, 480);
 
                 Debug.Log("Webcam request width: " + webcamtex.requestedWidth + ". Webcam requested height: " + webcamtex.requestedHeight);
 
@@ -122,10 +126,6 @@ public class MapGenerator : MonoBehaviour {
         {
             display.DrawTexture(TextureGenerator.TextureFromHeightMap(mapData.heightMap));
         }
-        else if (drawMode == DrawMode.ColorMap)
-        {
-            display.DrawTexture(TextureGenerator.TextureFromColorMap(mapData.colorMap, mapChunkSize, mapChunkSize));
-        }
         else if (drawMode == DrawMode.Mesh)
         {
             display.DrawMesh(MeshGenerator.GenerateTerrainMesh(mapData.heightMap, terrainData.meshHeightMultiplier, terrainData.meshHeightCurve, levelOfDetail)/*, TextureGenerator.TextureFromColorMap(colorMap, mapChunkSize, mapChunkSize)*/);
@@ -137,49 +137,27 @@ public class MapGenerator : MonoBehaviour {
         MapData mapData = GenerateMapData(coord);
 
         return MeshGenerator.GenerateTerrainMesh(mapData.heightMap, terrainData.meshHeightMultiplier, terrainData.meshHeightCurve, levelOfDetail);
-    }  
+    }
 
     MapData GenerateMapData(Vector2 coord)
     {
-        //Change this so it only create noise map if ImageMode is PureNoise?
-        float[,] noiseMap;
-        Color[] colorMap = new Color[mapChunkSize * mapChunkSize];
+        //Color[] colorMap = new Color[mapChunkSize * mapChunkSize];
+
 
         if(imageMode == ImageMode.PureNoise)
         {
             noiseMap =  Noise.GenerateNoiseMap(mapChunkSize, mapChunkSize, noiseData.seed, noiseData.noiseScale, noiseData.octaves, noiseData.persistance, noiseData.lacunarity, coord + noiseData.offset, noiseData.normalizeMode);
         }
 
-        else if (imageMode == ImageMode.FromWebcam && Application.isPlaying)
-        {
-            Texture2D texture2DFromCamera = new Texture2D(webcamtex.requestedWidth, webcamtex.requestedHeight);
-            
-            for (int y = 0; y < texture2DFromCamera.height; y++)
-            {
-                for (int x = 0; x < texture2DFromCamera.height; x++)
-                {
-                    texture2DFromCamera.SetPixel(x, y, webcamtex.GetPixel(x, y));
-                }
-            }
-            texture2DFromCamera.Apply();
-
-            //Commented out to simplify things while I'm trying to figure out how to get the mesh's to only display a portion of the webcam feed
-            //instead of all of it at once
-            //Texture2D noisedTex = TextureGenerator.ApplyNoiseToTexture(texture2DFromCamera, noiseMap, noiseWeight, minGreyValue);
-
-            //Need to somehow translate the center + offset in GenerateNoiseMap to the noiseMap generated here
-            //noiseMap = TextureGenerator.TextureToNoise(noisedTex);
-
-            noiseMap = TextureGenerator.TextureToNoiseChunk(texture2DFromCamera, coord, mapChunkWidth, mapChunkHeight);
-        }
-
         else if (imageMode == ImageMode.FromImage && Application.isPlaying)
         {
             noiseMap = TextureGenerator.TextureToNoiseChunk(imageTex, coord, mapChunkWidth, mapChunkHeight);
+        }
 
-            //Texture2D noisedTex = TextureGenerator.ApplyNoiseToTexture(imageTex, noiseMap, noiseWeight, minGreyValue);
-            //noiseMap = TextureGenerator.TextureToNoise(noisedTex);
-        }   
+        else if (imageMode == ImageMode.FromWebcam && Application.isPlaying)
+        {
+            noiseMap = TextureGenerator.WebcamTextureToNoiseChunk(webcamtex, coord, mapChunkWidth, mapChunkHeight);
+        }
         
         else //added this because it won't let you use noiseMap below otherwise. this should probably be refactored
         {
@@ -188,7 +166,7 @@ public class MapGenerator : MonoBehaviour {
        
         textureData.UpdateMeshHeights(terrainMaterial, terrainData.minHeight, terrainData.maxHeight);
 
-        return new MapData(noiseMap, colorMap);
+        return new MapData(noiseMap);
     }
 
     private void OnValidate()
@@ -218,10 +196,10 @@ public class MapGenerator : MonoBehaviour {
 public struct MapData
 {
     public readonly float[,] heightMap;
-    public readonly Color[] colorMap;
-    public MapData(float[,] heightMap, Color[] colorMap)
+    //public readonly Color[] colorMap;
+    public MapData(float[,] heightMap)
     {
         this.heightMap = heightMap;
-        this.colorMap = colorMap;
+        //this.colorMap = colorMap;
     }
 }

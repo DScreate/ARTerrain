@@ -60,6 +60,7 @@ public class MeshData
         triangleIndex += 3;
     }
 
+    //Anyway to alter existing mesh rather than creating a new one?
     public Mesh CreateMesh()
     {
         Mesh mesh = new Mesh();
@@ -68,5 +69,13 @@ public class MeshData
         mesh.uv = uvs;
         mesh.RecalculateNormals();
         return mesh;
+    }
+
+    public void UpdateMesh(Mesh mesh)
+    {
+        mesh.vertices = vertices;
+        mesh.triangles = triangles;
+        mesh.uv = uvs;
+        mesh.RecalculateNormals();
     }
 }

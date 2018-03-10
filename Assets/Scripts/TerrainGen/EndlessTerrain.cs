@@ -10,10 +10,10 @@ public class EndlessTerrain : MonoBehaviour
 
     //this needs to change, maybe removed. It's used to attach a viewer tranform to the script but we don't have a viwer
     public Transform viewer;
+    public static Vector2 viewerPosition;
 
     public Material mapMaterial;
-
-    public static Vector2 viewerPosition;
+    
     static MapGenerator mapGenerator;
     int chunkSize;
 
@@ -60,6 +60,7 @@ public class EndlessTerrain : MonoBehaviour
                 numberOfChunks.x = Mathf.RoundToInt(mapGenerator.imageTex.width / chunkWidth);
                 numberOfChunks.y = Mathf.RoundToInt(mapGenerator.imageTex.height / chunkHeight);
             }
+
             else if(mapGenerator.imageMode == MapGenerator.ImageMode.FromWebcam)
             {
                 numberOfChunks.x = Mathf.RoundToInt(mapGenerator.webcamRequestedWidth / chunkWidth);
@@ -77,10 +78,24 @@ public class EndlessTerrain : MonoBehaviour
     {
         if (mapGenerator.imageMode == MapGenerator.ImageMode.FromWebcam)
         {
+            /*
+            Texture2D texture2DFromCamera = new Texture2D(mapGenerator.webcamRequestedWidth, mapGenerator.webcamRequestedHeight);
+
+            for (int y = 0; y < texture2DFromCamera.height; y++)
+            {
+                for (int x = 0; x < texture2DFromCamera.height; x++)
+                {
+                    texture2DFromCamera.SetPixel(x, y, mapGenerator.webcamtex.GetPixel(x, y));
+                }
+            }
+
+            texture2DFromCamera.Apply();
+            */
             foreach (TerrainChunk terrainChunk in terrainChunkArray)
             {
                 terrainChunk.UpdateTerrainChunk();
             }
+
         }
     }
 
@@ -142,7 +157,12 @@ public class EndlessTerrain : MonoBehaviour
         public void UpdateTerrainChunk()
         {
             MeshData meshData = mapGenerator.RequestMeshData(position);
-            meshFilter.mesh = meshData.CreateMesh();
+
+            if (meshFilter == null)
+                meshFilter.mesh = meshData.CreateMesh();
+
+            else
+                meshData.UpdateMesh(meshFilter.mesh);
         }
 
         public TerrainChunk(Vector2 coord, int width, int height, Transform parent, Material material)
