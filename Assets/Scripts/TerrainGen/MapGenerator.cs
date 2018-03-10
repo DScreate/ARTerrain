@@ -9,7 +9,7 @@ public class MapGenerator : MonoBehaviour {
     public enum DrawMode { NoiseMap, Mesh };
     public enum ImageMode { PureNoise, FromImage, FromWebcam}
     [TooltipAttribute("Set the name of the device to use.")]
-    public string requestedDeviceName = null;
+    
     public DrawMode drawMode;
 
     public DataForTerrain terrainData;
@@ -31,19 +31,14 @@ public class MapGenerator : MonoBehaviour {
 
     //need to create getters? need to make it so these values can't be changed once they're set in Start()
     public int mapChunkWidth;
-    public int mapChunkHeight;
+    public int mapChunkHeight;    
 
-    public int webcamRequestedWidth;
-    public int webcamRequestedHeight;
 
-    //public Vector2 numberOfChunks;
-
-    public bool autoUpdate;
-
-    public WebCamTexture webcamtex;
+    public bool autoUpdate;    
 
     private float[,] noiseMap;
 
+    public WebcamTextureHandler webcamHandler;
 
     void OnValuesUpdate()
     {
@@ -61,55 +56,38 @@ public class MapGenerator : MonoBehaviour {
     {
         if (imageMode == ImageMode.FromImage || imageMode == ImageMode.FromWebcam)
         {
-            int width;
-            int height;
-
-            if (imageMode == ImageMode.FromWebcam)
+            if(imageMode == ImageMode.FromWebcam)
             {
-                
-                if (!String.IsNullOrEmpty(requestedDeviceName))
-                {
-                    webcamtex = new WebCamTexture(requestedDeviceName, webcamRequestedWidth, webcamRequestedHeight);
-                }
+                webcamHandler = FindObjectOfType<WebcamTextureHandler>();
 
-                else
-                    webcamtex = new WebCamTexture(640, 480);
-                
-                //webcamtex = new WebCamTexture(640, 480);
+                webcamHandler.Initialize();
 
-                Debug.Log("Webcam request width: " + webcamtex.requestedWidth + ". Webcam requested height: " + webcamtex.requestedHeight);
-
-                webcamRequestedWidth = webcamtex.requestedWidth;
-                webcamRequestedHeight = webcamtex.requestedHeight;
-
-                webcamtex.Play();
-
-                width = webcamtex.requestedWidth;
-                height = webcamtex.requestedHeight;
+                mapChunkWidth = webcamHandler.webcamRequestedWidth;
+                mapChunkHeight = webcamHandler.webcamRequestedHeight;
             }
 
             else
             {
-                width = imageTex.width;
-                height = imageTex.height;
+                mapChunkWidth = imageTex.width;
+                mapChunkHeight = imageTex.height;
             }
 
-            while (width > 250 || height > 250)
+            while (mapChunkWidth > 250 || mapChunkHeight > 250)
             {
-                if (width % 2 != 0)
+                if (mapChunkWidth % 2 != 0)
                     Debug.Log("Width is not evenly divisble by 2");
 
-                width /= 2;
+                mapChunkWidth /= 2;
 
-                if (height % 2 != 0)
+                if (mapChunkHeight % 2 != 0)
                     Debug.Log("Height is not evenly divisble by 2");
 
-                height /= 2;         
+                mapChunkHeight /= 2;         
             }
 
             //I forget why, but Sebastion explains in a video that these variables need to be chunk size + 1
-            mapChunkWidth = width + 1;
-            mapChunkHeight = height + 1;            
+            mapChunkWidth = mapChunkWidth + 1;
+            mapChunkHeight = mapChunkHeight + 1;            
         }
     }
 

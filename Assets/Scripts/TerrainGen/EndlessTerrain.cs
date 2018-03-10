@@ -63,8 +63,8 @@ public class EndlessTerrain : MonoBehaviour
 
             else if(mapGenerator.imageMode == MapGenerator.ImageMode.FromWebcam)
             {
-                numberOfChunks.x = Mathf.RoundToInt(mapGenerator.webcamRequestedWidth / chunkWidth);
-                numberOfChunks.y = Mathf.RoundToInt(mapGenerator.webcamRequestedHeight / chunkHeight);
+                numberOfChunks.x = Mathf.RoundToInt(mapGenerator.webcamHandler.webcamRequestedWidth / chunkWidth);
+                numberOfChunks.y = Mathf.RoundToInt(mapGenerator.webcamHandler.webcamRequestedHeight / chunkHeight);
             }
 
             terrainChunkArray = new TerrainChunk[(int)numberOfChunks.y, (int)numberOfChunks.x];
