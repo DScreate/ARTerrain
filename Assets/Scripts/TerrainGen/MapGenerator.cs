@@ -23,14 +23,18 @@ public class MapGenerator : MonoBehaviour {
 
     [Range(0, 1)]
     public float minGreyValue;
+    public float noiseWeight;
 
     public const int mapChunkSize = 241;
     [Range(0,6)]
     public int levelOfDetail;
 
     //need to create getters? need to make it so these values can't be changed once they're set in Start()
-    public int mapChunkWidth = 241;
-    public int mapChunkHeight = 241;
+    public int mapChunkWidth;
+    public int mapChunkHeight;
+
+    public int webcamRequestedWidth;
+    public int webcamRequestedHeight;
 
     //public Vector2 numberOfChunks;
 
@@ -52,55 +56,56 @@ public class MapGenerator : MonoBehaviour {
 
     private void Start()
     {
-        if (imageMode == ImageMode.FromWebcam)
+        if (imageMode == ImageMode.FromImage || imageMode == ImageMode.FromWebcam)
         {
-            if (!String.IsNullOrEmpty(requestedDeviceName))
+            int width;
+            int height;
+
+            if (imageMode == ImageMode.FromWebcam)
             {
-                webcamtex = new WebCamTexture(requestedDeviceName, mapChunkSize, mapChunkSize);
+                /*if (!String.IsNullOrEmpty(requestedDeviceName))
+                {
+                    webcamtex = new WebCamTexture(requestedDeviceName, webcamRequestedWidth, webcamRequestedHeight);
+                }
+
+                else
+                    webcamtex = new WebCamTexture(webcamRequestedWidth, webcamRequestedHeight);*/
+
+                webcamtex = new WebCamTexture(640, 480);
+
+                Debug.Log("Webcam request width: " + webcamtex.requestedWidth + ". Webcam requested height: " + webcamtex.requestedHeight);
+
+                webcamRequestedWidth = webcamtex.requestedWidth;
+                webcamRequestedHeight = webcamtex.requestedHeight;
+
+                webcamtex.Play();
+
+                width = webcamtex.requestedWidth;
+                height = webcamtex.requestedHeight;
             }
 
             else
-                webcamtex = new WebCamTexture(mapChunkSize, mapChunkSize);
-
-            Debug.Log("Webcam width: " + webcamtex.width + ". Webcam height: " + webcamtex.height);
-            webcamtex.Play();        
-        }
-
-        else if(imageMode == ImageMode.FromImage)
-        {
-            int width = imageTex.width;
-            int height = imageTex.height;
-
-            //always have at least 1 chunk
-            //numberOfChunks = new Vector2(1, 1);
-
-            while(width > 250 || height > 250)
             {
-                if(width > 250)
-                {
-                    if (width % 2 != 0)
-                        Debug.Log("Width is not evenly divisble by 2");
+                width = imageTex.width;
+                height = imageTex.height;
+            }
 
-                    width /= 2;
+            while (width > 250 || height > 250)
+            {
+                if (width % 2 != 0)
+                    Debug.Log("Width is not evenly divisble by 2");
 
-                    //increase number of chunks along the x-axis
-                    //numberOfChunks.x++;
-                }
-                if(height > 250)
-                {
-                    if (height % 2 != 0)
-                        Debug.Log("Height is not evenly divisble by 2");
+                width /= 2;
 
-                    height /= 2;
+                if (height % 2 != 0)
+                    Debug.Log("Height is not evenly divisble by 2");
 
-                    //increase number of chunks along the y-axis
-                    //numberOfChunks.y++;
-                }
+                height /= 2;         
             }
 
             //I forget why, but Sebastion explains in a video that these variables need to be chunk size + 1
             mapChunkWidth = width + 1;
-            mapChunkHeight = height + 1;
+            mapChunkHeight = height + 1;            
         }
     }
 
@@ -127,49 +132,59 @@ public class MapGenerator : MonoBehaviour {
         }        
     }
 
-    public MeshData RequestMeshData(Vector2 center)
+    public MeshData RequestMeshData(Vector2 coord)
     {
-        MapData mapData = GenerateMapData(center);
+        MapData mapData = GenerateMapData(coord);
 
         return MeshGenerator.GenerateTerrainMesh(mapData.heightMap, terrainData.meshHeightMultiplier, terrainData.meshHeightCurve, levelOfDetail);
-    }
+    }  
 
-    MapData GenerateMapData(Vector2 center)
+    MapData GenerateMapData(Vector2 coord)
     {
         //Change this so it only create noise map if ImageMode is PureNoise?
-        float[,] noiseMap = Noise.GenerateNoiseMap(mapChunkSize, mapChunkSize, noiseData.seed, noiseData.noiseScale, noiseData.octaves, noiseData.persistance, noiseData.lacunarity, center + noiseData.offset, noiseData.normalizeMode);
+        float[,] noiseMap;
         Color[] colorMap = new Color[mapChunkSize * mapChunkSize];
 
-        if (imageMode == ImageMode.FromWebcam && Application.isPlaying)
+        if(imageMode == ImageMode.PureNoise)
         {
-            Texture2D texture2DFromCamera = new Texture2D(mapChunkSize, mapChunkSize);
+            noiseMap =  Noise.GenerateNoiseMap(mapChunkSize, mapChunkSize, noiseData.seed, noiseData.noiseScale, noiseData.octaves, noiseData.persistance, noiseData.lacunarity, coord + noiseData.offset, noiseData.normalizeMode);
+        }
+
+        else if (imageMode == ImageMode.FromWebcam && Application.isPlaying)
+        {
+            Texture2D texture2DFromCamera = new Texture2D(webcamtex.requestedWidth, webcamtex.requestedHeight);
             
-            for (int y = 0; y < mapChunkSize; y++)
+            for (int y = 0; y < texture2DFromCamera.height; y++)
             {
-                for (int x = 0; x < mapChunkSize; x++)
+                for (int x = 0; x < texture2DFromCamera.height; x++)
                 {
                     texture2DFromCamera.SetPixel(x, y, webcamtex.GetPixel(x, y));
                 }
             }
             texture2DFromCamera.Apply();
 
-            //I want to try removing this next line and just pass in texture2DFromCamera to TextureToNoise and see what happens
-            //Intent: simplify things while I'm trying to figure out how to get the mesh's to only display a portion of the webcam feed
+            //Commented out to simplify things while I'm trying to figure out how to get the mesh's to only display a portion of the webcam feed
             //instead of all of it at once
             //Texture2D noisedTex = TextureGenerator.ApplyNoiseToTexture(texture2DFromCamera, noiseMap, noiseWeight, minGreyValue);
 
             //Need to somehow translate the center + offset in GenerateNoiseMap to the noiseMap generated here
             //noiseMap = TextureGenerator.TextureToNoise(noisedTex);
 
-            noiseMap = TextureGenerator.TextureToNoise(texture2DFromCamera);
+            noiseMap = TextureGenerator.TextureToNoiseChunk(texture2DFromCamera, coord, mapChunkWidth, mapChunkHeight);
         }
 
         else if (imageMode == ImageMode.FromImage && Application.isPlaying)
         {
+            noiseMap = TextureGenerator.TextureToNoiseChunk(imageTex, coord, mapChunkWidth, mapChunkHeight);
+
             //Texture2D noisedTex = TextureGenerator.ApplyNoiseToTexture(imageTex, noiseMap, noiseWeight, minGreyValue);
             //noiseMap = TextureGenerator.TextureToNoise(noisedTex);
-            noiseMap = TextureGenerator.TextureToNoiseAndCrop(imageTex, mapChunkSize, mapChunkSize);
-        }        
+        }   
+        
+        else //added this because it won't let you use noiseMap below otherwise. this should probably be refactored
+        {
+            noiseMap = Noise.GenerateNoiseMap(mapChunkSize, mapChunkSize, noiseData.seed, noiseData.noiseScale, noiseData.octaves, noiseData.persistance, noiseData.lacunarity, coord + noiseData.offset, noiseData.normalizeMode);
+        }
        
         textureData.UpdateMeshHeights(terrainMaterial, terrainData.minHeight, terrainData.maxHeight);
 
@@ -210,13 +225,3 @@ public struct MapData
         this.colorMap = colorMap;
     }
 }
-
-/*
-[System.Serializable]
-public struct TerrainType
-{
-    public string name;
-    public float height;
-    public Color color;
-}
-*/

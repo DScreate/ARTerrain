@@ -11,8 +11,6 @@ public class EndlessTerrain : MonoBehaviour
     //this needs to change, maybe removed. It's used to attach a viewer tranform to the script but we don't have a viwer
     public Transform viewer;
 
-    Vector2 centerOfWorld;
-
     public Material mapMaterial;
 
     public static Vector2 viewerPosition;
@@ -37,7 +35,7 @@ public class EndlessTerrain : MonoBehaviour
     {       
         mapGenerator = FindObjectOfType<MapGenerator>();
 
-        if (mapGenerator.imageMode != MapGenerator.ImageMode.FromImage)
+        if (mapGenerator.imageMode == MapGenerator.ImageMode.PureNoise)
         {
             chunkSize = MapGenerator.mapChunkSize - 1;
 
@@ -49,43 +47,53 @@ public class EndlessTerrain : MonoBehaviour
             InitializeChunks();
         }
 
-        else
+        else if(mapGenerator.imageMode == MapGenerator.ImageMode.FromImage || mapGenerator.imageMode == MapGenerator.ImageMode.FromWebcam)
         {
             //undoing when we added 1 in mapgen
             chunkWidth = mapGenerator.mapChunkWidth - 1;
             chunkHeight = mapGenerator.mapChunkHeight - 1;
 
             //Number of chunks equal to number of times width and height divide into our textures width and height
-            numberOfChunks.x = Mathf.RoundToInt(mapGenerator.imageTex.width / chunkWidth);
-            numberOfChunks.y = Mathf.RoundToInt(mapGenerator.imageTex.height / chunkHeight);
 
-            //centerOfWorld = new Vector2(0, 0);
+            if (mapGenerator.imageMode == MapGenerator.ImageMode.FromImage)
+            {
+                numberOfChunks.x = Mathf.RoundToInt(mapGenerator.imageTex.width / chunkWidth);
+                numberOfChunks.y = Mathf.RoundToInt(mapGenerator.imageTex.height / chunkHeight);
+            }
+            else if(mapGenerator.imageMode == MapGenerator.ImageMode.FromWebcam)
+            {
+                numberOfChunks.x = Mathf.RoundToInt(mapGenerator.webcamRequestedWidth / chunkWidth);
+                numberOfChunks.y = Mathf.RoundToInt(mapGenerator.webcamRequestedHeight / chunkHeight);
+            }
 
-            terrainChunkArray = new TerrainChunk[(int)numberOfChunks.x, (int)numberOfChunks.y];
+            terrainChunkArray = new TerrainChunk[(int)numberOfChunks.y, (int)numberOfChunks.x];
 
-            InitializeChunksForImage();
+            InitializeChunksForImageAndWebcam();
         }
     }
 
     //I think we can get rid of this update method?
     void Update()
-    {        
+    {
         if (mapGenerator.imageMode == MapGenerator.ImageMode.FromWebcam)
-            UpdateVisibleChunks();
+        {
+            foreach (TerrainChunk terrainChunk in terrainChunkArray)
+            {
+                terrainChunk.UpdateTerrainChunk();
+            }
+        }
     }
 
+    //sebastion's method for displaying noise map
     void InitializeChunks()
     {
         int currentChunkCoordX = Mathf.RoundToInt(viewerPosition.x / chunkSize);
         int currentChunkCoordY = Mathf.RoundToInt(viewerPosition.y / chunkSize);
 
-        //for all surrounding chunks
         for (int yOffset = -chunksVisibleInViewDst; yOffset <= chunksVisibleInViewDst; yOffset++)
         {
             for (int xOffset = -chunksVisibleInViewDst; xOffset <= chunksVisibleInViewDst; xOffset++)
             {
-                //position of a terrain chunk surrounding the viewer's terrain chunk?
-                //I think we need to change so that it's iterating through 2D array of chunks (number of chunks in rows and columns) and start from 0,0 and go left to right then go down the rows instead of using negatives and iterating around 0,0
                 Vector2 viewedChunkCoord = new Vector2(currentChunkCoordX + xOffset, currentChunkCoordY + yOffset);
 
                 terrainChunkDictionary.Add(viewedChunkCoord, new TerrainChunk(viewedChunkCoord, chunkSize, transform, mapMaterial));
@@ -93,39 +101,14 @@ public class EndlessTerrain : MonoBehaviour
         }
     }
 
-    void InitializeChunksForImage()
+    void InitializeChunksForImageAndWebcam()
     {
-        /*int currentChunkCoordX = Mathf.RoundToInt(viewerPosition.x / chunkSize);
-        int currentChunkCoordY = Mathf.RoundToInt(viewerPosition.y / chunkSize);
-
-        //for all surrounding chunks
-        for (int yOffset = -chunksVisibleInViewDst; yOffset <= chunksVisibleInViewDst; yOffset++)
+        for(int y = 0; y < numberOfChunks.y; y++)
         {
-            for (int xOffset = -chunksVisibleInViewDst; xOffset <= chunksVisibleInViewDst; xOffset++)
+            for(int x = 0; x < numberOfChunks.x; x++)
             {
-                //position of a terrain chunk surrounding the viewer's terrain chunk?
-                //I think we need to change so that it's iterating through 2D array of chunks (number of chunks in rows and columns) and start from 0,0 and go left to right then go down the rows instead of using negatives and iterating around 0,0
-                Vector2 viewedChunkCoord = new Vector2(currentChunkCoordX + xOffset, currentChunkCoordY + yOffset);
-
-                terrainChunkDictionary.Add(viewedChunkCoord, new TerrainChunk(viewedChunkCoord, chunkSize, transform, mapMaterial));
+                terrainChunkArray[y, x] = new TerrainChunk(new Vector2(x, y), chunkWidth, chunkHeight, transform, mapMaterial);
             }
-        }*/
-
-        for(int x = 0; x < numberOfChunks.x; x ++)
-        {
-            for(int y = 0; y < numberOfChunks.y; y++)
-            {
-                terrainChunkArray[x, y] = new TerrainChunk(new Vector2(x, y), chunkWidth, chunkHeight, transform, mapMaterial);
-            }
-        }
-    }
-
-    //I think the problem is this. Chunks should always be updating when webcam is being used.
-    void UpdateVisibleChunks()
-    {
-        foreach(KeyValuePair<Vector2, TerrainChunk> pair in terrainChunkDictionary) {
-            TerrainChunk terrainChunk = pair.Value;
-            terrainChunk.UpdateTerrainChunk();
         }
     }
 
@@ -134,19 +117,13 @@ public class EndlessTerrain : MonoBehaviour
         GameObject meshObject;
         Vector2 position;
 
-        //don't need? used for enabling/disabling chunks
-       // Bounds bounds;
-
         MeshRenderer meshRenderer;
         MeshFilter meshFilter;
 
-        //MapData mapData;
-
-        //parent is used to make the new planes/chunks children of the viewer. we don't have a viewer so probably don't need this unless we make a game object to be the parent
+        //parent is used to make the new planes/chunks children of the viewer. should change viewer to some other gameObject
         public TerrainChunk(Vector2 coord, int size, Transform parent, Material material)
         {
             position = coord * size;
-            //bounds = new Bounds(position, Vector2.one * size);
             Vector3 positionV3 = new Vector3(position.x, 0, position.y);
 
             meshObject = new GameObject("Terrain Chunk");
@@ -156,8 +133,6 @@ public class EndlessTerrain : MonoBehaviour
 
             meshObject.transform.position = positionV3;
             meshObject.transform.parent = parent;
-
-            //Need to get mapData?
 
             MeshData meshData = mapGenerator.RequestMeshData(position);
 
@@ -174,20 +149,19 @@ public class EndlessTerrain : MonoBehaviour
         {
             position.x = coord.x * width;
             position.y = coord.y * height;
-            //bounds = new Bounds(position, Vector2.one * size);
-            Vector3 positionV3 = new Vector3(position.x, 0, position.y);
 
             meshObject = new GameObject("Terrain Chunk");
             meshRenderer = meshObject.AddComponent<MeshRenderer>();
             meshFilter = meshObject.AddComponent<MeshFilter>();
             meshRenderer.material = material;
 
-            meshObject.transform.position = positionV3;
+            meshObject.transform.position = new Vector3(position.x, 0, position.y);
             meshObject.transform.parent = parent;
 
-            //Need to get mapData?
+            //Something might be off with what I did. I'm not sure why I have to rotate the mesh atm but if I don't it's incorrect.
+            meshObject.transform.Rotate(new Vector3(0, 180, 0));
 
-            MeshData meshData = mapGenerator.RequestMeshData(position);
+            MeshData meshData = mapGenerator.RequestMeshData(coord);
 
             meshFilter.mesh = meshData.CreateMesh();
         }

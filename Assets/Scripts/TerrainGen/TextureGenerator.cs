@@ -88,15 +88,18 @@ public static class TextureGenerator {
         return noiseMap;
     }
 
-    public static float[,] TextureToNoiseAndCrop(Texture2D texture, int mapWidth, int mapHeight)
+    public static float[,] TextureToNoiseChunk(Texture2D texture, Vector2 position, int width, int height)
     {
-        float[,] noiseMap = new float[mapWidth, mapHeight];
+        float[,] noiseMap = new float[width, height];
 
-        for (int y = 0; y < mapHeight; y++)
+        int xOffset = (int)position.x * width;
+        int yOffset = (int)position.y * height;
+
+        for (int y = 0; y < height; y++)
         {
-            for (int x = 0; x < mapWidth; x++)
+            for (int x = 0; x < width; x++)
             {
-                noiseMap[x, y] = texture.GetPixel(x, y).grayscale;
+                noiseMap[x, y] = texture.GetPixel(x + xOffset, y + yOffset).grayscale;
             }
         }
 
