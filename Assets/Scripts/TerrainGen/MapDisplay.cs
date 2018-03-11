@@ -6,7 +6,6 @@ public class MapDisplay : MonoBehaviour {
 
     public Renderer textureRenderer;
     public MeshFilter meshFilter;
-    public MeshRenderer meshRenderer;
 
     public void DrawTexture(Texture2D texture)
     { 
@@ -14,10 +13,8 @@ public class MapDisplay : MonoBehaviour {
         textureRenderer.transform.localScale = new Vector3(texture.width, 1, texture.height);
     }
 
-    public void DrawMesh(MeshData meshData /*, Texture2D texture*/)
+    public void DrawMesh(MeshData meshData)
     {
         meshFilter.sharedMesh = meshData.CreateMesh();
-        //meshRenderer.sharedMaterial.mainTexture = texture;
-       // meshFilter.transform.localScale = Vector3.one * FindObjectOfType<MapGenerator>().terrainData.uniformScale;
     }
 }

@@ -1,0 +1,562 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="bb13e5c0-1a32-43ad-95ad-eae88384e992" name="Default" comment="">
+      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/.idea.ARTerrain/.idea/contentModel.xml" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/.idea.ARTerrain/.idea/indexLayout.xml" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/.idea.ARTerrain/.idea/modules.xml" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/.idea.ARTerrain/.idea/vcs.xml" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/.idea.ARTerrain/riderModule.iml" />
+      <change beforePath="$PROJECT_DIR$/Assets/Materials/Map Mat.mat" afterPath="$PROJECT_DIR$/Assets/Materials/Map Mat.mat" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/TerrainGen/EndlessTerrain.cs" afterPath="$PROJECT_DIR$/Assets/Scripts/TerrainGen/EndlessTerrain.cs" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/TerrainGen/MapDisplay.cs" afterPath="$PROJECT_DIR$/Assets/Scripts/TerrainGen/MapDisplay.cs" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/TerrainGen/MapGenerator.cs" afterPath="$PROJECT_DIR$/Assets/Scripts/TerrainGen/MapGenerator.cs" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/TerrainGen/TextureGenerator.cs" afterPath="$PROJECT_DIR$/Assets/Scripts/TerrainGen/TextureGenerator.cs" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/TerrainGen/WebcamTextureHandler.cs" afterPath="$PROJECT_DIR$/Assets/Scripts/TerrainGen/WebcamTextureController.cs" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/TerrainGen/WebcamTextureHandler.cs.meta" afterPath="$PROJECT_DIR$/Assets/Scripts/TerrainGen/WebcamTextureController.cs.meta" />
+      <change beforePath="$PROJECT_DIR$/Assets/TerrainAssets/DefaultNoise.asset" afterPath="$PROJECT_DIR$/Assets/TerrainAssets/DefaultNoise.asset" />
+      <change beforePath="$PROJECT_DIR$/Assets/TerrainAssets/DefaultTerrain.asset" afterPath="$PROJECT_DIR$/Assets/TerrainAssets/DefaultTerrain.asset" />
+      <change beforePath="$PROJECT_DIR$/Assets/TerrainAssets/DefaultTexture.asset" afterPath="$PROJECT_DIR$/Assets/TerrainAssets/DefaultTexture.asset" />
+      <change beforePath="$PROJECT_DIR$/Assets/_Scenes/TerrainGenTesting.unity" afterPath="$PROJECT_DIR$/Assets/_Scenes/TerrainGenTesting.unity" />
+      <change beforePath="$PROJECT_DIR$/ProjectSettings/ProjectSettings.asset" afterPath="$PROJECT_DIR$/ProjectSettings/ProjectSettings.asset" />
+      <change beforePath="$PROJECT_DIR$/ProjectSettings/ProjectVersion.txt" afterPath="$PROJECT_DIR$/ProjectSettings/ProjectVersion.txt" />
+    </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="TRACKING_ENABLED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="450">
+      <file leaf-file-name="WebcamTextureController.cs" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/Assets/Scripts/TerrainGen/WebcamTextureController.cs">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="590">
+              <caret line="36" column="55" lean-forward="false" selection-start-line="36" selection-start-column="41" selection-end-line="36" selection-end-column="55" />
+              <folding>
+                <marker date="1520726558635" expanded="false" signature="6:32" ph="..." />
+                <marker date="1520726558635" expanded="true" signature="87:1219" ph="{...}" />
+                <marker date="1520726558635" expanded="true" signature="278:324" ph="{...}" />
+                <marker date="1520726558635" expanded="true" signature="354:1217" ph="{...}" />
+                <marker date="1520726558635" expanded="true" signature="473:814" ph="{...}" />
+                <marker date="1520726558635" expanded="true" signature="536:804" ph="{...}" />
+                <marker date="1520726558635" expanded="true" signature="610:790" ph="{...}" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>mapWidth</find>
+      <find>chunksVisibleInViewDst</find>
+      <find>normalize</find>
+    </findStrings>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/TerrainGen/MapGenerator.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/TerrainGen/MapDisplay.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/TerrainGen/EndlessTerrain.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/TerrainGen/TextureGenerator.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/TerrainGen/WebcamTextureController.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/Data/UpdatableData.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/Data/DataForTerrain.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/TerrainGen/Noise.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/Data/NoiseData.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/Data/TextureData.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Editor/MapGeneratorEditor.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/TerrainGen/MeshGenerator.cs" root0="FORCE_HIGHLIGHTING" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/Assets/Scripts/TerrainGen/MeshGenerator.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/TerrainGen/EndlessTerrain.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/TerrainGen/MapGenerator.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/TerrainGen/MapDisplay.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/TerrainGen/TextureGenerator.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/TerrainGen/WebcamTextureController.cs" />
+      </list>
+    </option>
+  </component>
+  <component name="JsBuildToolGruntFileManager" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsBuildToolPackageJson" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsGulpfileManager">
+    <detection-done>true</detection-done>
+    <sorting>DEFINITION_ORDER</sorting>
+  </component>
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="113" />
+    <option name="y" value="77" />
+    <option name="width" value="1400" />
+    <option name="height" value="1000" />
+  </component>
+  <component name="ProjectView">
+    <navigator currentView="SolutionExplorer" proportions="" version="1">
+      <flattenPackages />
+      <showMembers />
+      <showModules />
+      <showLibraryContents />
+      <hideEmptyPackages />
+      <abbreviatePackageNames />
+      <autoscrollToSource />
+      <autoscrollFromSource />
+      <sortByType />
+      <manualOrder />
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="Scratches" />
+      <pane id="SolutionExplorer">
+        <subPane>
+          <expand>
+            <path>
+              <item name="" type="13324e5d:SolutionExplorerViewPane$ProjectViewPaneTreeStructure$createRoot$1" />
+              <item name="ARTerrain (3 projects)" type="977d5f41:SolutionExplorerNodeRider" />
+            </path>
+            <path>
+              <item name="" type="13324e5d:SolutionExplorerViewPane$ProjectViewPaneTreeStructure$createRoot$1" />
+              <item name="ARTerrain (3 projects)" type="977d5f41:SolutionExplorerNodeRider" />
+              <item name="Assembly-CSharp" type="977d5f41:SolutionExplorerNodeRider" />
+            </path>
+            <path>
+              <item name="" type="13324e5d:SolutionExplorerViewPane$ProjectViewPaneTreeStructure$createRoot$1" />
+              <item name="ARTerrain (3 projects)" type="977d5f41:SolutionExplorerNodeRider" />
+              <item name="Assembly-CSharp" type="977d5f41:SolutionExplorerNodeRider" />
+              <item name="Assets" type="977d5f41:SolutionExplorerNodeRider" />
+            </path>
+            <path>
+              <item name="" type="13324e5d:SolutionExplorerViewPane$ProjectViewPaneTreeStructure$createRoot$1" />
+              <item name="ARTerrain (3 projects)" type="977d5f41:SolutionExplorerNodeRider" />
+              <item name="Assembly-CSharp" type="977d5f41:SolutionExplorerNodeRider" />
+              <item name="Assets" type="977d5f41:SolutionExplorerNodeRider" />
+              <item name="Scripts" type="977d5f41:SolutionExplorerNodeRider" />
+            </path>
+            <path>
+              <item name="" type="13324e5d:SolutionExplorerViewPane$ProjectViewPaneTreeStructure$createRoot$1" />
+              <item name="ARTerrain (3 projects)" type="977d5f41:SolutionExplorerNodeRider" />
+              <item name="Assembly-CSharp" type="977d5f41:SolutionExplorerNodeRider" />
+              <item name="Assets" type="977d5f41:SolutionExplorerNodeRider" />
+              <item name="Scripts" type="977d5f41:SolutionExplorerNodeRider" />
+              <item name="Data" type="977d5f41:SolutionExplorerNodeRider" />
+            </path>
+            <path>
+              <item name="" type="13324e5d:SolutionExplorerViewPane$ProjectViewPaneTreeStructure$createRoot$1" />
+              <item name="ARTerrain (3 projects)" type="977d5f41:SolutionExplorerNodeRider" />
+              <item name="Assembly-CSharp" type="977d5f41:SolutionExplorerNodeRider" />
+              <item name="Assets" type="977d5f41:SolutionExplorerNodeRider" />
+              <item name="Scripts" type="977d5f41:SolutionExplorerNodeRider" />
+              <item name="TerrainGen" type="977d5f41:SolutionExplorerNodeRider" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+        <option name="show-file-system" value="false" />
+        <option name="show-all-items" value="false" />
+      </pane>
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="WebServerToolWindowFactoryState" value="false" />
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager">
+    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" />
+  </component>
+  <component name="ShelveChangesManager" show_recycled="false">
+    <option name="remove_strategy" value="false" />
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="bb13e5c0-1a32-43ad-95ad-eae88384e992" name="Default" comment="" />
+      <created>1520720217405</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1520720217405</updated>
+      <workItem from="1520720229030" duration="570000" />
+      <workItem from="1520720845015" duration="5829000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TimeTrackingManager">
+    <option name="totallyTimeSpent" value="6399000" />
+  </component>
+  <component name="TodoView">
+    <todo-panel id="selected-file">
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="true" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="-11" y="-11" width="1942" height="1102" extended-state="6" />
+    <layout>
+      <window_info id="PlantUML" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Errors In Solution" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Unit Tests" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="NuGet" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.23072916" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Docker" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Build" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+    </layout>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager />
+    <watches-manager />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/Assets/Scripts/TerrainGen/WebcamTextureController.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="220">
+          <caret line="11" column="0" lean-forward="false" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
+          <folding>
+            <marker date="1520726558635" expanded="false" signature="6:32" ph="..." />
+            <marker date="1520726558635" expanded="true" signature="87:1219" ph="{...}" />
+            <marker date="1520726558635" expanded="true" signature="278:324" ph="{...}" />
+            <marker date="1520726558635" expanded="true" signature="354:1217" ph="{...}" />
+            <marker date="1520726558635" expanded="true" signature="473:814" ph="{...}" />
+            <marker date="1520726558635" expanded="true" signature="536:804" ph="{...}" />
+            <marker date="1520726558635" expanded="true" signature="610:790" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Assets/Scripts/TerrainGen/EndlessTerrain.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1408">
+          <caret line="66" column="74" lean-forward="false" selection-start-line="66" selection-start-column="74" selection-end-line="66" selection-end-column="74" />
+          <folding>
+            <marker date="1520725603830" expanded="false" signature="6:78" ph="..." />
+            <marker date="1520725603830" expanded="true" signature="123:3950" ph="{...}" />
+            <marker date="1520725603830" expanded="true" signature="932:1925" ph="{...}" />
+            <marker date="1520725603830" expanded="true" signature="1192:1308" ph="{...}" />
+            <marker date="1520725603830" expanded="true" signature="1386:1554" ph="{...}" />
+            <marker date="1520725603830" expanded="true" signature="1632:1788" ph="{...}" />
+            <marker date="1520725603830" expanded="true" signature="1996:2249" ph="{...}" />
+            <marker date="1520725603830" expanded="true" signature="2075:2243" ph="{...}" />
+            <marker date="1520725603830" expanded="true" signature="2154:2233" ph="{...}" />
+            <marker date="1520725603830" expanded="true" signature="2278:2570" ph="{...}" />
+            <marker date="1520725603830" expanded="true" signature="2334:2564" ph="{...}" />
+            <marker date="1520725603830" expanded="true" signature="2398:2554" ph="{...}" />
+            <marker date="1520725603830" expanded="true" signature="2601:3948" ph="{...}" />
+            <marker date="1520725603830" expanded="true" signature="2835:3634" ph="{...}" />
+            <marker date="1520725603830" expanded="true" signature="3684:3942" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Assets/Scripts/TerrainGen/MapGenerator.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2838">
+          <caret line="131" column="0" lean-forward="false" selection-start-line="131" selection-start-column="0" selection-end-line="131" selection-end-column="68" />
+          <folding>
+            <marker date="1520725590699" expanded="false" signature="6:54" ph="..." />
+            <marker date="1520725590699" expanded="true" signature="133:5924" ph="{...}" />
+            <marker date="1520725590699" expanded="true" signature="554:632" ph="/* [Range(0, 1)] ... */" />
+            <marker date="1520725590699" expanded="true" signature="956:1006" ph="{...}" />
+            <marker date="1520725590699" expanded="true" signature="1037:1088" ph="{...}" />
+            <marker date="1520725590699" expanded="true" signature="1113:1158" ph="{...}" />
+            <marker date="1520725590699" expanded="true" signature="1184:1230" ph="{...}" />
+            <marker date="1520725590699" expanded="true" signature="1408:1507" ph="{...}" />
+            <marker date="1520725590699" expanded="true" signature="1450:1501" ph="{...}" />
+            <marker date="1520725590699" expanded="true" signature="1541:1607" ph="{...}" />
+            <marker date="1520725590699" expanded="true" signature="1633:3150" ph="{...}" />
+            <marker date="1520725590699" expanded="true" signature="1722:3144" ph="{...}" />
+            <marker date="1520725590699" expanded="true" signature="1782:2218" ph="{...}" />
+            <marker date="1520725590699" expanded="true" signature="2236:2467" ph="{...}" />
+            <marker date="1520725590699" expanded="true" signature="2532:2916" ph="{...}" />
+            <marker date="1520725590699" expanded="true" signature="3185:3770" ph="{...}" />
+            <marker date="1520725590699" expanded="true" signature="3355:3458" ph="{...}" />
+            <marker date="1520725590699" expanded="true" signature="3502:3756" ph="{...}" />
+            <marker date="1520725590699" expanded="true" signature="3822:4018" ph="{...}" />
+            <marker date="1520725590699" expanded="true" signature="4063:5356" ph="{...}" />
+            <marker date="1520725590699" expanded="true" signature="4114:4443" ph="{...}" />
+            <marker date="1520725590699" expanded="true" signature="4520:4649" ph="{...}" />
+            <marker date="1520725590699" expanded="true" signature="4727:5013" ph="{...}" />
+            <marker date="1520725590699" expanded="true" signature="5036:5214" ph="{...}" />
+            <marker date="1520725590699" expanded="true" signature="5387:5922" ph="{...}" />
+            <marker date="1520725590699" expanded="true" signature="5426:5564" ph="{...}" />
+            <marker date="1520725590699" expanded="true" signature="5595:5729" ph="{...}" />
+            <marker date="1520725590699" expanded="true" signature="5762:5916" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Assets/Editor/MapGeneratorEditor.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="286">
+          <caret line="16" column="0" lean-forward="false" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
+          <folding>
+            <marker date="1520719816530" expanded="false" signature="6:97" ph="..." />
+            <marker date="1520719816530" expanded="true" signature="179:551" ph="{...}" />
+            <marker date="1520719816530" expanded="true" signature="223:549" ph="{...}" />
+            <marker date="1520719816530" expanded="true" signature="318:443" ph="{...}" />
+            <marker date="1520719816530" expanded="true" signature="363:433" ph="{...}" />
+            <marker date="1520719816530" expanded="true" signature="485:543" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Assets/Scripts/TerrainGen/EndlessTerrain.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-61">
+          <caret line="80" column="13" lean-forward="false" selection-start-line="80" selection-start-column="13" selection-end-line="80" selection-end-column="13" />
+          <folding>
+            <marker date="1520725603830" expanded="false" signature="6:78" ph="..." />
+            <marker date="1520725603830" expanded="true" signature="123:3950" ph="{...}" />
+            <marker date="1520725603830" expanded="true" signature="932:1925" ph="{...}" />
+            <marker date="1520725603830" expanded="true" signature="1192:1308" ph="{...}" />
+            <marker date="1520725603830" expanded="true" signature="1386:1554" ph="{...}" />
+            <marker date="1520725603830" expanded="true" signature="1632:1788" ph="{...}" />
+            <marker date="1520725603830" expanded="true" signature="1996:2249" ph="{...}" />
+            <marker date="1520725603830" expanded="true" signature="2075:2243" ph="{...}" />
+            <marker date="1520725603830" expanded="true" signature="2154:2233" ph="{...}" />
+            <marker date="1520725603830" expanded="true" signature="2278:2570" ph="{...}" />
+            <marker date="1520725603830" expanded="true" signature="2334:2564" ph="{...}" />
+            <marker date="1520725603830" expanded="true" signature="2398:2554" ph="{...}" />
+            <marker date="1520725603830" expanded="true" signature="2601:3948" ph="{...}" />
+            <marker date="1520725603830" expanded="true" signature="2835:3634" ph="{...}" />
+            <marker date="1520725603830" expanded="true" signature="3684:3942" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Assets/Scripts/TerrainGen/MapDisplay.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="110">
+          <caret line="7" column="33" lean-forward="false" selection-start-line="7" selection-start-column="33" selection-end-line="7" selection-end-column="33" />
+          <folding>
+            <marker date="1520725688229" expanded="false" signature="6:78" ph="..." />
+            <marker date="1520725688229" expanded="true" signature="120:524" ph="{...}" />
+            <marker date="1520725688229" expanded="true" signature="241:410" ph="{...}" />
+            <marker date="1520725688229" expanded="true" signature="455:522" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Assets/Scripts/TerrainGen/Noise.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <marker date="1520458131767" expanded="false" signature="6:78" ph="..." />
+            <marker date="1520458131767" expanded="true" signature="106:2953" ph="{...}" />
+            <marker date="1520458131767" expanded="true" signature="349:2951" ph="{...}" />
+            <marker date="1520458131767" expanded="true" signature="664:962" ph="{...}" />
+            <marker date="1520458131767" expanded="true" signature="987:1036" ph="{...}" />
+            <marker date="1520458131767" expanded="true" signature="1261:2342" ph="{...}" />
+            <marker date="1520458131767" expanded="true" signature="1318:2332" ph="{...}" />
+            <marker date="1520458131767" expanded="true" signature="1485:1994" ph="{...}" />
+            <marker date="1520458131767" expanded="true" signature="2045:2131" ph="{...}" />
+            <marker date="1520458131767" expanded="true" signature="2186:2272" ph="{...}" />
+            <marker date="1520458131767" expanded="true" signature="2387:2918" ph="{...}" />
+            <marker date="1520458131767" expanded="true" signature="2444:2908" ph="{...}" />
+            <marker date="1520458131767" expanded="true" signature="2516:2656" ph="{...}" />
+            <marker date="1520458131767" expanded="true" signature="2677:2894" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Assets/Scripts/TerrainGen/TextureGenerator.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="836">
+          <caret line="70" column="2" lean-forward="false" selection-start-line="70" selection-start-column="2" selection-end-line="70" selection-end-column="2" />
+          <folding>
+            <marker date="1520725899344" expanded="false" signature="6:78" ph="..." />
+            <marker date="1520725899344" expanded="true" signature="117:3378" ph="{...}" />
+            <marker date="1520725899344" expanded="true" signature="213:477" ph="{...}" />
+            <marker date="1520725899344" expanded="true" signature="285:384" ph="{...}" />
+            <marker date="1520725899344" expanded="true" signature="547:995" ph="{...}" />
+            <marker date="1520725899344" expanded="true" signature="738:927" ph="{...}" />
+            <marker date="1520725899344" expanded="true" signature="792:917" ph="{...}" />
+            <marker date="1520725899344" expanded="true" signature="996:2321" ph="/* public static Texture2D ApplyNoiseToTexture(Texture2D texture, float[,] noiseMap, float noiseWeight, float min ... */" />
+            <marker date="1520725899344" expanded="true" signature="2428:2837" ph="{...}" />
+            <marker date="1520725899344" expanded="true" signature="2626:2805" ph="{...}" />
+            <marker date="1520725899344" expanded="true" signature="2680:2795" ph="{...}" />
+            <marker date="1520725899344" expanded="true" signature="2961:3376" ph="{...}" />
+            <marker date="1520725899344" expanded="true" signature="3159:3344" ph="{...}" />
+            <marker date="1520725899344" expanded="true" signature="3213:3334" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Assets/Scripts/TerrainGen/MeshGenerator.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="352">
+          <caret line="55" column="24" lean-forward="false" selection-start-line="55" selection-start-column="24" selection-end-line="55" selection-end-column="24" />
+          <folding>
+            <marker date="1520723818458" expanded="true" signature="54:1445" ph="{...}" />
+            <marker date="1520723818458" expanded="true" signature="194:1443" ph="{...}" />
+            <marker date="1520723818458" expanded="true" signature="699:1411" ph="{...}" />
+            <marker date="1520723818458" expanded="true" signature="782:1401" ph="{...}" />
+            <marker date="1520723818458" expanded="true" signature="1091:1355" ph="{...}" />
+            <marker date="1520723818458" expanded="true" signature="1468:2500" ph="{...}" />
+            <marker date="1520723818458" expanded="true" signature="1631:1819" ph="{...}" />
+            <marker date="1520723818458" expanded="true" signature="1869:2028" ph="{...}" />
+            <marker date="1520723818458" expanded="true" signature="2126:2319" ph="{...}" />
+            <marker date="1520723818458" expanded="true" signature="2358:2498" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Assets/Scripts/Data/DataForTerrain.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <marker date="1520458131738" expanded="false" signature="6:78" ph="..." />
+            <marker date="1520458131738" expanded="true" signature="104:697" ph="{...}" />
+            <marker date="1520458131738" expanded="true" signature="178:695" ph="{...}" />
+            <marker date="1520458131738" expanded="true" signature="349:503" ph="{...}" />
+            <marker date="1520458131738" expanded="true" signature="375:493" ph="{...}" />
+            <marker date="1520458131738" expanded="true" signature="535:689" ph="{...}" />
+            <marker date="1520458131738" expanded="true" signature="561:679" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Assets/Scripts/Data/NoiseData.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <marker date="1520719816536" expanded="false" signature="6:78" ph="..." />
+            <marker date="1520719816536" expanded="true" signature="104:666" ph="{...}" />
+            <marker date="1520719816536" expanded="true" signature="173:664" ph="{...}" />
+            <marker date="1520719816536" expanded="true" signature="484:658" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Assets/Scripts/Data/TextureData.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-642">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <marker date="1520640661450" expanded="false" signature="6:97" ph="..." />
+            <marker date="1520640661450" expanded="true" signature="123:2399" ph="{...}" />
+            <marker date="1520640661450" expanded="true" signature="194:2397" ph="{...}" />
+            <marker date="1520640661450" expanded="true" signature="452:1266" ph="{...}" />
+            <marker date="1520640661450" expanded="true" signature="1357:1567" ph="{...}" />
+            <marker date="1520640661450" expanded="true" signature="1634:2011" ph="{...}" />
+            <marker date="1520640661450" expanded="true" signature="1823:1934" ph="{...}" />
+            <marker date="1520640661450" expanded="true" signature="2069:2391" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Assets/Scripts/Data/UpdatableData.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <marker date="1520719816537" expanded="false" signature="6:78" ph="..." />
+            <marker date="1520719816537" expanded="true" signature="104:666" ph="{...}" />
+            <marker date="1520719816537" expanded="true" signature="156:664" ph="{...}" />
+            <marker date="1520719816537" expanded="true" signature="287:442" ph="{...}" />
+            <marker date="1520719816537" expanded="true" signature="325:432" ph="{...}" />
+            <marker date="1520719816537" expanded="true" signature="487:658" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Assets/Scripts/TerrainGen/MapGenerator.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="283">
+          <caret line="150" column="225" lean-forward="false" selection-start-line="150" selection-start-column="216" selection-end-line="150" selection-end-column="225" />
+          <folding>
+            <marker date="1520725590699" expanded="false" signature="6:54" ph="..." />
+            <marker date="1520725590699" expanded="true" signature="133:5924" ph="{...}" />
+            <marker date="1520725590699" expanded="true" signature="554:632" ph="/* [Range(0, 1)] ... */" />
+            <marker date="1520725590699" expanded="true" signature="956:1006" ph="{...}" />
+            <marker date="1520725590699" expanded="true" signature="1037:1088" ph="{...}" />
+            <marker date="1520725590699" expanded="true" signature="1113:1158" ph="{...}" />
+            <marker date="1520725590699" expanded="true" signature="1184:1230" ph="{...}" />
+            <marker date="1520725590699" expanded="true" signature="1408:1507" ph="{...}" />
+            <marker date="1520725590699" expanded="true" signature="1450:1501" ph="{...}" />
+            <marker date="1520725590699" expanded="true" signature="1541:1607" ph="{...}" />
+            <marker date="1520725590699" expanded="true" signature="1633:3150" ph="{...}" />
+            <marker date="1520725590699" expanded="true" signature="1722:3144" ph="{...}" />
+            <marker date="1520725590699" expanded="true" signature="1782:2218" ph="{...}" />
+            <marker date="1520725590699" expanded="true" signature="2236:2467" ph="{...}" />
+            <marker date="1520725590699" expanded="true" signature="2532:2916" ph="{...}" />
+            <marker date="1520725590699" expanded="true" signature="3185:3770" ph="{...}" />
+            <marker date="1520725590699" expanded="true" signature="3355:3458" ph="{...}" />
+            <marker date="1520725590699" expanded="true" signature="3502:3756" ph="{...}" />
+            <marker date="1520725590699" expanded="true" signature="3822:4018" ph="{...}" />
+            <marker date="1520725590699" expanded="true" signature="4063:5356" ph="{...}" />
+            <marker date="1520725590699" expanded="true" signature="4114:4443" ph="{...}" />
+            <marker date="1520725590699" expanded="true" signature="4520:4649" ph="{...}" />
+            <marker date="1520725590699" expanded="true" signature="4727:5013" ph="{...}" />
+            <marker date="1520725590699" expanded="true" signature="5036:5214" ph="{...}" />
+            <marker date="1520725590699" expanded="true" signature="5387:5922" ph="{...}" />
+            <marker date="1520725590699" expanded="true" signature="5426:5564" ph="{...}" />
+            <marker date="1520725590699" expanded="true" signature="5595:5729" ph="{...}" />
+            <marker date="1520725590699" expanded="true" signature="5762:5916" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Assets/Scripts/TerrainGen/WebcamTextureController.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="590">
+          <caret line="36" column="55" lean-forward="false" selection-start-line="36" selection-start-column="41" selection-end-line="36" selection-end-column="55" />
+          <folding>
+            <marker date="1520726558635" expanded="false" signature="6:32" ph="..." />
+            <marker date="1520726558635" expanded="true" signature="87:1219" ph="{...}" />
+            <marker date="1520726558635" expanded="true" signature="278:324" ph="{...}" />
+            <marker date="1520726558635" expanded="true" signature="354:1217" ph="{...}" />
+            <marker date="1520726558635" expanded="true" signature="473:814" ph="{...}" />
+            <marker date="1520726558635" expanded="true" signature="536:804" ph="{...}" />
+            <marker date="1520726558635" expanded="true" signature="610:790" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+  </component>
+</project>

@@ -33,7 +33,7 @@ public static class TextureGenerator {
 
         return TextureFromColorMap(colorMap, width, height);
     }
-
+/*
     public static Texture2D ApplyNoiseToTexture(Texture2D texture, float[,] noiseMap, float noiseWeight, float minGreyValue)
     {
         Color[] noisePixels = new Color[noiseMap.GetLength(0) * noiseMap.GetLength(1)];
@@ -68,26 +68,7 @@ public static class TextureGenerator {
 
         return newTex;
     }
-
-    public static float[,] TextureToNoise(Texture2D texture)
-    {
-
-        int width = texture.width;
-        int height = texture.height;
-
-        float[,] noiseMap = new float[width, height];
-
-        for (int y = 0; y < height; y++)
-        {
-            for (int x = 0; x < width; x++)
-            {
-                noiseMap[x, y] = texture.GetPixel(x, y).grayscale;
-            }
-        }
-
-        return noiseMap;
-    }
-
+*/
     public static float[,] TextureToNoiseChunk(Texture2D texture, Vector2 position, int width, int height)
     {
         float[,] noiseMap = new float[width, height];
