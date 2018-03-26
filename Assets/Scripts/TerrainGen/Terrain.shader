@@ -12,7 +12,8 @@
 		#pragma surface surf Standard fullforwardshadows
 
 		// Use shader model 3.0 target, to get nicer looking lighting
-		#pragma target 3.0
+			//Changed to 3.5 to fix build error
+		#pragma target 3.5
 
 		const static int maxLayerCount = 15;
 		const static float epsilon = 1E-4;

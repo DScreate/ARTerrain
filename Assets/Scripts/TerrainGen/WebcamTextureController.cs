@@ -5,8 +5,8 @@ public class WebcamTextureController : MonoBehaviour {
 
     public string requestedDeviceName;
 
-    public int webcamRequestedWidth;
-    public int webcamRequestedHeight;
+    public int webcamRequestedWidth = 640;
+    public int webcamRequestedHeight = 480;
 
     private WebCamTexture webcamtex;
 
@@ -34,8 +34,8 @@ public class WebcamTextureController : MonoBehaviour {
         if (webcamtex == null)
             webcamtex = new WebCamTexture(webcamRequestedWidth, webcamRequestedHeight);        
 
-        webcamRequestedWidth = webcamtex.requestedWidth;
-        webcamRequestedHeight = webcamtex.requestedHeight;
+        //webcamRequestedWidth = webcamtex.requestedWidth;
+        //webcamRequestedHeight = webcamtex.requestedHeight;
 
         webcamtex.Play();
 

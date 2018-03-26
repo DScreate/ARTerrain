@@ -18,7 +18,7 @@ public class MapGenerator : MonoBehaviour {
 
     public Material terrainMaterial;
 
-    public ImageMode imageMode;
+    public ImageMode imageMode = ImageMode.FromWebcam;
     public Texture2D imageTex;
 
     /*[Range(0, 1)]
