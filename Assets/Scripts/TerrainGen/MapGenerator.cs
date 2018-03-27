@@ -116,7 +116,9 @@ public class MapGenerator : MonoBehaviour {
 
             //I forget why, but Sebastion explains in a video that these variables need to be chunk size + 1
             mapChunkWidth = mapChunkWidth + 1;
-            mapChunkHeight = mapChunkHeight + 1;            
+            mapChunkHeight = mapChunkHeight + 1;
+
+            textureData.ApplyToMaterial(terrainMaterial);
         }
     }
 

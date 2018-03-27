@@ -36,7 +36,6 @@ namespace TerrainGenData
 
             material.SetFloat("minHeight",minHeight);
             material.SetFloat("maxHeight",maxHeight);
-
         }
 
         Texture2DArray GenerateTextureArray(Texture2D[] textures)
