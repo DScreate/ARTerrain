@@ -58,7 +58,7 @@ public class MapGenerator : MonoBehaviour {
 
     public bool autoUpdate;    
 
-    static WebcamTextureController webcamController;
+    public static WebcamTextureController webcamController;
 
     private float[,] noiseMap;
     private float[,] heightMap;

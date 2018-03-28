@@ -63,12 +63,15 @@ public class EndlessTerrain : MonoBehaviour
 
     //I think we can get rid of this update method?
     void Update()
-    {
+    {      
         if (mapGenerator.imageMode == MapGenerator.ImageMode.FromWebcam)
         {
-            foreach (TerrainChunk terrainChunk in terrainChunkArray)
+            if (MapGenerator.webcamController.Webcamtex.didUpdateThisFrame)
             {
-                terrainChunk.UpdateTerrainChunk();
+                foreach (TerrainChunk terrainChunk in terrainChunkArray)
+                {
+                    terrainChunk.UpdateTerrainChunk();
+                }
             }
         }
     }
