@@ -81,7 +81,7 @@ public class MapGenerator : MonoBehaviour {
         {
             if(imageMode == ImageMode.FromWebcam)
             {
-                webcamController = FindObjectOfType<WebcamTextureController>();
+                webcamController = gameObject.GetComponent(typeof(WebcamTextureController)) as WebcamTextureController;
 
                 webcamController.Initialize();
 
@@ -160,8 +160,9 @@ public class MapGenerator : MonoBehaviour {
 
         else if (imageMode == ImageMode.FromWebcam && Application.isPlaying)
         {
-            noiseMap = TextureGenerator.WebcamTextureToNoiseChunk(webcamController.Webcamtex, coord, mapChunkWidth, mapChunkHeight);
-            noiseMap = TextureGenerator.WebcamTextureToNoiseChunk(webcamController.Webcamtex, coord, mapChunkWidth, mapChunkHeight);
+            noiseMap = TextureGenerator.WebcamTextureToNoiseChunk(webcamController.WebcamTex, coord, mapChunkWidth, mapChunkHeight);
+            //noiseMap = TextureGenerator.WebcamTextureToNoiseChunk(webcamController.WebcamTex, coord, mapChunkWidth, mapChunkHeight);
+            //noiseMap = TextureGenerator.TextureToNoiseChunk(FindObjectOfType<FaceDetection>().testTexture, coord, mapChunkWidth, mapChunkHeight);
         }
         
          else

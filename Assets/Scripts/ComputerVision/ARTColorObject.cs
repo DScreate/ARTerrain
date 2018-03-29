@@ -3,7 +3,7 @@ using System.Collections;
 
 using OpenCVForUnity;
 
-namespace ColorTracking
+namespace ComputerVision
 {
     public class ARTColor
     {

@@ -12,12 +12,12 @@ public class MenuController : MonoBehaviour {
 
     public void OnPlayButtonClick()
     {
-        webcamController.Webcamtex.Play();
+        webcamController.WebcamTex.Play();
     }
 
     public void OnPauseButtonClick()
     {
-        webcamController.Webcamtex.Pause();
+        webcamController.WebcamTex.Pause();
     }
 
     public void OnChangeCameraButtonClick()

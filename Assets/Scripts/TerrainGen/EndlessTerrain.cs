@@ -21,7 +21,7 @@ public class EndlessTerrain : MonoBehaviour
 
     int chunksVisibleInViewDst;
 
-    Vector2 numberOfChunks;
+    public Vector2 numberOfChunks;
 
     Dictionary<Vector2, TerrainChunk> terrainChunkDictionary = new Dictionary<Vector2, TerrainChunk>();
 
@@ -30,10 +30,13 @@ public class EndlessTerrain : MonoBehaviour
     //don't think we need, sebastion uses to remove chunks that are no longer visible
     List<TerrainChunk> terrainChunksVisibleLastUpdate = new List<TerrainChunk>();
 
+    WebcamTextureController webcamController;
+
     void Start()
     {       
         mapGenerator = FindObjectOfType<MapGenerator>();
-        
+        webcamController = gameObject.GetComponent<WebcamTextureController>();
+
         chunkWidth = mapGenerator.MapChunkWidth - 1;
         chunkHeight = mapGenerator.MapChunkHeight - 1;
 
@@ -66,7 +69,7 @@ public class EndlessTerrain : MonoBehaviour
     {      
         if (mapGenerator.imageMode == MapGenerator.ImageMode.FromWebcam)
         {
-            if (MapGenerator.webcamController.Webcamtex.didUpdateThisFrame)
+            if (webcamController.DidUpdateThisFrame())
             {
                 foreach (TerrainChunk terrainChunk in terrainChunkArray)
                 {

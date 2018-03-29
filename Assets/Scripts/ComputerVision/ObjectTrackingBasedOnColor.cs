@@ -4,7 +4,7 @@ using UnityEngine;
 using OpenCVForUnity;
 using System;
 
-namespace ColorTracking
+namespace ComputerVision
 {
     public class ObjectTrackingBasedOnColor
     {
