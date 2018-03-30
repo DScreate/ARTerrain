@@ -15,7 +15,7 @@ public class FaceDetection : MonoBehaviour {
     /// <summary>
     /// The texture.
     /// </summary>
-    public Texture2D testTexture;
+    public Texture2D faceTexture;
 
     /// <summary>
     /// The cascade.
@@ -53,7 +53,7 @@ public class FaceDetection : MonoBehaviour {
         int width = webcamController.WebcamTex.width;
         int height = webcamController.WebcamTex.height;
 
-        testTexture = new Texture2D(width, height, TextureFormat.RGBA32, false);
+        faceTexture = new Texture2D(width, height, TextureFormat.RGBA32, false);
 
         grayscale = new Mat(height, width, CvType.CV_8UC1);
 
@@ -76,16 +76,14 @@ public class FaceDetection : MonoBehaviour {
         webcamController.Initialize();        
     }
 
-    // Update is called once per frame
-    void Update()
+    public void UpdateFaceTexture(bool equalize, bool denoise)
     {
         if (webcamController.DidUpdateThisFrame())
         {
-            Mat rgbaMat = webcamController.WebcamMat;
+            Mat rgbaMat = webcamController.WebcamMat;            
 
-            //Photo.fastNlMeansDenoising(rgbaMat, rgbaMat);
-            Imgproc.cvtColor(rgbaMat, grayscale, Imgproc.COLOR_RGBA2GRAY);
-            Imgproc.equalizeHist(grayscale, grayscale);
+            Imgproc.cvtColor(rgbaMat, grayscale, Imgproc.COLOR_RGB2GRAY);            
+            Imgproc.equalizeHist(grayscale, grayscale);           
 
             if (cascade != null)
                 cascade.detectMultiScale(grayscale, faces, 1.1, 2, 2, // TODO: objdetect.CV_HAAR_SCALE_IMAGE
@@ -93,7 +91,19 @@ public class FaceDetection : MonoBehaviour {
 
             faceLocations = faces.toArray();
 
-            Utils.matToTexture2D(grayscale, testTexture, webcamController.Colors);
+            if (denoise)
+                Photo.fastNlMeansDenoising(grayscale, grayscale);
+
+            for (int i = 0; i < faceLocations.Length; i++)
+            {
+                Imgproc.rectangle(grayscale, new Point(faceLocations[i].x, faceLocations[i].y), new Point(faceLocations[i].x + faceLocations[i].width, faceLocations[i].y + faceLocations[i].height), new Scalar(255, 255, 255, 255), 5);
+            }
+
+            if (equalize)
+                Utils.matToTexture2D(grayscale, faceTexture, webcamController.Colors);
+
+            else
+                Utils.matToTexture2D(rgbaMat, faceTexture, webcamController.Colors);
         }
     }
 

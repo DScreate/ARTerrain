@@ -64,15 +64,15 @@ public class EndlessTerrain : MonoBehaviour
         
     }
 
-    //I think we can get rid of this update method?
     void Update()
     {      
         if (mapGenerator.imageMode == MapGenerator.ImageMode.FromWebcam)
         {
             if (webcamController.DidUpdateThisFrame())
             {
+                FindObjectOfType<FaceDetection>().UpdateFaceTexture(true, false);
                 foreach (TerrainChunk terrainChunk in terrainChunkArray)
-                {
+                {                    
                     terrainChunk.UpdateTerrainChunk();
                 }
             }
