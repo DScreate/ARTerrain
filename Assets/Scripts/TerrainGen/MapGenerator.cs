@@ -21,9 +21,9 @@ public class MapGenerator : MonoBehaviour {
     public ImageMode imageMode = ImageMode.FromWebcam;
     public Texture2D imageTex;
 
-    /*[Range(0, 1)]
+    [Range(0, 1)]
     public float minGreyValue;
-    public float noiseWeight;*/
+    public float noiseWeight;
     
     [Range(0,6)]
     public int levelOfDetail;
@@ -59,8 +59,10 @@ public class MapGenerator : MonoBehaviour {
     public bool autoUpdate;    
 
     public static WebcamTextureController webcamController;
+    //public Texture2D textureForNoise;
 
-    private float[,] noiseMap;
+    public float[,] chunkNoiseMap;
+    public float[,] fullNoiseMap;
     private float[,] heightMap;
 
     void OnValuesUpdate()
@@ -90,6 +92,9 @@ public class MapGenerator : MonoBehaviour {
 
                 mapWidth = webcamController.webcamRequestedWidth;
                 mapHeight = webcamController.webcamRequestedHeight;
+
+                fullNoiseMap = NoiseGenerator.GenerateNoiseMap(webcamController.WebcamTex.width, webcamController.WebcamTex.height, noiseData.seed, noiseData.noiseScale, noiseData.octaves, noiseData.persistance, noiseData.lacunarity, noiseData.offset, noiseData.normalizeMode);
+                //textureForNoise = new Texture2D(webcamController.WebcamTex.width, webcamController.WebcamTex.height);
             }
 
             else
@@ -137,42 +142,43 @@ public class MapGenerator : MonoBehaviour {
         }        
     }
 
-    public MeshData RequestMeshData(Vector2 coord)
+    public MeshData RequestMeshData(Vector2 chunkPosition)
     {
-        heightMap = GenerateMapData(coord);
+        heightMap = GenerateMapData(chunkPosition);
 
         return MeshGenerator.GenerateTerrainMesh(heightMap, terrainData.meshHeightMultiplier, terrainData.meshHeightCurve, levelOfDetail);
     }
 
-    float[,] GenerateMapData(Vector2 coord)
+    float[,] GenerateMapData(Vector2 chunkPosition)
     {
         if(imageMode == ImageMode.PureNoise)
         {
-            coord.x *= mapChunkWidth;
-            coord.y *= mapChunkHeight;
-            noiseMap =  Noise.GenerateNoiseMap(mapChunkWidth, mapChunkHeight, noiseData.seed, noiseData.noiseScale, noiseData.octaves, noiseData.persistance, noiseData.lacunarity, coord + noiseData.offset, noiseData.normalizeMode);
+            chunkPosition.x *= mapChunkWidth;
+            chunkPosition.y *= mapChunkHeight;
+            chunkNoiseMap =  NoiseGenerator.GenerateNoiseMap(mapChunkWidth, mapChunkHeight, noiseData.seed, noiseData.noiseScale, noiseData.octaves, noiseData.persistance, noiseData.lacunarity, chunkPosition + noiseData.offset, noiseData.normalizeMode);
         }
 
         else if (imageMode == ImageMode.FromImage && Application.isPlaying)
         {
-            noiseMap = TextureGenerator.TextureToNoiseChunk(imageTex, coord, mapChunkWidth, mapChunkHeight);
+            chunkNoiseMap = TextureGenerator.TextureToNoiseChunk(imageTex, chunkPosition, mapChunkWidth, mapChunkHeight);
         }
 
         else if (imageMode == ImageMode.FromWebcam && Application.isPlaying)
         {
             //noiseMap = TextureGenerator.WebcamTextureToNoiseChunk(webcamController.WebcamTex, coord, mapChunkWidth, mapChunkHeight);           
-            noiseMap = TextureGenerator.TextureToNoiseChunk(FindObjectOfType<FaceDetection>().faceTexture, coord, mapChunkWidth, mapChunkHeight);
+            chunkNoiseMap = NoiseGenerator.LerpNoiseMapWithTextureToNoiseChunk(FindObjectOfType<FaceDetection>().faceTexture, fullNoiseMap, noiseWeight, minGreyValue, mapChunkWidth, mapChunkHeight, chunkPosition);
+            //chunkNoiseMap = TextureGenerator.TextureToNoiseChunk(textureForNoise, coord, mapChunkWidth, mapChunkHeight);
         }
         
          else
         {
-            noiseMap = Noise.GenerateNoiseMap(1, 1,1,1,1,1, 1, new Vector2(1, 1), noiseData.normalizeMode);
+            chunkNoiseMap = NoiseGenerator.GenerateNoiseMap(1, 1,1,1,1,1, 1, new Vector2(1, 1), noiseData.normalizeMode);
             Debug.Log("Generate map data error");
         }
        
         textureData.UpdateMeshHeights(terrainMaterial, terrainData.minHeight, terrainData.maxHeight);
 
-        return noiseMap;
+        return chunkNoiseMap;
     }
 
     private void OnValidate()

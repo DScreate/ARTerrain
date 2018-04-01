@@ -29,6 +29,7 @@ public class FaceDetection : MonoBehaviour {
 
     public OpenCVForUnity.Rect[] faceLocations;
 
+    /*
     public OpenCVForUnity.Rect[] FaceLocations
     {
         get
@@ -42,9 +43,8 @@ public class FaceDetection : MonoBehaviour {
             else
                 return faceLocations;
         }
-    }
+    } */
 
-    // Use this for initialization
     void Start () {
         InitializeCascade();
 
@@ -76,7 +76,7 @@ public class FaceDetection : MonoBehaviour {
         webcamController.Initialize();        
     }
 
-    public void UpdateFaceTexture(bool equalize, bool denoise)
+    public void UpdateFaceTextureAndEqualize(bool denoise)
     {
         if (webcamController.DidUpdateThisFrame())
         {
@@ -99,11 +99,7 @@ public class FaceDetection : MonoBehaviour {
                 Imgproc.rectangle(grayscale, new Point(faceLocations[i].x, faceLocations[i].y), new Point(faceLocations[i].x + faceLocations[i].width, faceLocations[i].y + faceLocations[i].height), new Scalar(255, 255, 255, 255), 5);
             }
 
-            if (equalize)
-                Utils.matToTexture2D(grayscale, faceTexture, webcamController.Colors);
-
-            else
-                Utils.matToTexture2D(rgbaMat, faceTexture, webcamController.Colors);
+            Utils.matToTexture2D(grayscale, faceTexture, webcamController.Colors);
         }
     }
 
