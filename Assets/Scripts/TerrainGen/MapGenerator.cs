@@ -9,7 +9,6 @@ public class MapGenerator : MonoBehaviour {
     public enum DrawMode { NoiseMap, Mesh };
     public enum ImageMode { PureNoise, FromImage, FromWebcam}
     [TooltipAttribute("Set the name of the device to use.")]
-    
     public DrawMode drawMode;
 
     public DataForTerrain terrainData;
