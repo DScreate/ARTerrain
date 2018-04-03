@@ -134,6 +134,10 @@ public class MapGenerator : MonoBehaviour {
         
         if (drawMode == DrawMode.NoiseMap)
         {
+            if(imageMode == ImageMode.FromWebcam)
+            {
+                heightMap = TextureGenerator.TextureToNoise(FindObjectOfType<FaceDetection>().faceTexture, mapWidth, mapHeight);
+            }
             display.DrawTexture(TextureGenerator.TextureFromHeightMap(heightMap));
         }
         else if (drawMode == DrawMode.Mesh)

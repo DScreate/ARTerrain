@@ -51,6 +51,21 @@ public static class TextureGenerator {
         return noiseMap;
     }
 
+    public static float[,] TextureToNoise(Texture2D texture, int width, int height)
+    {
+        float[,] noiseMap = new float[width, height];
+
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                noiseMap[x, y] = texture.GetPixel(x, y).grayscale;
+            }
+        }
+
+        return noiseMap;
+    }
+
     /*
         public static Texture2D ApplyNoiseToTexture(Texture2D texture, float[,] noiseMap, float noiseWeight, float minGreyValue)
         {
@@ -85,22 +100,7 @@ public static class TextureGenerator {
             newTex.Apply();
 
             return newTex;
-        }    
-
-        public static float[,] TextureToNoise(Texture2D texture, int width, int height)
-        {
-            float[,] noiseMap = new float[width, height];
-
-            for (int y = 0; y < height; y++)
-            {
-                for (int x = 0; x < width; x++)
-                {
-                    noiseMap[x, y] = texture.GetPixel(x, y).grayscale;
-                }
-            }
-
-            return noiseMap;
-        }
+        }            
 
         public static float[,] WebcamTextureToNoiseChunk(WebCamTexture webCamTexture, Vector2 offset, int width, int height)
         {

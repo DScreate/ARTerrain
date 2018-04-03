@@ -70,12 +70,19 @@ public class EndlessTerrain : MonoBehaviour
         {
             if (webcamController.DidUpdateThisFrame())
             {
-                FindObjectOfType<FaceDetection>().UpdateFaceTextureAndEqualize(false);
+                FindObjectOfType<FaceDetection>().UpdateFaceTexture();
 
-                //mapGenerator.textureForNoise = TextureGenerator.ApplyNoiseToTexture(FindObjectOfType<FaceDetection>().faceTexture, mapGenerator.fullNoiseMap, mapGenerator.noiseWeight, mapGenerator.minGreyValue);
-                foreach (TerrainChunk terrainChunk in terrainChunkArray)
-                {                    
-                    terrainChunk.UpdateTerrainChunk();
+                if (mapGenerator.drawMode == MapGenerator.DrawMode.Mesh)
+                {
+                    foreach (TerrainChunk terrainChunk in terrainChunkArray)
+                    {
+                        terrainChunk.UpdateTerrainChunk();
+                    }
+                }
+
+                else if(mapGenerator.drawMode == MapGenerator.DrawMode.NoiseMap)
+                {
+                    mapGenerator.DrawMapInEditor();
                 }
             }
         }

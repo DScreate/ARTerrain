@@ -103,8 +103,8 @@ public static class NoiseGenerator {
 
         //Texture2D newTex = new Texture2D(chunkWidth, chunkheight);
 
-        int offsetX = (int)offset.x * chunkWidth - (int)offset.x;
-        int offsetY = (int)offset.y * chunkHeight - (int)offset.y;
+        int offsetX = (int)offset.x * chunkWidth;
+        int offsetY = (int)offset.y * chunkHeight;
 
         if (noiseMap.GetLength(0) != texture.width)
             Debug.Log("NoiseMap width " + noiseMap.GetLength(0) + "not equal to Texture width " + texture.width);
@@ -112,32 +112,29 @@ public static class NoiseGenerator {
         if (noiseMap.GetLength(1) != texture.height)
             Debug.Log("NoiseMap height " + noiseMap.GetLength(1) + "not equal to Texture height " + texture.height);
 
-        for (int y = 0; y < chunkHeight - 1; y++)
+        for (int y = 0; y < chunkHeight; y++)
         {
-            for (int x = 0; x < chunkWidth - 1; x++)
+            for (int x = 0; x < chunkWidth; x++)
             {              
                 texSample = texture.GetPixel(x + offsetX, y + offsetY).grayscale;
-                try
-                {
-                    noiseSample = noiseMap[x + offsetX, y + offsetY];
-                }
-                catch (Exception e)
-                {
-                    Debug.Log("Index [" + (x + offsetX) + ", " + (y + offsetY) + "] is out of bounds");
-                    noiseSample = texSample;
-                }
 
                 if (texSample > minGreyValue)
                 {
+                    try
+                    {
+                        noiseSample = noiseMap[x + offsetX, y + offsetY];
+                    }
+                    catch (IndexOutOfRangeException e)
+                    {
+                        noiseSample = texSample;
+                    }
+
                     noiseChunk[x, y] = Mathf.Lerp(texSample, noiseSample, noiseWeight);
                 }
                 else
                 {
                     noiseChunk[x, y] = texSample;
-                    //noiseMap[x, y] = texture.GetPixel(x + xOffset, y + yOffset).grayscale;
                 } 
-
-               // noiseChunk[x, y] = texSample;
             }
         }
 

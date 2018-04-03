@@ -27,7 +27,11 @@ public class FaceDetection : MonoBehaviour {
     /// </summary>
     MatOfRect faces;
 
-    public OpenCVForUnity.Rect[] faceLocations;
+    private OpenCVForUnity.Rect[] faceLocations;
+
+    public bool EqualizeTexture;
+
+    public bool DenoiseTexture;
 
     /*
     public OpenCVForUnity.Rect[] FaceLocations
@@ -76,7 +80,7 @@ public class FaceDetection : MonoBehaviour {
         webcamController.Initialize();        
     }
 
-    public void UpdateFaceTextureAndEqualize(bool denoise)
+    public void UpdateFaceTexture()
     {
         if (webcamController.DidUpdateThisFrame())
         {
@@ -91,83 +95,23 @@ public class FaceDetection : MonoBehaviour {
 
             faceLocations = faces.toArray();
 
-            if (denoise)
+            if (DenoiseTexture)
                 Photo.fastNlMeansDenoising(grayscale, grayscale);
 
             for (int i = 0; i < faceLocations.Length; i++)
             {
-                Imgproc.rectangle(grayscale, new Point(faceLocations[i].x, faceLocations[i].y), new Point(faceLocations[i].x + faceLocations[i].width, faceLocations[i].y + faceLocations[i].height), new Scalar(255, 255, 255, 255), 5);
+                if(EqualizeTexture)
+                    Imgproc.rectangle(grayscale, new Point(faceLocations[i].x, faceLocations[i].y), new Point(faceLocations[i].x + faceLocations[i].width, faceLocations[i].y + faceLocations[i].height), new Scalar(255, 255, 255, 255), 5);
+
+                else
+                    Imgproc.rectangle(rgbaMat, new Point(faceLocations[i].x, faceLocations[i].y), new Point(faceLocations[i].x + faceLocations[i].width, faceLocations[i].y + faceLocations[i].height), new Scalar(255, 255, 255, 255), 5);
             }
 
-            Utils.matToTexture2D(grayscale, faceTexture, webcamController.Colors);
+            if(EqualizeTexture)
+                Utils.matToTexture2D(grayscale, faceTexture, webcamController.Colors);
+
+            else
+                Utils.matToTexture2D(rgbaMat, faceTexture, webcamController.Colors);
         }
     }
-
-    /*
-    private Rectangle[] CreateTheFaceRects()
-    {
-        faceLocations = faces.toArray();
-
-        Rectangle[] _faceLocations = new Rectangle[rects.Length];
-
-        for (int i = 0; i < rects.Length; i++)
-        {
-            int width = rects[i].width;
-            int height = rects[i].height;
-
-            Point topLeft = new Point(rects[i].x, rects[i].y);
-            Point bottomRight = new Point(rects[i].x + width, rects[i].y + height);
-
-            _faceLocations[i] = new Rectangle(topLeft, bottomRight, width, height);
-
-            //Imgproc.rectangle(rgbMat, new Point(rects[i].x, rects[i].y), new Point(rects[i].x + rects[i].width, rects[i].y + rects[i].height), new Scalar(255, 0, 0, 255), 2);
-        }
-
-        return _faceLocations;
-    }
-    */
-    
-    /*
-    //I think we can just use OpenCV rects
-    public struct Rectangle
-    {
-        private Point topLeft;
-        private Point bottomRight;
-
-        public Point TopLeft
-        {
-            get { return topLeft; }
-            private set { topLeft = value; }
-        }
-
-        public Point BottomRight
-        {
-            get { return bottomRight; }
-            private set { bottomRight = value; }
-        }
-
-        private int width;
-        private int height;
-
-        public int Width
-        {
-            get { return width; }
-            private set { width = value; }
-        }
-
-        public int Height
-        {
-            get { return height; }
-            private set { height = value; }
-        }
-
-        public Rectangle(Point topLeft, Point bottomRight, int width, int height)
-        {
-            this.topLeft = topLeft;
-            this.bottomRight = bottomRight;
-            this.width = width;
-            this.height = height;
-        }
-    }
-    */
 }
