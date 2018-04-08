@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -89,6 +90,73 @@ public static class NoiseGenerator
         }
 
         return noiseMap;
-
     }
+
+    public static float[,] LerpNoiseMapWithTextureToNoiseChunk(Texture2D texture, float[,] noiseMap, float noiseWeight, float minGreyValue, int chunkWidth, int chunkHeight, Vector2 offset)
+    {
+        //Color[] noisePixels = new Color[noiseMap.GetLength(0) * noiseMap.GetLength(1)];
+        float[,] noiseChunk = new float[chunkWidth, chunkHeight];
+        float noiseSample;
+        float texSample;
+
+        //int chunkWidth = texture.width <= noiseMap.GetLength(0) ? texture.width : noiseMap.GetLength(0);
+        //int chunkheight = texture.height <= noiseMap.GetLength(1) ? texture.height : noiseMap.GetLength(1);
+
+        //Texture2D newTex = new Texture2D(chunkWidth, chunkheight);
+
+        int offsetX = (int)offset.x * chunkWidth;
+        int offsetY = (int)offset.y * chunkHeight;
+
+        if (noiseMap.GetLength(0) != texture.width)
+            Debug.Log("NoiseMap width " + noiseMap.GetLength(0) + "not equal to Texture width " + texture.width);
+
+        if (noiseMap.GetLength(1) != texture.height)
+            Debug.Log("NoiseMap height " + noiseMap.GetLength(1) + "not equal to Texture height " + texture.height);
+
+        for (int y = 0; y < chunkHeight; y++)
+        {
+            for (int x = 0; x < chunkWidth; x++)
+            {
+                texSample = texture.GetPixel(x + offsetX, y + offsetY).grayscale;
+
+                if (texSample > minGreyValue)
+                {
+                    try
+                    {
+                        noiseSample = noiseMap[x + offsetX, y + offsetY];
+                    }
+                    catch (IndexOutOfRangeException e)
+                    {
+                        noiseSample = texSample;
+                    }
+
+                    noiseChunk[x, y] = Mathf.Lerp(texSample, noiseSample, noiseWeight);
+                }
+                else
+                {
+                    noiseChunk[x, y] = texSample;
+                }
+            }
+        }
+
+        return noiseChunk;
+    }
+    /*
+        public static float[,] TextureToNoiseChunk(Texture2D texture, Vector2 offset, int width, int height)
+        {
+            float[,] noiseMap = new float[width, height];
+
+            int xOffset = (int)offset.x * width;
+            int yOffset = (int)offset.y * height;
+
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    noiseMap[x, y] = texture.GetPixel(x + xOffset, y + yOffset).grayscale;
+                }
+            }
+
+            return noiseMap;
+        }*/
 }

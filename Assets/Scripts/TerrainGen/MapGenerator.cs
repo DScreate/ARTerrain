@@ -24,6 +24,7 @@ public class MapGenerator : MonoBehaviour
 
     [Range(0, 1)]
     public float minGreyValue;
+    [Range(0, 1)]
     public float noiseWeight;
 
     [Range(0, 6)]
