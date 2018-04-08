@@ -4,12 +4,13 @@ using TerrainGenData;
 
 
 //I think we can delete colormap?
-public class MapGenerator : MonoBehaviour {
+public class MapGenerator : MonoBehaviour
+{
 
     public enum DrawMode { NoiseMap, Mesh };
-    public enum ImageMode { PureNoise, FromImage, FromWebcam}
+    public enum ImageMode { PureNoise, FromImage, FromWebcam }
     [TooltipAttribute("Set the name of the device to use.")]
-    
+
     public DrawMode drawMode;
 
     public DataForTerrain terrainData;
@@ -21,15 +22,15 @@ public class MapGenerator : MonoBehaviour {
     public ImageMode imageMode = ImageMode.FromWebcam;
     public Texture2D imageTex;
 
-    /*[Range(0, 1)]
+    [Range(0, 1)]
     public float minGreyValue;
-    public float noiseWeight;*/
-    
-    [Range(0,6)]
+    public float noiseWeight;
+
+    [Range(0, 6)]
     public int levelOfDetail;
 
     //need to create getters? need to make it so these values can't be changed once they're set in Start()
-    
+
     private int mapChunkWidth = 241;
     private int mapChunkHeight = 241;
 
@@ -56,11 +57,13 @@ public class MapGenerator : MonoBehaviour {
         get { return mapHeight; }
     }
 
-    public bool autoUpdate;    
+    public bool autoUpdate;
 
     public static WebcamTextureController webcamController;
+    //public Texture2D textureForNoise;
 
-    private float[,] noiseMap;
+    public float[,] chunkNoiseMap;
+    public float[,] fullNoiseMap;
     private float[,] heightMap;
 
     void OnValuesUpdate()
@@ -79,7 +82,7 @@ public class MapGenerator : MonoBehaviour {
     {
         if (imageMode == ImageMode.FromImage || imageMode == ImageMode.FromWebcam)
         {
-            if(imageMode == ImageMode.FromWebcam)
+            if (imageMode == ImageMode.FromWebcam)
             {
                 webcamController = gameObject.GetComponent(typeof(WebcamTextureController)) as WebcamTextureController;
 
@@ -90,13 +93,16 @@ public class MapGenerator : MonoBehaviour {
 
                 mapWidth = webcamController.webcamRequestedWidth;
                 mapHeight = webcamController.webcamRequestedHeight;
+
+                fullNoiseMap = NoiseGenerator.GenerateNoiseMap(webcamController.WebcamTex.width, webcamController.WebcamTex.height, noiseData.seed, noiseData.noiseScale, noiseData.octaves, noiseData.persistance, noiseData.lacunarity, noiseData.offset, noiseData.normalizeMode);
+                //textureForNoise = new Texture2D(webcamController.WebcamTex.width, webcamController.WebcamTex.height);
             }
 
             else
             {
                 mapChunkWidth = imageTex.width;
                 mapChunkHeight = imageTex.height;
-                
+
                 mapWidth = imageTex.width;
                 mapHeight = imageTex.height;
             }
@@ -111,7 +117,7 @@ public class MapGenerator : MonoBehaviour {
                 if (mapChunkHeight % 2 != 0)
                     Debug.Log("Height " + mapChunkHeight + " is not evenly divisble by 2");
 
-                mapChunkHeight /= 2;         
+                mapChunkHeight /= 2;
             }
 
             //I forget why, but Sebastion explains in a video that these variables need to be chunk size + 1
@@ -126,53 +132,58 @@ public class MapGenerator : MonoBehaviour {
     {
         heightMap = GenerateMapData(Vector2.zero);
         MapDisplay display = FindObjectOfType<MapDisplay>();
-        
+
         if (drawMode == DrawMode.NoiseMap)
         {
+            if (imageMode == ImageMode.FromWebcam)
+            {
+                heightMap = TextureGenerator.TextureToNoise(FindObjectOfType<FaceDetection>().FaceTexture, mapWidth, mapHeight);
+            }
             display.DrawTexture(TextureGenerator.TextureFromHeightMap(heightMap));
         }
         else if (drawMode == DrawMode.Mesh)
         {
             display.DrawMesh(MeshGenerator.GenerateTerrainMesh(heightMap, terrainData.meshHeightMultiplier, terrainData.meshHeightCurve, levelOfDetail)/*, TextureGenerator.TextureFromColorMap(colorMap, mapChunkSize, mapChunkSize)*/);
-        }        
+        }
     }
 
-    public MeshData RequestMeshData(Vector2 coord)
+    public MeshData RequestMeshData(Vector2 chunkPosition)
     {
-        heightMap = GenerateMapData(coord);
+        heightMap = GenerateMapData(chunkPosition);
 
         return MeshGenerator.GenerateTerrainMesh(heightMap, terrainData.meshHeightMultiplier, terrainData.meshHeightCurve, levelOfDetail);
     }
 
-    float[,] GenerateMapData(Vector2 coord)
+    float[,] GenerateMapData(Vector2 chunkPosition)
     {
-        if(imageMode == ImageMode.PureNoise)
+        if (imageMode == ImageMode.PureNoise)
         {
-            coord.x *= mapChunkWidth;
-            coord.y *= mapChunkHeight;
-            noiseMap =  Noise.GenerateNoiseMap(mapChunkWidth, mapChunkHeight, noiseData.seed, noiseData.noiseScale, noiseData.octaves, noiseData.persistance, noiseData.lacunarity, coord + noiseData.offset, noiseData.normalizeMode);
+            chunkPosition.x *= mapChunkWidth;
+            chunkPosition.y *= mapChunkHeight;
+            chunkNoiseMap = NoiseGenerator.GenerateNoiseMap(mapChunkWidth, mapChunkHeight, noiseData.seed, noiseData.noiseScale, noiseData.octaves, noiseData.persistance, noiseData.lacunarity, chunkPosition + noiseData.offset, noiseData.normalizeMode);
         }
 
         else if (imageMode == ImageMode.FromImage && Application.isPlaying)
         {
-            noiseMap = TextureGenerator.TextureToNoiseChunk(imageTex, coord, mapChunkWidth, mapChunkHeight);
+            chunkNoiseMap = TextureGenerator.TextureToNoiseChunk(imageTex, chunkPosition, mapChunkWidth, mapChunkHeight);
         }
 
         else if (imageMode == ImageMode.FromWebcam && Application.isPlaying)
         {
             //noiseMap = TextureGenerator.WebcamTextureToNoiseChunk(webcamController.WebcamTex, coord, mapChunkWidth, mapChunkHeight);           
-            noiseMap = TextureGenerator.TextureToNoiseChunk(FindObjectOfType<FaceDetection>().FaceTexture, coord, mapChunkWidth, mapChunkHeight);
+            chunkNoiseMap = NoiseGenerator.LerpNoiseMapWithTextureToNoiseChunk(FindObjectOfType<FaceDetection>().FaceTexture, fullNoiseMap, noiseWeight, minGreyValue, mapChunkWidth, mapChunkHeight, chunkPosition);
+            //chunkNoiseMap = TextureGenerator.TextureToNoiseChunk(textureForNoise, coord, mapChunkWidth, mapChunkHeight);
         }
-        
-         else
+
+        else
         {
-            noiseMap = Noise.GenerateNoiseMap(1, 1,1,1,1,1, 1, new Vector2(1, 1), noiseData.normalizeMode);
+            chunkNoiseMap = NoiseGenerator.GenerateNoiseMap(1, 1, 1, 1, 1, 1, 1, new Vector2(1, 1), noiseData.normalizeMode);
             Debug.Log("Generate map data error");
         }
-       
+
         textureData.UpdateMeshHeights(terrainMaterial, terrainData.minHeight, terrainData.maxHeight);
 
-        return noiseMap;
+        return chunkNoiseMap;
     }
 
     private void OnValidate()

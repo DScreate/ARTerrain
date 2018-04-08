@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class Noise {
+public static class NoiseGenerator
+{
 
     public enum NormalizeMode { Local, Global };
 
@@ -46,10 +47,10 @@ public static class Noise {
                 frequency = 1;
                 float noiseHeight = 0;
 
-                for (int i = 0; i < octaves; i ++)
+                for (int i = 0; i < octaves; i++)
                 {
-                    float sampleX = (x-halfWidth + octaveOffset[i].x) / scale * frequency;
-                    float sampleY = (y-halfHeight + octaveOffset[i].y) / scale * frequency;
+                    float sampleX = (x - halfWidth + octaveOffset[i].x) / scale * frequency;
+                    float sampleY = (y - halfHeight + octaveOffset[i].y) / scale * frequency;
 
                     float perlinValue = Mathf.PerlinNoise(sampleX, sampleY) * 2 - 1;
                     noiseHeight += perlinValue * amplitude;

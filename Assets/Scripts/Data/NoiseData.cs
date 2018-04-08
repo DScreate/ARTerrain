@@ -7,7 +7,7 @@ namespace TerrainGenData
     [CreateAssetMenu()]
     public class NoiseData : UpdatableData
     {
-        public Noise.NormalizeMode normalizeMode;
+        public NoiseGenerator.NormalizeMode normalizeMode;
 
         public float noiseScale;
 

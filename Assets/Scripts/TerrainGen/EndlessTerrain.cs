@@ -19,7 +19,7 @@ public class EndlessTerrain : MonoBehaviour
     int chunkWidth;
     int chunkHeight;
 
-    int chunksVisibleInViewDst;
+    //int chunksVisibleInViewDst;
 
     public Vector2 numberOfChunks;
 
@@ -71,9 +71,18 @@ public class EndlessTerrain : MonoBehaviour
             if (webcamController.DidUpdateThisFrame())
             {
                 FindObjectOfType<FaceDetection>().UpdateFaceTexture();
-                foreach (TerrainChunk terrainChunk in terrainChunkArray)
+
+                if (mapGenerator.drawMode == MapGenerator.DrawMode.Mesh)
                 {
-                    terrainChunk.UpdateTerrainChunk();
+                    foreach (TerrainChunk terrainChunk in terrainChunkArray)
+                    {
+                        terrainChunk.UpdateTerrainChunk();
+                    }
+                }
+
+                else if (mapGenerator.drawMode == MapGenerator.DrawMode.NoiseMap)
+                {
+                    mapGenerator.DrawMapInEditor();
                 }
             }
         }
@@ -93,13 +102,16 @@ public class EndlessTerrain : MonoBehaviour
     public class TerrainChunk
     {
         GameObject meshObject;
-        Vector2 position;
+        Vector2 coord;
 
         MeshRenderer meshRenderer;
         MeshFilter meshFilter;
 
         public TerrainChunk(Vector2 coord, int width, int height, Transform parent, Material material)
         {
+            this.coord = coord;
+
+            Vector2 position;
             position.x = coord.x * width;
             position.y = coord.y * height;
 
@@ -121,7 +133,7 @@ public class EndlessTerrain : MonoBehaviour
 
         public void UpdateTerrainChunk()
         {
-            MeshData meshData = mapGenerator.RequestMeshData(position);
+            MeshData meshData = mapGenerator.RequestMeshData(coord);
 
             if (meshFilter == null)
                 meshFilter.mesh = meshData.CreateMesh();
