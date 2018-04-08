@@ -15,7 +15,7 @@ public class FaceDetection : MonoBehaviour {
     /// <summary>
     /// The texture.
     /// </summary>
-    public Texture2D testTexture;
+    public Texture2D faceTexture;
 
     /// <summary>
     /// The cascade.
@@ -27,7 +27,7 @@ public class FaceDetection : MonoBehaviour {
     /// </summary>
     MatOfRect faces;
 
-    public OpenCVForUnity.Rect[] faceLocations;
+    private OpenCVForUnity.Rect[] faceLocations;
 
     public OpenCVForUnity.Rect[] FaceLocations
     {
@@ -53,7 +53,7 @@ public class FaceDetection : MonoBehaviour {
         int width = webcamController.WebcamTex.width;
         int height = webcamController.WebcamTex.height;
 
-        testTexture = new Texture2D(width, height, TextureFormat.RGBA32, false);
+        faceTexture = new Texture2D(width, height, TextureFormat.RGBA32, false);
 
         grayscale = new Mat(height, width, CvType.CV_8UC1);
 
@@ -76,16 +76,14 @@ public class FaceDetection : MonoBehaviour {
         webcamController.Initialize();        
     }
 
-    // Update is called once per frame
-    void Update()
+    public void UpdateFaceTexture(bool equalize, bool denoise)
     {
         if (webcamController.DidUpdateThisFrame())
         {
-            Mat rgbaMat = webcamController.WebcamMat;
+            Mat rgbaMat = webcamController.WebcamMat;            
 
-            //Photo.fastNlMeansDenoising(rgbaMat, rgbaMat);
-            Imgproc.cvtColor(rgbaMat, grayscale, Imgproc.COLOR_RGBA2GRAY);
-            Imgproc.equalizeHist(grayscale, grayscale);
+            Imgproc.cvtColor(rgbaMat, grayscale, Imgproc.COLOR_RGB2GRAY);            
+            Imgproc.equalizeHist(grayscale, grayscale);           
 
             if (cascade != null)
                 cascade.detectMultiScale(grayscale, faces, 1.1, 2, 2, // TODO: objdetect.CV_HAAR_SCALE_IMAGE
@@ -93,75 +91,19 @@ public class FaceDetection : MonoBehaviour {
 
             faceLocations = faces.toArray();
 
-            Utils.matToTexture2D(grayscale, testTexture, webcamController.Colors);
+            if (denoise)
+                Photo.fastNlMeansDenoising(grayscale, grayscale);
+
+            for (int i = 0; i < faceLocations.Length; i++)
+            {
+                Imgproc.rectangle(grayscale, new Point(faceLocations[i].x, faceLocations[i].y), new Point(faceLocations[i].x + faceLocations[i].width, faceLocations[i].y + faceLocations[i].height), new Scalar(255, 255, 255, 255), 5);
+            }
+
+            if (equalize)
+                Utils.matToTexture2D(grayscale, faceTexture, webcamController.Colors);
+
+            else
+                Utils.matToTexture2D(rgbaMat, faceTexture, webcamController.Colors);
         }
     }
-
-    /*
-    private Rectangle[] CreateTheFaceRects()
-    {
-        faceLocations = faces.toArray();
-
-        Rectangle[] _faceLocations = new Rectangle[rects.Length];
-
-        for (int i = 0; i < rects.Length; i++)
-        {
-            int width = rects[i].width;
-            int height = rects[i].height;
-
-            Point topLeft = new Point(rects[i].x, rects[i].y);
-            Point bottomRight = new Point(rects[i].x + width, rects[i].y + height);
-
-            _faceLocations[i] = new Rectangle(topLeft, bottomRight, width, height);
-
-            //Imgproc.rectangle(rgbMat, new Point(rects[i].x, rects[i].y), new Point(rects[i].x + rects[i].width, rects[i].y + rects[i].height), new Scalar(255, 0, 0, 255), 2);
-        }
-
-        return _faceLocations;
-    }
-    */
-    
-    /*
-    //I think we can just use OpenCV rects
-    public struct Rectangle
-    {
-        private Point topLeft;
-        private Point bottomRight;
-
-        public Point TopLeft
-        {
-            get { return topLeft; }
-            private set { topLeft = value; }
-        }
-
-        public Point BottomRight
-        {
-            get { return bottomRight; }
-            private set { bottomRight = value; }
-        }
-
-        private int width;
-        private int height;
-
-        public int Width
-        {
-            get { return width; }
-            private set { width = value; }
-        }
-
-        public int Height
-        {
-            get { return height; }
-            private set { height = value; }
-        }
-
-        public Rectangle(Point topLeft, Point bottomRight, int width, int height)
-        {
-            this.topLeft = topLeft;
-            this.bottomRight = bottomRight;
-            this.width = width;
-            this.height = height;
-        }
-    }
-    */
 }
