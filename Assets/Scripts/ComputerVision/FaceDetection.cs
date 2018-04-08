@@ -1,9 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using OpenCVForUnity;
 
-public class FaceDetection : MonoBehaviour {
+public class FaceDetection : MonoBehaviour
+{
 
     WebcamTextureController webcamController;
 
@@ -17,17 +16,19 @@ public class FaceDetection : MonoBehaviour {
     /// </summary>
     private Texture2D faceTexture;
 
-    public Texture2D FaceTexture {
+    public Texture2D FaceTexture
+    {
         get
         {
             if (faceTexture == null)
             {
                 Debug.Log("faceTexture null");
-                return new Texture2D(1, 1);                
+                return new Texture2D(1, 1);
             }
             return faceTexture;
         }
     }
+
     /// <summary>
     /// The cascade.
     /// </summary>
@@ -40,6 +41,11 @@ public class FaceDetection : MonoBehaviour {
 
     private OpenCVForUnity.Rect[] faceLocations;
 
+    public bool EqualizeTexture;
+
+    public bool DenoiseTexture;
+
+    /*
     public OpenCVForUnity.Rect[] FaceLocations
     {
         get
@@ -53,17 +59,13 @@ public class FaceDetection : MonoBehaviour {
             else
                 return faceLocations;
         }
-    }
+    } */
 
-    // Use this for initialization
-    void Start () {
+    void Start()
+    {
         InitializeCascade();
 
         InitializeWebcamController();
-
-        webcamController = gameObject.GetComponent(typeof(WebcamTextureController)) as WebcamTextureController;
-
-        webcamController.Initialize();
 
         int width = webcamController.WebcamTex.width;
         int height = webcamController.WebcamTex.height;
@@ -86,19 +88,19 @@ public class FaceDetection : MonoBehaviour {
 
     private void InitializeWebcamController()
     {
-        webcamController = FindObjectOfType<WebcamTextureController>();
+        webcamController = gameObject.GetComponent(typeof(WebcamTextureController)) as WebcamTextureController;
 
-        webcamController.Initialize();        
+        webcamController.Initialize();
     }
 
-    public void UpdateFaceTexture(bool equalize, bool denoise)
+    public void UpdateFaceTexture()
     {
         if (webcamController.DidUpdateThisFrame())
         {
-            Mat rgbaMat = webcamController.WebcamMat;            
+            Mat rgbaMat = webcamController.WebcamMat;
 
-            Imgproc.cvtColor(rgbaMat, grayscale, Imgproc.COLOR_RGB2GRAY);            
-            Imgproc.equalizeHist(grayscale, grayscale);           
+            Imgproc.cvtColor(rgbaMat, grayscale, Imgproc.COLOR_RGB2GRAY);
+            Imgproc.equalizeHist(grayscale, grayscale);
 
             if (cascade != null)
                 cascade.detectMultiScale(grayscale, faces, 1.1, 2, 2, // TODO: objdetect.CV_HAAR_SCALE_IMAGE
@@ -106,15 +108,19 @@ public class FaceDetection : MonoBehaviour {
 
             faceLocations = faces.toArray();
 
-            if (denoise)
+            if (DenoiseTexture)
                 Photo.fastNlMeansDenoising(grayscale, grayscale);
 
             for (int i = 0; i < faceLocations.Length; i++)
             {
-                Imgproc.rectangle(grayscale, new Point(faceLocations[i].x, faceLocations[i].y), new Point(faceLocations[i].x + faceLocations[i].width, faceLocations[i].y + faceLocations[i].height), new Scalar(255, 255, 255, 255), 5);
+                if (EqualizeTexture)
+                    Imgproc.rectangle(grayscale, new Point(faceLocations[i].x, faceLocations[i].y), new Point(faceLocations[i].x + faceLocations[i].width, faceLocations[i].y + faceLocations[i].height), new Scalar(255, 255, 255, 255), 5);
+
+                else
+                    Imgproc.rectangle(rgbaMat, new Point(faceLocations[i].x, faceLocations[i].y), new Point(faceLocations[i].x + faceLocations[i].width, faceLocations[i].y + faceLocations[i].height), new Scalar(255, 255, 255, 255), 5);
             }
 
-            if (equalize)
+            if (EqualizeTexture)
                 Utils.matToTexture2D(grayscale, faceTexture, webcamController.Colors);
 
             else

@@ -70,7 +70,7 @@ public class EndlessTerrain : MonoBehaviour
         {
             if (webcamController.DidUpdateThisFrame())
             {
-                FindObjectOfType<FaceDetection>().UpdateFaceTexture(true, false);
+                FindObjectOfType<FaceDetection>().UpdateFaceTexture();
                 foreach (TerrainChunk terrainChunk in terrainChunkArray)
                 {
                     terrainChunk.UpdateTerrainChunk();
