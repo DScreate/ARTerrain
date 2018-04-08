@@ -13,7 +13,7 @@ public class EndlessTerrain : MonoBehaviour
     public static Vector2 viewerPosition;
 
     public Material mapMaterial;
-    
+
     static MapGenerator mapGenerator;
 
     int chunkWidth;
@@ -33,7 +33,7 @@ public class EndlessTerrain : MonoBehaviour
     WebcamTextureController webcamController;
 
     void Start()
-    {       
+    {
         mapGenerator = FindObjectOfType<MapGenerator>();
         webcamController = gameObject.GetComponent<WebcamTextureController>();
 
@@ -52,7 +52,7 @@ public class EndlessTerrain : MonoBehaviour
             numberOfChunks.y = mapGenerator.imageTex.height / chunkHeight;
         }
 
-        else if(mapGenerator.imageMode == MapGenerator.ImageMode.FromWebcam)
+        else if (mapGenerator.imageMode == MapGenerator.ImageMode.FromWebcam)
         {
             numberOfChunks.x = mapGenerator.MapWidth / chunkWidth;
             numberOfChunks.y = mapGenerator.MapHeight / chunkHeight;
@@ -61,16 +61,16 @@ public class EndlessTerrain : MonoBehaviour
         terrainChunkArray = new TerrainChunk[(int)numberOfChunks.y, (int)numberOfChunks.x];
 
         InitializeChunks();
-        
+
     }
 
-    //I think we can get rid of this update method?
     void Update()
-    {      
+    {
         if (mapGenerator.imageMode == MapGenerator.ImageMode.FromWebcam)
         {
             if (webcamController.DidUpdateThisFrame())
             {
+                FindObjectOfType<FaceDetection>().UpdateFaceTexture(true, false);
                 foreach (TerrainChunk terrainChunk in terrainChunkArray)
                 {
                     terrainChunk.UpdateTerrainChunk();
@@ -81,9 +81,9 @@ public class EndlessTerrain : MonoBehaviour
 
     void InitializeChunks()
     {
-        for(int y = 0; y < numberOfChunks.y; y++)
+        for (int y = 0; y < numberOfChunks.y; y++)
         {
-            for(int x = 0; x < numberOfChunks.x; x++)
+            for (int x = 0; x < numberOfChunks.x; x++)
             {
                 terrainChunkArray[y, x] = new TerrainChunk(new Vector2(x, y), chunkWidth, chunkHeight, transform, mapMaterial);
             }
@@ -118,7 +118,7 @@ public class EndlessTerrain : MonoBehaviour
 
             meshFilter.mesh = meshData.CreateMesh();
         }
-        
+
         public void UpdateTerrainChunk()
         {
             MeshData meshData = mapGenerator.RequestMeshData(position);

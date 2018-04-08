@@ -15,8 +15,19 @@ public class FaceDetection : MonoBehaviour {
     /// <summary>
     /// The texture.
     /// </summary>
-    public Texture2D faceTexture;
+    private Texture2D faceTexture;
 
+    public Texture2D FaceTexture {
+        get
+        {
+            if (faceTexture == null)
+            {
+                Debug.Log("faceTexture null");
+                return new Texture2D(1, 1);                
+            }
+            return faceTexture;
+        }
+    }
     /// <summary>
     /// The cascade.
     /// </summary>
@@ -49,6 +60,10 @@ public class FaceDetection : MonoBehaviour {
         InitializeCascade();
 
         InitializeWebcamController();
+
+        webcamController = gameObject.GetComponent(typeof(WebcamTextureController)) as WebcamTextureController;
+
+        webcamController.Initialize();
 
         int width = webcamController.WebcamTex.width;
         int height = webcamController.WebcamTex.height;

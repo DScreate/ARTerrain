@@ -160,9 +160,8 @@ public class MapGenerator : MonoBehaviour {
 
         else if (imageMode == ImageMode.FromWebcam && Application.isPlaying)
         {
-            noiseMap = TextureGenerator.WebcamTextureToNoiseChunk(webcamController.WebcamTex, coord, mapChunkWidth, mapChunkHeight);
-            //noiseMap = TextureGenerator.WebcamTextureToNoiseChunk(webcamController.WebcamTex, coord, mapChunkWidth, mapChunkHeight);
-            //noiseMap = TextureGenerator.TextureToNoiseChunk(FindObjectOfType<FaceDetection>().testTexture, coord, mapChunkWidth, mapChunkHeight);
+            //noiseMap = TextureGenerator.WebcamTextureToNoiseChunk(webcamController.WebcamTex, coord, mapChunkWidth, mapChunkHeight);           
+            noiseMap = TextureGenerator.TextureToNoiseChunk(FindObjectOfType<FaceDetection>().FaceTexture, coord, mapChunkWidth, mapChunkHeight);
         }
         
          else
