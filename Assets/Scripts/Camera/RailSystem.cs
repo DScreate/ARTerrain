@@ -37,7 +37,7 @@ public class RailSystem : MonoBehaviour {
 
     private Vector3 InstaPosition(int seg, float ratio)
     {
-        Debug.Log(ratio);
+        //Debug.Log(ratio);
         return railNodes[seg + 1].position;
     }
 

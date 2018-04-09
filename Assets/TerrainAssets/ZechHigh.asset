@@ -11,7 +11,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d14108fadba867419c9431d674c511c, type: 3}
   m_Name: ZechHigh
   m_EditorClassIdentifier: 
-  autoUpdate: 0
+  autoUpdate: 1
   uniformScale: 2.25
   meshHeightMultiplier: 17.06
   meshHeightCurve:
