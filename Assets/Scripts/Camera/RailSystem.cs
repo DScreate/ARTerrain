@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -7,6 +8,7 @@ public enum Mode
 {
     Linear,
     Catmull,
+    Insta,
 }
 
 [ExecuteInEditMode]
@@ -28,8 +30,17 @@ public class RailSystem : MonoBehaviour {
                 return LinearPosition(seg, ratio);
             case Mode.Catmull:
                 return CatmullPosition(seg, ratio);
+            case Mode.Insta:
+                return InstaPosition(seg,ratio);
         }
     }
+
+    private Vector3 InstaPosition(int seg, float ratio)
+    {
+        Debug.Log(ratio);
+        return railNodes[seg + 1].position;
+    }
+
     public Quaternion Orientation(int seg, float ratio)
     {
         Quaternion quaterOne = railNodes[seg].rotation;
