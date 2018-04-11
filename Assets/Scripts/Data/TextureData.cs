@@ -28,6 +28,8 @@ namespace TerrainGenData
             material.SetTexture("baseTextures", texturesArray);
 
             UpdateMeshHeights(material , savedMinHeight,savedMaxHeight);
+
+            UpdateWaterHeight(layers[0].startHeight);
         }
         public void UpdateMeshHeights(Material material, float minHeight, float maxHeight)
         {
@@ -36,6 +38,11 @@ namespace TerrainGenData
 
             material.SetFloat("minHeight",minHeight);
             material.SetFloat("maxHeight",maxHeight);
+        }
+
+        public void UpdateWaterHeight(float startHeight)
+        {
+
         }
 
         Texture2DArray GenerateTextureArray(Texture2D[] textures)
