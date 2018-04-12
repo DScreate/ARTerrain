@@ -16,6 +16,10 @@ namespace TerrainGenData
         float savedMinHeight;
         float savedMaxHeight;
 
+        public GameObject Water;
+
+        public DataForTerrain terrainData;
+
         public void ApplyToMaterial(Material material)
         {
             material.SetInt("layerCount", layers.Length);
@@ -29,7 +33,8 @@ namespace TerrainGenData
 
             UpdateMeshHeights(material , savedMinHeight,savedMaxHeight);
 
-            UpdateWaterHeight(layers[0].startHeight);
+            if(Application.isPlaying)
+                UpdateWaterHeight(layers[1].startHeight * terrainData.meshHeightMultiplier * terrainData.uniformScale);
         }
         public void UpdateMeshHeights(Material material, float minHeight, float maxHeight)
         {
@@ -40,9 +45,13 @@ namespace TerrainGenData
             material.SetFloat("maxHeight",maxHeight);
         }
 
-        public void UpdateWaterHeight(float startHeight)
+        public void UpdateWaterHeight(float newHeight)
         {
+            if(Water == null)
+                Water = GameObject.Find("WaterProDaytime");
 
+            Vector3 curPos = Water.transform.position;
+            Water.transform.position = new Vector3(curPos.x, newHeight, curPos.z);
         }
 
         Texture2DArray GenerateTextureArray(Texture2D[] textures)

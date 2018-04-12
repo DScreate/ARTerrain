@@ -83,6 +83,10 @@ public class MapGenerator : MonoBehaviour
     {
         if (imageMode == ImageMode.FromImage || imageMode == ImageMode.FromWebcam)
         {
+            textureData.Water = GameObject.Find("WaterProDaytime");
+
+            textureData.terrainData = terrainData;
+
             if (imageMode == ImageMode.FromWebcam)
             {
                 webcamController = gameObject.GetComponent(typeof(WebcamTextureController)) as WebcamTextureController;
