@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
+//using UnityEditor;
 using UnityEngine;
 
 namespace CameraMovement
@@ -13,7 +13,7 @@ namespace CameraMovement
         Insta,
     }
 
-    [ExecuteInEditMode]
+    //[ExecuteInEditMode]
     public class RailSystem : MonoBehaviour
     {
 
@@ -45,7 +45,6 @@ namespace CameraMovement
 
         private Vector3 InstaPosition(int seg, float ratio)
         {
-            //Debug.Log(ratio);
             return railNodes[seg + 1].position;
         }
 
@@ -113,6 +112,7 @@ namespace CameraMovement
 
             return Vector3.Lerp(pointOne, pointTwo, ratio);
         }
+        /*/
         private void OnDrawGizmos()
         {
             for (int i = 0; i < railNodes.Length - 1; i++)
@@ -120,6 +120,6 @@ namespace CameraMovement
                 Handles.DrawDottedLine(railNodes[i].position, railNodes[i + 1].position, 3.0f);
             }
         }
-
+        */
     }
 }
