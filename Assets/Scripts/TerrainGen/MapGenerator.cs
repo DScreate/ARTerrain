@@ -74,7 +74,7 @@ public class MapGenerator : MonoBehaviour
             DrawMapInEditor();
         }
     }
-    void OnTextureValuesUpdated()
+    public void OnTextureValuesUpdated()
     {
         textureData.ApplyToMaterial(terrainMaterial);
     }

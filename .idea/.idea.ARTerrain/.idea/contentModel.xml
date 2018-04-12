@@ -555,12 +555,13 @@
           </e>
         </e>
         <e p="Resources" t="Include">
+          <e p="Outlined-Silhouette Only.shader" t="Include" />
           <e p="Terrain.shader" t="Include" />
         </e>
         <e p="Scripts" t="Include">
-          <e p="ColorTracking" t="Include">
+          <e p="ComputerVision" t="Include">
             <e p="ARTColorObject.cs" t="Include" />
-            <e p="NewBehaviourScript.cs" t="Include" />
+            <e p="FaceDetection.cs" t="Include" />
             <e p="ObjectTrackingBasedOnColor.cs" t="Include" />
           </e>
           <e p="Data" t="Include">
@@ -576,7 +577,7 @@
             <e p="MapDisplay.cs" t="Include" />
             <e p="MapGenerator.cs" t="Include" />
             <e p="MeshGenerator.cs" t="Include" />
-            <e p="Noise.cs" t="Include" />
+            <e p="NoiseGenerator.cs" t="Include" />
             <e p="TextureGenerator.cs" t="Include" />
             <e p="WebcamTextureController.cs" t="Include" />
           </e>

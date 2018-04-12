@@ -16,6 +16,8 @@ namespace TerrainGenData
         float savedMinHeight;
         float savedMaxHeight;
 
+    
+
         public void ApplyToMaterial(Material material)
         {
             material.SetInt("layerCount", layers.Length);
