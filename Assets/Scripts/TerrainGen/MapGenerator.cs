@@ -187,6 +187,15 @@ public class MapGenerator : MonoBehaviour
         return chunkNoiseMap;
     }
 
+    public void UpdateFullNoiseMap()
+    {
+        if (noiseData.Updated)
+        {
+            fullNoiseMap = NoiseGenerator.GenerateNoiseMap(webcamController.WebcamTex.width, webcamController.WebcamTex.height, noiseData.seed, noiseData.noiseScale, noiseData.octaves, noiseData.persistance, noiseData.lacunarity, noiseData.offset, noiseData.normalizeMode);
+            noiseData.Updated = false;
+        }
+    }
+
     private void OnValidate()
     {
         if (terrainData != null)

@@ -72,6 +72,8 @@ public class EndlessTerrain : MonoBehaviour
             {
                 FindObjectOfType<FaceDetection>().UpdateFaceTexture();
 
+                mapGenerator.UpdateFullNoiseMap();
+
                 if (mapGenerator.drawMode == MapGenerator.DrawMode.Mesh)
                 {
                     foreach (TerrainChunk terrainChunk in terrainChunkArray)

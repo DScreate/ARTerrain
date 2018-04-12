@@ -51,24 +51,30 @@ public class MenuController : MonoBehaviour {
         //terrainData.
     }
 
+    //refactor and so that these variables are properties and they will change Updated to true inside setter?
+    //But then how to access from inspector if they're properties?
     public void SetNoiseScale(float vin)
     {
         noiseData.noiseScale = vin;
+        noiseData.Updated = true;
     }
     
     public void SetNoiseOctaves(float vin)
     {
         noiseData.octaves = Mathf.RoundToInt(vin);
+        noiseData.Updated = true;
     }
     
     public void SetNoisePersistance(float vin)
     {
         noiseData.persistance = vin;
+        noiseData.Updated = true;
     }
     
     public void SetNoiseLacunarity(float vin)
     {
         noiseData.lacunarity = vin;
+        noiseData.Updated = true;
     }
     #endregion
     
