@@ -37,11 +37,14 @@ public class MenuController : MonoBehaviour {
     public void SetUniformScale(float vin)
     {
         terrainData.uniformScale = vin;
+        mapGen.UpdateWaterHeight();
+
     }
 
     public void SetHeightMultiplier(float vin)
     {
         terrainData.meshHeightMultiplier = vin;
+        mapGen.UpdateWaterHeight();
     }
     #endregion
 

@@ -71,7 +71,7 @@ public class MapGenerator : MonoBehaviour
 
     void OnValuesUpdate()
     {
-        if(Application.isPlaying)
+        //if(Application.isPlaying)
             UpdateWaterHeight();
 
         if (!Application.isPlaying)
