@@ -67,8 +67,13 @@ public class MapGenerator : MonoBehaviour
     public float[,] fullNoiseMap;
     private float[,] heightMap;
 
+    public GameObject Water;
+
     void OnValuesUpdate()
     {
+        if(Application.isPlaying)
+            UpdateWaterHeight();
+
         if (!Application.isPlaying)
         {
             DrawMapInEditor();
@@ -77,16 +82,15 @@ public class MapGenerator : MonoBehaviour
     public void OnTextureValuesUpdated()
     {
         textureData.ApplyToMaterial(terrainMaterial);
+
+        if (Application.isPlaying)
+            UpdateWaterHeight();
     }
 
     private void Start()
     {
         if (imageMode == ImageMode.FromImage || imageMode == ImageMode.FromWebcam)
         {
-            textureData.Water = GameObject.Find("WaterProDaytime");
-
-            textureData.terrainData = terrainData;
-
             if (imageMode == ImageMode.FromWebcam)
             {
                 webcamController = gameObject.GetComponent(typeof(WebcamTextureController)) as WebcamTextureController;
@@ -189,6 +193,15 @@ public class MapGenerator : MonoBehaviour
         textureData.UpdateMeshHeights(terrainMaterial, terrainData.minHeight, terrainData.maxHeight);
 
         return chunkNoiseMap;
+    }
+    public void UpdateWaterHeight()
+    {
+        if (Water == null)
+            Water = GameObject.Find("WaterProDaytime");
+
+        float newHeight = textureData.layers[1].startHeight * terrainData.meshHeightMultiplier * terrainData.uniformScale;
+        Vector3 curPos = Water.transform.position;
+        Water.transform.position = new Vector3(curPos.x, newHeight, curPos.z);
     }
 
     public void UpdateFullNoiseMap()
