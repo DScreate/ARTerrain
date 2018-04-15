@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 
 public enum Mode
@@ -105,12 +104,15 @@ public class RailSystem : MonoBehaviour {
 
         return Vector3.Lerp(pointOne,pointTwo,ratio);
     }
+    
+    #if UNITY_EDITOR
     private void OnDrawGizmos()
     {
         for(int i = 0; i < railNodes.Length - 1; i++)
         {
-            Handles.DrawDottedLine(railNodes[i].position, railNodes[i + 1].position, 3.0f);
+            Gizmos.DrawLine(railNodes[i].position, railNodes[i + 1].position);
         }
     }
+    #endif
 
 }
