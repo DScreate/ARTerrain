@@ -363,7 +363,6 @@
         </e>
       </e>
       <e p="Assets\Resources" t="Include">
-        <e p="Outlined-Silhouette Only.shader" t="Include" />
         <e p="Terrain.shader" t="Include" />
       </e>
       <e p="Assets\Scripts" t="Include">
