@@ -5,6 +5,9 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/OpenCVForUnity/Examples/Advanced/MultiObjectTrackingBasedOnColorExample/MultiObjectTrackingBasedOnColorExample.unity
     guid: 5a1c56649093e524789f6393e0ba99c1
+  - enabled: 1
+    path: Assets/_Scenes/TerrainGenTesting.unity
+    guid: 71f5978bd0495d84ca9a0d4fa07d11fa

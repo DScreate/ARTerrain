@@ -1,44 +1,128 @@
 ﻿using System;
 using UnityEngine;
+using OpenCVForUnity;
 
 public class WebcamTextureController : MonoBehaviour {
 
     public string requestedDeviceName;
 
-    public int webcamRequestedWidth;
-    public int webcamRequestedHeight;
+    public int webcamRequestedWidth = 640;
+    public int webcamRequestedHeight = 480;
 
-    private WebCamTexture webcamtex;
+    private WebCamTexture webcamTexture;
 
-    public WebCamTexture Webcamtex
+    private int deviceIndex;
+
+    private bool initialized = false;
+
+    //destination mat for changing webcam texture to opencv mat
+    private Mat webcamMat;
+
+    //used to save memory
+    private Color32[] colors;
+
+    public WebCamTexture WebcamTex
     {
-        get { return webcamtex; }
+        get { return webcamTexture; }
+    }
+
+    public Mat WebcamMat
+    {
+        get {
+            if(webcamTexture.didUpdateThisFrame)
+                Utils.webCamTextureToMat(webcamTexture, webcamMat, colors);
+
+            return webcamMat;
+        }
+    }
+
+    public Color32[] Colors
+    {
+        get { return colors; }
     }
 
     public void Initialize()
     {
+        if (!initialized)
+        {
+            InitializeWebcamTexture();            
+
+            //webcamRequestedWidth = webcamtex.requestedWidth;
+            //webcamRequestedHeight = webcamtex.requestedHeight;
+
+            webcamTexture.Play();
+
+            webcamMat = new Mat(webcamTexture.height, webcamTexture.width, CvType.CV_8UC4);
+
+            initialized = true;
+
+            Debug.Log("Webcam request width: " + webcamTexture.requestedWidth + ". Webcam requested height: " + webcamTexture.requestedHeight);
+        }
+    }
+
+    private void InitializeWebcamTexture()
+    {        
+        if (!String.IsNullOrEmpty(requestedDeviceName))
+            InitializeWebcamTextureWithDeviceName();
+
+        if (webcamTexture == null)
+            InitializeWebcamTextureWithDefaultDevice();
+    }
+
+    private void InitializeWebcamTextureWithDeviceName()
+    {
         WebCamDevice[] devices = WebCamTexture.devices;
 
-        if (!String.IsNullOrEmpty(requestedDeviceName))
+        for (int i = 0; i < devices.Length; i++)
         {
-            for (int i = 0; i < devices.Length; i++)
+            if (devices[i].name == requestedDeviceName)
             {
-                if (devices[i].name == requestedDeviceName)
-                {
-                    webcamtex = new WebCamTexture(requestedDeviceName, webcamRequestedWidth, webcamRequestedHeight);
-                    break;
-                }
+                webcamTexture = new WebCamTexture(requestedDeviceName, webcamRequestedWidth, webcamRequestedHeight);
+                deviceIndex = i;
+                break;
             }
         }
+    }
 
-        if (webcamtex == null)
-            webcamtex = new WebCamTexture(webcamRequestedWidth, webcamRequestedHeight);        
+    private void InitializeWebcamTextureWithDefaultDevice()
+    {
+        webcamTexture = new WebCamTexture(webcamRequestedWidth, webcamRequestedHeight);
+        deviceIndex = 0;
+    }
 
-        webcamRequestedWidth = webcamtex.requestedWidth;
-        webcamRequestedHeight = webcamtex.requestedHeight;
+    //Will probably get weird behavior here if width and height are different from before
+    public void ChangeWebcamTextureToNextAvailable()
+    {
+        string nextWebcamDeviceName = GetNextWebCamDevice().name;
 
-        webcamtex.Play();
+        webcamTexture.Stop();
 
-        Debug.Log("Webcam request width: " + webcamRequestedWidth + ". Webcam requested height: " + webcamRequestedHeight);
+        webcamTexture = new WebCamTexture(nextWebcamDeviceName, webcamRequestedWidth, webcamRequestedHeight);
+
+        webcamTexture.Play();
+
+        Debug.Log("Webcam request width: " + webcamTexture.requestedWidth + ". Webcam requested height: " + webcamTexture.requestedHeight + ". Webcam device name: " + nextWebcamDeviceName);
+    }
+
+    private WebCamDevice GetNextWebCamDevice()
+    {
+        WebCamDevice[] devices = WebCamTexture.devices;
+
+        WebCamDevice nextDevice;
+
+        int i = deviceIndex + 1;
+ 
+        if (i >= devices.Length)
+            i = 0;
+
+        nextDevice = devices[i];
+        deviceIndex = i;
+
+        return nextDevice;
+    }
+
+    public bool DidUpdateThisFrame()
+    {
+        return (initialized) ? webcamTexture.didUpdateThisFrame : false;
     }
 }

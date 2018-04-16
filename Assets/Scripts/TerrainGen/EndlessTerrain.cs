@@ -13,15 +13,15 @@ public class EndlessTerrain : MonoBehaviour
     public static Vector2 viewerPosition;
 
     public Material mapMaterial;
-    
+
     static MapGenerator mapGenerator;
 
     int chunkWidth;
     int chunkHeight;
 
-    int chunksVisibleInViewDst;
+    //int chunksVisibleInViewDst;
 
-    Vector2 numberOfChunks;
+    public Vector2 numberOfChunks;
 
     Dictionary<Vector2, TerrainChunk> terrainChunkDictionary = new Dictionary<Vector2, TerrainChunk>();
 
@@ -30,10 +30,13 @@ public class EndlessTerrain : MonoBehaviour
     //don't think we need, sebastion uses to remove chunks that are no longer visible
     List<TerrainChunk> terrainChunksVisibleLastUpdate = new List<TerrainChunk>();
 
+    WebcamTextureController webcamController;
+
     void Start()
-    {       
+    {
         mapGenerator = FindObjectOfType<MapGenerator>();
-        
+        webcamController = gameObject.GetComponent<WebcamTextureController>();
+
         chunkWidth = mapGenerator.MapChunkWidth - 1;
         chunkHeight = mapGenerator.MapChunkHeight - 1;
 
@@ -49,7 +52,7 @@ public class EndlessTerrain : MonoBehaviour
             numberOfChunks.y = mapGenerator.imageTex.height / chunkHeight;
         }
 
-        else if(mapGenerator.imageMode == MapGenerator.ImageMode.FromWebcam)
+        else if (mapGenerator.imageMode == MapGenerator.ImageMode.FromWebcam)
         {
             numberOfChunks.x = mapGenerator.MapWidth / chunkWidth;
             numberOfChunks.y = mapGenerator.MapHeight / chunkHeight;
@@ -58,26 +61,40 @@ public class EndlessTerrain : MonoBehaviour
         terrainChunkArray = new TerrainChunk[(int)numberOfChunks.y, (int)numberOfChunks.x];
 
         InitializeChunks();
-        
+
     }
 
-    //I think we can get rid of this update method?
     void Update()
     {
         if (mapGenerator.imageMode == MapGenerator.ImageMode.FromWebcam)
         {
-            foreach (TerrainChunk terrainChunk in terrainChunkArray)
+            if (webcamController.DidUpdateThisFrame())
             {
-                terrainChunk.UpdateTerrainChunk();
+                FindObjectOfType<FaceDetection>().UpdateFaceTexture();
+
+                mapGenerator.UpdateFullNoiseMap();
+
+                if (mapGenerator.drawMode == MapGenerator.DrawMode.Mesh)
+                {
+                    foreach (TerrainChunk terrainChunk in terrainChunkArray)
+                    {
+                        terrainChunk.UpdateTerrainChunk();
+                    }
+                }
+
+                else if (mapGenerator.drawMode == MapGenerator.DrawMode.NoiseMap)
+                {
+                    mapGenerator.DrawMapInEditor();
+                }
             }
         }
     }
 
     void InitializeChunks()
     {
-        for(int y = 0; y < numberOfChunks.y; y++)
+        for (int y = 0; y < numberOfChunks.y; y++)
         {
-            for(int x = 0; x < numberOfChunks.x; x++)
+            for (int x = 0; x < numberOfChunks.x; x++)
             {
                 terrainChunkArray[y, x] = new TerrainChunk(new Vector2(x, y), chunkWidth, chunkHeight, transform, mapMaterial);
             }
@@ -87,13 +104,16 @@ public class EndlessTerrain : MonoBehaviour
     public class TerrainChunk
     {
         GameObject meshObject;
-        Vector2 position;
+        Vector2 coord;
 
         MeshRenderer meshRenderer;
         MeshFilter meshFilter;
 
         public TerrainChunk(Vector2 coord, int width, int height, Transform parent, Material material)
         {
+            this.coord = coord;
+
+            Vector2 position;
             position.x = coord.x * width;
             position.y = coord.y * height;
 
@@ -112,10 +132,10 @@ public class EndlessTerrain : MonoBehaviour
 
             meshFilter.mesh = meshData.CreateMesh();
         }
-        
+
         public void UpdateTerrainChunk()
         {
-            MeshData meshData = mapGenerator.RequestMeshData(position);
+            MeshData meshData = mapGenerator.RequestMeshData(coord);
 
             if (meshFilter == null)
                 meshFilter.mesh = meshData.CreateMesh();

@@ -11,17 +11,21 @@ namespace TerrainGenData
 
         protected virtual void OnValidate()
         {
+#if UNITY_EDITOR
             if (autoUpdate)
             {
                 UnityEditor.EditorApplication.update += NotifyOfUpdatedValues;
             }
+#endif
         }
 
         public void NotifyOfUpdatedValues()
         {
+#if UNITY_EDITOR
             UnityEditor.EditorApplication.update -= NotifyOfUpdatedValues;
             if (OnValuesUpdated != null)
                 OnValuesUpdated();
+#endif
         }
     }
 }
