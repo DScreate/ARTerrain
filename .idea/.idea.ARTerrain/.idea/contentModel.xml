@@ -8,6 +8,7 @@
       <e p="Assembly-CSharp-firstpass.csproj" t="IncludeRecursive" />
       <e p="Assembly-CSharp.csproj" t="IncludeRecursive" />
       <e p="Assets\Editor" t="Include">
+        <e p="CameraRailUpdate.cs" t="Include" />
         <e p="MapGeneratorEditor.cs" t="Include" />
         <e p="UpdateDataEditor.cs" t="Include" />
       </e>
@@ -15,190 +16,6 @@
         <e p="Editor" t="Include">
           <e p="iOS_BuildPostprocessor.cs" t="Include" />
           <e p="OpenCVForUnityMenuItem.cs" t="Include" />
-        </e>
-        <e p="Examples" t="Include">
-          <e p="Advanced" t="Include">
-            <e p="ComicFilterExample" t="Include">
-              <e p="ComicFilterExample.cs" t="Include" />
-            </e>
-            <e p="GreenScreenExample" t="Include">
-              <e p="GreenScreenExample.cs" t="Include" />
-            </e>
-            <e p="HandPoseEstimationExample" t="Include">
-              <e p="ColorBlobDetector.cs" t="Include" />
-              <e p="HandPoseEstimationExample.cs" t="Include" />
-            </e>
-            <e p="MultiObjectTrackingBasedOnColorExample" t="Include">
-              <e p="ColorObject.cs" t="Include" />
-              <e p="MultiObjectTrackingBasedOnColorExample.cs" t="Include" />
-            </e>
-            <e p="PolygonFilterExample" t="Include">
-              <e p="PolygonFilterExample.cs" t="Include" />
-            </e>
-          </e>
-          <e p="Basic" t="Include">
-            <e p="Texture2DToMatExample" t="Include">
-              <e p="Texture2DToMatExample.cs" t="Include" />
-            </e>
-            <e p="WebCamTextureToMatExample" t="Include">
-              <e p="WebCamTextureToMatExample.cs" t="Include" />
-            </e>
-            <e p="WebCamTextureToMatHelperExample" t="Include">
-              <e p="WebCamTextureToMatHelperExample.cs" t="Include" />
-            </e>
-          </e>
-          <e p="ContribModules" t="Include">
-            <e p="aruco" t="Include">
-              <e p="ArUcoExample" t="Include">
-                <e p="ArUcoCreateMarkerExample.cs" t="Include" />
-                <e p="ArUcoExample.cs" t="Include" />
-                <e p="ArUcoWebCamTextureExample.cs" t="Include" />
-                <e p="ARUtils.cs" t="Include" />
-              </e>
-            </e>
-            <e p="face" t="Include">
-              <e p="FaceRecognizerExample" t="Include">
-                <e p="FaceRecognizerExample.cs" t="Include" />
-              </e>
-            </e>
-            <e p="plot" t="Include">
-              <e p="PlotExample" t="Include">
-                <e p="PlotExample.cs" t="Include" />
-              </e>
-            </e>
-            <e p="text" t="Include">
-              <e p="TextExample" t="Include">
-                <e p="TextDetectionExample.cs" t="Include" />
-                <e p="TextRecognitionExample.cs" t="Include" />
-              </e>
-            </e>
-            <e p="tracking" t="Include">
-              <e p="TrackingExample" t="Include">
-                <e p="TrackingExample.cs" t="Include" />
-              </e>
-            </e>
-          </e>
-          <e p="MainModules" t="Include">
-            <e p="calib3d" t="Include">
-              <e p="StereoBMExample" t="Include">
-                <e p="StereoBMExample.cs" t="Include" />
-              </e>
-            </e>
-            <e p="core" t="Include">
-              <e p="PCAExample" t="Include">
-                <e p="PCAExample.cs" t="Include" />
-              </e>
-            </e>
-            <e p="dnn" t="Include">
-              <e p="CaffeExample" t="Include">
-                <e p="MobileNetSSDExample.cs" t="Include" />
-                <e p="MobileNetSSDWebCamTextureExample.cs" t="Include" />
-                <e p="ResnetSSDFaceDetectionExample.cs" t="Include" />
-              </e>
-              <e p="TensorFlowExample" t="Include">
-                <e p="TensorFlowWebCamTextureExample.cs" t="Include" />
-              </e>
-              <e p="YoloExample" t="Include">
-                <e p="YoloObjectDetectionExample.cs" t="Include" />
-                <e p="YoloObjectDetectionWebCamTextureExample.cs" t="Include" />
-              </e>
-            </e>
-            <e p="features2d" t="Include">
-              <e p="Feature2DExample" t="Include">
-                <e p="Feature2DExample.cs" t="Include" />
-              </e>
-              <e p="MSERExample" t="Include">
-                <e p="MSERExample.cs" t="Include" />
-              </e>
-              <e p="SimpleBlobExample" t="Include">
-                <e p="SimpleBlobExample.cs" t="Include" />
-              </e>
-            </e>
-            <e p="imgproc" t="Include">
-              <e p="CircleDetectionExample" t="Include">
-                <e p="CircleDetectionExample.cs" t="Include" />
-              </e>
-              <e p="ConnectedComponentsExample" t="Include">
-                <e p="ConnectedComponentsExample.cs" t="Include" />
-              </e>
-              <e p="ConvexHullExample" t="Include">
-                <e p="ConvexHullExample.cs" t="Include" />
-              </e>
-              <e p="DrawingExample" t="Include">
-                <e p="DrawingExample.cs" t="Include" />
-              </e>
-              <e p="GrabCutExample" t="Include">
-                <e p="GrabCutExample.cs" t="Include" />
-              </e>
-              <e p="HoughLinesPExample" t="Include">
-                <e p="HoughLinesPExample.cs" t="Include" />
-              </e>
-              <e p="MatchShapesExample" t="Include">
-                <e p="MatchShapesExample.cs" t="Include" />
-              </e>
-              <e p="MatchTemplateExample" t="Include">
-                <e p="MatchTemplateExample.cs" t="Include" />
-              </e>
-              <e p="ThresholdExample" t="Include">
-                <e p="ThresholdExample.cs" t="Include" />
-              </e>
-              <e p="WrapPerspectiveExample" t="Include">
-                <e p="WrapPerspectiveExample.cs" t="Include" />
-              </e>
-            </e>
-            <e p="ml" t="Include">
-              <e p="SVMExample" t="Include">
-                <e p="SVMExample.cs" t="Include" />
-              </e>
-            </e>
-            <e p="objdetect" t="Include">
-              <e p="FaceDetectionExample" t="Include">
-                <e p="AsynchronousFaceDetectionWebCamTextureExample.cs" t="Include" />
-                <e p="FaceDetectionExample.cs" t="Include" />
-                <e p="FaceDetectionWebCamTextureExample.cs" t="Include" />
-              </e>
-              <e p="HOGDescriptorExample" t="Include">
-                <e p="HOGDescriptorExample.cs" t="Include" />
-              </e>
-            </e>
-            <e p="photo" t="Include">
-              <e p="InpaintExample" t="Include">
-                <e p="InpaintExample.cs" t="Include" />
-              </e>
-              <e p="SeamlessCloneExample" t="Include">
-                <e p="SeamlessCloneExample.cs" t="Include" />
-              </e>
-            </e>
-            <e p="shape" t="Include">
-              <e p="ThinPlateSplineShapeTransformerExample" t="Include">
-                <e p="ThinPlateSplineShapeTransformerExample.cs" t="Include" />
-              </e>
-            </e>
-            <e p="video" t="Include">
-              <e p="BackgroundSubtractorMOG2Example" t="Include">
-                <e p="BackgroundSubtractorMOG2Example.cs" t="Include" />
-              </e>
-              <e p="CamShiftExample" t="Include">
-                <e p="CamShiftExample.cs" t="Include" />
-              </e>
-              <e p="OpticalFlowExample" t="Include">
-                <e p="OpticalFlowExample.cs" t="Include" />
-              </e>
-            </e>
-            <e p="videoio" t="Include">
-              <e p="VideoCaptureExample" t="Include">
-                <e p="VideoCaptureExample.cs" t="Include" />
-              </e>
-              <e p="VideoWriterExample" t="Include">
-                <e p="VideoWriterExample.cs" t="Include" />
-              </e>
-            </e>
-          </e>
-          <e p="OpenCVForUnityExample.cs" t="Include" />
-          <e p="OptimizationWebCamTextureToMatHelper.cs" t="Include" />
-          <e p="ShowLicense.cs" t="Include" />
-          <e p="TouchController.cs" t="Include" />
-          <e p="WebCamTextureToMatHelper.cs" t="Include" />
         </e>
         <e p="OpenCV_LICENSE.txt" t="Include" />
         <e p="org" t="Include">
@@ -552,8 +369,6 @@
       <e p="Assets\Scripts" t="Include">
         <e p="Camera" t="Include">
           <e p="CameraMover.cs" t="Include" />
-          <e p="FaceCameraMover.cs" t="Include" />
-          <e p="orbitCamera.cs" t="Include" />
           <e p="RailSystem.cs" t="Include" />
         </e>
         <e p="ComputerVision" t="Include">

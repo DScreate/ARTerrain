@@ -26,7 +26,12 @@ namespace CameraMovement
 
         public void setNodes()
         {
-            railNodes = GetComponentsInChildren<Transform>();
+            Transform[] holder = GetComponentsInChildren<Transform>();
+            railNodes = new Transform[holder.Length -1];
+            for (int ix = 1; ix < holder.Length; ix++)
+            {
+                railNodes[ix - 1] = holder[ix];
+            }
         }
 
         public Vector3 PositionOnRailSystem(int seg, float ratio, Mode playMode)
@@ -112,14 +117,17 @@ namespace CameraMovement
 
             return Vector3.Lerp(pointOne, pointTwo, ratio);
         }
-        /*/
+        
+        #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
+            if(railNodes == null)
+                setNodes();
             for (int i = 0; i < railNodes.Length - 1; i++)
             {
-                Handles.DrawDottedLine(railNodes[i].position, railNodes[i + 1].position, 3.0f);
+                Gizmos.DrawLine(railNodes[i].position, railNodes[i + 1].position);
             }
         }
-        */
+        #endif
     }
 }
