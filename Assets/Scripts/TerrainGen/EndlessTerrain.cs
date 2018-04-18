@@ -19,6 +19,8 @@ public class EndlessTerrain : MonoBehaviour
     int chunkWidth;
     int chunkHeight;
 
+    private FaceDetection _face;
+
     //int chunksVisibleInViewDst;
 
     public Vector2 numberOfChunks;
@@ -39,6 +41,8 @@ public class EndlessTerrain : MonoBehaviour
 
         chunkWidth = mapGenerator.MapChunkWidth - 1;
         chunkHeight = mapGenerator.MapChunkHeight - 1;
+
+        _face = FindObjectOfType<FaceDetection>();
 
         if (mapGenerator.imageMode == MapGenerator.ImageMode.PureNoise)
         {
@@ -70,7 +74,7 @@ public class EndlessTerrain : MonoBehaviour
         {
             if (webcamController.DidUpdateThisFrame())
             {
-                FindObjectOfType<FaceDetection>().UpdateFaceTexture();
+                _face.UpdateFaceTexture();
 
                 mapGenerator.UpdateFullNoiseMap();
 
