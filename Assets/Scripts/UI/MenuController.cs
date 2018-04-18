@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using CameraMovement;
 using TerrainGenData;
 using UnityEngine;
 
@@ -11,6 +12,7 @@ public class MenuController : MonoBehaviour {
     public NoiseData noiseData;
     public TextureData textureData;
     public MapGenerator mapGen;
+    public CameraMover cameraMover;
 
 	void Start () {
         webcamController = MapGenerator.webcamController;
@@ -167,6 +169,14 @@ public class MenuController : MonoBehaviour {
     }
     
     
+    #endregion
+    
+    #region Camera
+
+    public void SetCameraSpeed(float vin)
+    {
+        cameraMover.speed = (int) vin;
+    }
     #endregion
 
 }
