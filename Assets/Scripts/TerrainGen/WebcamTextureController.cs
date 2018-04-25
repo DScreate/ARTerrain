@@ -1,13 +1,32 @@
 ﻿using System;
 using UnityEngine;
 using OpenCVForUnity;
+using System.Collections;
 
 public class WebcamTextureController : MonoBehaviour {
 
     public string requestedDeviceName;
 
-    public int webcamRequestedWidth = 640;
-    public int webcamRequestedHeight = 480;
+    private int defaultWidth = 640;
+    private int defaultHeight = 480;
+
+    public int webcamRequestedWidth;
+    public int webcamRequestedHeight;
+
+    public int WebcamHeight
+    {
+        get {
+            return webcamTexture.height;
+        }
+    }
+
+    public int WebcamWidth
+    {
+        get
+        {
+            return webcamTexture.width;
+        }
+    }
 
     private WebCamTexture webcamTexture;
 
@@ -45,28 +64,40 @@ public class WebcamTextureController : MonoBehaviour {
     {
         if (!initialized)
         {
-            InitializeWebcamTexture();            
-
-            //webcamRequestedWidth = webcamtex.requestedWidth;
-            //webcamRequestedHeight = webcamtex.requestedHeight;
+            InitializeWebcamTexture();                        
 
             webcamTexture.Play();
+
+            StartCoroutine(WaitForWebcamToUpdate());
 
             webcamMat = new Mat(webcamTexture.height, webcamTexture.width, CvType.CV_8UC4);
 
             initialized = true;
 
-            Debug.Log("Webcam request width: " + webcamTexture.requestedWidth + ". Webcam requested height: " + webcamTexture.requestedHeight);
+            Debug.Log("Webcam width: " + webcamTexture.width + ". Webcam height: " + webcamTexture.height);
+
+            //Need to delete this and change references in other classes to WebcamHeight and WebcamWidth
+            webcamRequestedWidth = webcamTexture.width;
+            webcamRequestedHeight = webcamTexture.height;
         }
     }
 
     private void InitializeWebcamTexture()
-    {        
+    {
+        if (webcamRequestedWidth < 100 || webcamRequestedHeight < 100)
+            SetDefaultValuesForWebcamSize();
+
         if (!String.IsNullOrEmpty(requestedDeviceName))
             InitializeWebcamTextureWithDeviceName();
 
         if (webcamTexture == null)
             InitializeWebcamTextureWithDefaultDevice();
+    }
+
+    private void SetDefaultValuesForWebcamSize()
+    {
+        webcamRequestedWidth = defaultWidth;
+        webcamRequestedHeight = defaultHeight;        
     }
 
     private void InitializeWebcamTextureWithDeviceName()
@@ -90,6 +121,14 @@ public class WebcamTextureController : MonoBehaviour {
         deviceIndex = 0;
     }
 
+    private IEnumerator WaitForWebcamToUpdate()
+    {
+        while (webcamTexture.width < 100)
+        {
+            yield return new WaitForEndOfFrame();
+        }
+    }
+
     //Will probably get weird behavior here if width and height are different from before
     public void ChangeWebcamTextureToNextAvailable()
     {
@@ -101,7 +140,9 @@ public class WebcamTextureController : MonoBehaviour {
 
         webcamTexture.Play();
 
-        Debug.Log("Webcam request width: " + webcamTexture.requestedWidth + ". Webcam requested height: " + webcamTexture.requestedHeight + ". Webcam device name: " + nextWebcamDeviceName);
+        StartCoroutine(WaitForWebcamToUpdate());
+
+        Debug.Log("Webcam width: " + webcamTexture.width + ". Webcam height: " + webcamTexture.height + ". Webcam device name: " + nextWebcamDeviceName);
     }
 
     private WebCamDevice GetNextWebCamDevice()
