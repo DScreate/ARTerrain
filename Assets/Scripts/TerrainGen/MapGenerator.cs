@@ -34,76 +34,111 @@ public class MapGenerator : MonoBehaviour
     private int mapWidth;
     private int mapHeight;
 
+    private int numChunkWidth;
+    private int numChunkHeight;
+
     public int MapChunkWidth
     {
-        get { return mapChunkWidth; }
+        get
+        {
+            return mapChunkWidth;
+        }
     }
 
     public int MapChunkHeight
     {
-        get { return mapChunkHeight; }
+        get
+        {
+            return mapChunkHeight;
+        }
     }
 
     public int MapWidth
     {
-        get { return mapWidth; }
+        get
+        {
+            return mapWidth;
+        }
     }
 
     public int MapHeight
     {
-        get { return mapHeight; }
+        get
+        {
+            return mapHeight;
+        }
+    }
+    public int NumChunkWidth
+    {
+        get
+        {
+            return numChunkWidth;
+        }
     }
 
-    public float[,] chunkNoiseMap;
-    public float[,] fullNoiseMap;
+    public int NumChunkHeight
+    {
+        get
+        {
+            return numChunkHeight;
+        }
+    }
+
+    private float[,] chunkNoiseMap;
+    private float[,] fullNoiseMap;
     private float[,] heightMap;
-    
 
-    void OnValuesUpdate()
-    {
-        UpdateWaterHeight();
-    }
-    public void OnTextureValuesUpdated()
-    {
-        textureData.ApplyToMaterial(terrainMaterial);
-
-        UpdateWaterHeight();
-    }
+    private int test;
 
     private void Start()
+    {       
+        webcamController = gameObject.GetComponent(typeof(WebcamTextureController)) as WebcamTextureController;
+
+        webcamController.Initialize();
+
+        InitializeMapDimensions();
+
+        fullNoiseMap = NoiseGenerator.GenerateNoiseMap(mapWidth, mapHeight, noiseData.seed, noiseData.noiseScale, noiseData.octaves, noiseData.persistance, noiseData.lacunarity, noiseData.offset, noiseData.normalizeMode);
+
+        textureData.ApplyToMaterial(terrainMaterial);        
+    }
+
+    //I forget why, but Sebastion explains in a video that these variables need to be chunk size + 1
+    private void InitializeMapDimensions()
+    {                      
+        InitializeWidthData();
+        InitializeHeightData();
+    }
+
+    private void InitializeWidthData()
     {
-       
-            webcamController = gameObject.GetComponent(typeof(WebcamTextureController)) as WebcamTextureController;
+        mapWidth = webcamController.WebcamWidth;
 
-            webcamController.Initialize();
+        mapChunkWidth = InitializeChunkData(mapWidth);
 
-            mapChunkWidth = webcamController.webcamRequestedWidth;
-            mapChunkHeight = webcamController.webcamRequestedHeight;
+        numChunkWidth = mapWidth / mapChunkWidth;
+    }
+    private void InitializeHeightData()
+    {
+        mapHeight = webcamController.WebcamHeight;
 
-            mapWidth = webcamController.webcamRequestedWidth;
-            mapHeight = webcamController.webcamRequestedHeight;
+        mapChunkHeight = InitializeChunkData(mapHeight);
 
-            fullNoiseMap = NoiseGenerator.GenerateNoiseMap(webcamController.WebcamTex.width, webcamController.WebcamTex.height, noiseData.seed, noiseData.noiseScale, noiseData.octaves, noiseData.persistance, noiseData.lacunarity, noiseData.offset, noiseData.normalizeMode);
-                
-            while (mapChunkWidth > 250 || mapChunkHeight > 250)
-            {
-                if (mapChunkWidth % 2 != 0)
-                    Debug.Log("Width " + mapChunkWidth + " is not evenly divisble by 2");
+        numChunkHeight = mapHeight / mapChunkHeight;
+    }
 
-                mapChunkWidth /= 2;
+    private int InitializeChunkData(int chunkSize)
+    {
+        while (chunkSize > 250)
+        {
+            if (chunkSize % 2 != 0)
+                Debug.Log("Chunk size " + chunkSize + " is not evenly divisble by 2");
 
-                if (mapChunkHeight % 2 != 0)
-                    Debug.Log("Height " + mapChunkHeight + " is not evenly divisble by 2");
+            chunkSize /= 2;
+        }
 
-                mapChunkHeight /= 2;
-            }
-
-            //I forget why, but Sebastion explains in a video that these variables need to be chunk size + 1
-            mapChunkWidth = mapChunkWidth + 1;
-            mapChunkHeight = mapChunkHeight + 1;
-
-            textureData.ApplyToMaterial(terrainMaterial);
-        
+        //I forget why, but Sebastion explains in a video that these variables need to be chunk size + 1
+        return chunkSize++;
     }
 
     public MeshData RequestMeshData(Vector2 chunkPosition)
@@ -129,6 +164,16 @@ public class MapGenerator : MonoBehaviour
         textureData.UpdateMeshHeights(terrainMaterial, terrainData.minHeight, terrainData.maxHeight);
 
         return chunkNoiseMap;
+    }
+    void OnValuesUpdate()
+    {
+        UpdateWaterHeight();
+    }
+    public void OnTextureValuesUpdated()
+    {
+        textureData.ApplyToMaterial(terrainMaterial);
+
+        UpdateWaterHeight();
     }
     public void UpdateWaterHeight()
     {
