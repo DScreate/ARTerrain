@@ -26,13 +26,13 @@ public class MapGenerator : MonoBehaviour
     [Range(0, 6)]
     public int levelOfDetail;
 
-    //need to create getters? need to make it so these values can't be changed once they're set in Start()
-
-    private int mapChunkWidth = 241;
-    private int mapChunkHeight = 241;
+    //need to create getters? need to make it so these values can't be changed once they're set in Start()    
 
     private int mapWidth;
     private int mapHeight;
+
+    private int mapChunkWidth;
+    private int mapChunkHeight;
 
     private int numChunkWidth;
     private int numChunkHeight;

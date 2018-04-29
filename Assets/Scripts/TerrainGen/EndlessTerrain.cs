@@ -16,14 +16,15 @@ public class EndlessTerrain : MonoBehaviour
 
     static MapGenerator mapGenerator;
 
-    int chunkWidth;
-    int chunkHeight;
+    private int chunkWidth;
+    private int chunkHeight;
+
+    private int numChunkWidth;
+    private int numChunkHeight;
 
     private FaceDetection _face;
 
     //int chunksVisibleInViewDst;
-
-    public Vector2 numberOfChunks;
 
     Dictionary<Vector2, TerrainChunk> terrainChunkDictionary = new Dictionary<Vector2, TerrainChunk>();
 
@@ -44,13 +45,12 @@ public class EndlessTerrain : MonoBehaviour
 
         _face = FindObjectOfType<FaceDetection>();
 
-        numberOfChunks.x = mapGenerator.MapWidth / chunkWidth;
-        numberOfChunks.y = mapGenerator.MapHeight / chunkHeight;
+        numChunkWidth = mapGenerator.NumChunkWidth;
+        numChunkHeight = mapGenerator.NumChunkHeight;
 
-        terrainChunkArray = new TerrainChunk[(int)numberOfChunks.y, (int)numberOfChunks.x];
+        terrainChunkArray = new TerrainChunk[numChunkWidth, numChunkHeight];
 
         InitializeChunks();
-
     }
 
     void Update()
@@ -71,9 +71,9 @@ public class EndlessTerrain : MonoBehaviour
 
     void InitializeChunks()
     {
-        for (int y = 0; y < numberOfChunks.y; y++)
+        for (int y = 0; y < numChunkHeight; y++)
         {
-            for (int x = 0; x < numberOfChunks.x; x++)
+            for (int x = 0; x < numChunkWidth; x++)
             {
                 terrainChunkArray[y, x] = new TerrainChunk(new Vector2(x, y), chunkWidth, chunkHeight, transform, mapMaterial);
             }
