@@ -6,7 +6,7 @@ using TerrainGenData;
 //I think we can delete colormap?
 public class MapGenerator : MonoBehaviour
 {
-    [Tooltip("Set the name of the device to use.")]
+    //[Tooltip("Set the name of the device to use.")]
 
     public DataForTerrain terrainData;
     public NoiseData noiseData;
@@ -14,7 +14,9 @@ public class MapGenerator : MonoBehaviour
 
     public Material terrainMaterial;
 
-    public Texture2D imageTex;
+    public static WebcamTextureController webcamController;
+    public GameObject Water;
+
 
     [Range(0, 1)]
     public float minGreyValue;
@@ -52,33 +54,20 @@ public class MapGenerator : MonoBehaviour
         get { return mapHeight; }
     }
 
-    public bool autoUpdate;
-
-    public static WebcamTextureController webcamController;
-    //public Texture2D textureForNoise;
-
     public float[,] chunkNoiseMap;
     public float[,] fullNoiseMap;
     private float[,] heightMap;
-
-    public GameObject Water;
+    
 
     void OnValuesUpdate()
     {
-        //if(Application.isPlaying)
-            UpdateWaterHeight();
-
-        if (!Application.isPlaying)
-        {
-            DrawMapInEditor();
-        }
+        UpdateWaterHeight();
     }
     public void OnTextureValuesUpdated()
     {
         textureData.ApplyToMaterial(terrainMaterial);
 
-        if (Application.isPlaying)
-            UpdateWaterHeight();
+        UpdateWaterHeight();
     }
 
     private void Start()
@@ -115,25 +104,6 @@ public class MapGenerator : MonoBehaviour
 
             textureData.ApplyToMaterial(terrainMaterial);
         
-    }
-
-    public void DrawMapInEditor()
-    {
-        heightMap = GenerateMapData(Vector2.zero);
-        MapDisplay display = FindObjectOfType<MapDisplay>();
-
-       /* if (drawMode == DrawMode.NoiseMap)
-        {
-            if (imageMode == ImageMode.FromWebcam)
-            {
-                heightMap = TextureGenerator.TextureToNoise(FindObjectOfType<FaceDetection>().FaceTexture, mapWidth, mapHeight);
-            }
-            display.DrawTexture(TextureGenerator.TextureFromHeightMap(heightMap));
-        }
-        else if (drawMode == DrawMode.Mesh)
-        {
-            display.DrawMesh(MeshGenerator.GenerateTerrainMesh(heightMap, terrainData.meshHeightMultiplier, terrainData.meshHeightCurve, levelOfDetail));
-        }*/
     }
 
     public MeshData RequestMeshData(Vector2 chunkPosition)
