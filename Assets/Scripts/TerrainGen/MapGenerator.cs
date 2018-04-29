@@ -6,12 +6,7 @@ using TerrainGenData;
 //I think we can delete colormap?
 public class MapGenerator : MonoBehaviour
 {
-
-    public enum DrawMode { NoiseMap, Mesh };
-    public enum ImageMode { PureNoise, FromImage, FromWebcam }
-    [TooltipAttribute("Set the name of the device to use.")]
-
-    public DrawMode drawMode;
+    [Tooltip("Set the name of the device to use.")]
 
     public DataForTerrain terrainData;
     public NoiseData noiseData;
@@ -19,7 +14,6 @@ public class MapGenerator : MonoBehaviour
 
     public Material terrainMaterial;
 
-    public ImageMode imageMode = ImageMode.FromWebcam;
     public Texture2D imageTex;
 
     [Range(0, 1)]
@@ -89,33 +83,19 @@ public class MapGenerator : MonoBehaviour
 
     private void Start()
     {
-        if (imageMode == ImageMode.FromImage || imageMode == ImageMode.FromWebcam)
-        {
-            if (imageMode == ImageMode.FromWebcam)
-            {
-                webcamController = gameObject.GetComponent(typeof(WebcamTextureController)) as WebcamTextureController;
+       
+            webcamController = gameObject.GetComponent(typeof(WebcamTextureController)) as WebcamTextureController;
 
-                webcamController.Initialize();
+            webcamController.Initialize();
 
-                mapChunkWidth = webcamController.webcamRequestedWidth;
-                mapChunkHeight = webcamController.webcamRequestedHeight;
+            mapChunkWidth = webcamController.webcamRequestedWidth;
+            mapChunkHeight = webcamController.webcamRequestedHeight;
 
-                mapWidth = webcamController.webcamRequestedWidth;
-                mapHeight = webcamController.webcamRequestedHeight;
+            mapWidth = webcamController.webcamRequestedWidth;
+            mapHeight = webcamController.webcamRequestedHeight;
 
-                fullNoiseMap = NoiseGenerator.GenerateNoiseMap(webcamController.WebcamTex.width, webcamController.WebcamTex.height, noiseData.seed, noiseData.noiseScale, noiseData.octaves, noiseData.persistance, noiseData.lacunarity, noiseData.offset, noiseData.normalizeMode);
-                //textureForNoise = new Texture2D(webcamController.WebcamTex.width, webcamController.WebcamTex.height);
-            }
-
-            else
-            {
-                mapChunkWidth = imageTex.width;
-                mapChunkHeight = imageTex.height;
-
-                mapWidth = imageTex.width;
-                mapHeight = imageTex.height;
-            }
-
+            fullNoiseMap = NoiseGenerator.GenerateNoiseMap(webcamController.WebcamTex.width, webcamController.WebcamTex.height, noiseData.seed, noiseData.noiseScale, noiseData.octaves, noiseData.persistance, noiseData.lacunarity, noiseData.offset, noiseData.normalizeMode);
+                
             while (mapChunkWidth > 250 || mapChunkHeight > 250)
             {
                 if (mapChunkWidth % 2 != 0)
@@ -134,7 +114,7 @@ public class MapGenerator : MonoBehaviour
             mapChunkHeight = mapChunkHeight + 1;
 
             textureData.ApplyToMaterial(terrainMaterial);
-        }
+        
     }
 
     public void DrawMapInEditor()
@@ -142,7 +122,7 @@ public class MapGenerator : MonoBehaviour
         heightMap = GenerateMapData(Vector2.zero);
         MapDisplay display = FindObjectOfType<MapDisplay>();
 
-        if (drawMode == DrawMode.NoiseMap)
+       /* if (drawMode == DrawMode.NoiseMap)
         {
             if (imageMode == ImageMode.FromWebcam)
             {
@@ -152,8 +132,8 @@ public class MapGenerator : MonoBehaviour
         }
         else if (drawMode == DrawMode.Mesh)
         {
-            display.DrawMesh(MeshGenerator.GenerateTerrainMesh(heightMap, terrainData.meshHeightMultiplier, terrainData.meshHeightCurve, levelOfDetail)/*, TextureGenerator.TextureFromColorMap(colorMap, mapChunkSize, mapChunkSize)*/);
-        }
+            display.DrawMesh(MeshGenerator.GenerateTerrainMesh(heightMap, terrainData.meshHeightMultiplier, terrainData.meshHeightCurve, levelOfDetail));
+        }*/
     }
 
     public MeshData RequestMeshData(Vector2 chunkPosition)
@@ -165,23 +145,9 @@ public class MapGenerator : MonoBehaviour
 
     float[,] GenerateMapData(Vector2 chunkPosition)
     {
-        if (imageMode == ImageMode.PureNoise)
-        {
-            chunkPosition.x *= mapChunkWidth;
-            chunkPosition.y *= mapChunkHeight;
-            chunkNoiseMap = NoiseGenerator.GenerateNoiseMap(mapChunkWidth, mapChunkHeight, noiseData.seed, noiseData.noiseScale, noiseData.octaves, noiseData.persistance, noiseData.lacunarity, chunkPosition + noiseData.offset, noiseData.normalizeMode);
-        }
-
-        else if (imageMode == ImageMode.FromImage && Application.isPlaying)
-        {
-            chunkNoiseMap = TextureGenerator.TextureToNoiseChunk(imageTex, chunkPosition, mapChunkWidth, mapChunkHeight);
-        }
-
-        else if (imageMode == ImageMode.FromWebcam && Application.isPlaying)
-        {
-            //noiseMap = TextureGenerator.WebcamTextureToNoiseChunk(webcamController.WebcamTex, coord, mapChunkWidth, mapChunkHeight);           
+        if (Application.isPlaying)
+        {   
             chunkNoiseMap = NoiseGenerator.LerpNoiseMapWithTextureToNoiseChunk(FindObjectOfType<FaceDetection>().FaceTexture, fullNoiseMap, noiseWeight, minGreyValue, mapChunkWidth, mapChunkHeight, chunkPosition);
-            //chunkNoiseMap = TextureGenerator.TextureToNoiseChunk(textureForNoise, coord, mapChunkWidth, mapChunkHeight);
         }
 
         else

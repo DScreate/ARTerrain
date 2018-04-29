@@ -44,23 +44,8 @@ public class EndlessTerrain : MonoBehaviour
 
         _face = FindObjectOfType<FaceDetection>();
 
-        if (mapGenerator.imageMode == MapGenerator.ImageMode.PureNoise)
-        {
-            numberOfChunks.x = pureNoiseChunks;
-            numberOfChunks.y = pureNoiseChunks;
-        }
-
-        else if (mapGenerator.imageMode == MapGenerator.ImageMode.FromImage)
-        {
-            numberOfChunks.x = mapGenerator.imageTex.width / chunkWidth;
-            numberOfChunks.y = mapGenerator.imageTex.height / chunkHeight;
-        }
-
-        else if (mapGenerator.imageMode == MapGenerator.ImageMode.FromWebcam)
-        {
-            numberOfChunks.x = mapGenerator.MapWidth / chunkWidth;
-            numberOfChunks.y = mapGenerator.MapHeight / chunkHeight;
-        }
+        numberOfChunks.x = mapGenerator.MapWidth / chunkWidth;
+        numberOfChunks.y = mapGenerator.MapHeight / chunkHeight;
 
         terrainChunkArray = new TerrainChunk[(int)numberOfChunks.y, (int)numberOfChunks.x];
 
@@ -70,28 +55,18 @@ public class EndlessTerrain : MonoBehaviour
 
     void Update()
     {
-        if (mapGenerator.imageMode == MapGenerator.ImageMode.FromWebcam)
-        {
             if (webcamController.DidUpdateThisFrame())
             {
                 _face.UpdateFaceTexture();
 
                 mapGenerator.UpdateFullNoiseMap();
 
-                if (mapGenerator.drawMode == MapGenerator.DrawMode.Mesh)
+                foreach (TerrainChunk terrainChunk in terrainChunkArray)
                 {
-                    foreach (TerrainChunk terrainChunk in terrainChunkArray)
-                    {
-                        terrainChunk.UpdateTerrainChunk();
-                    }
-                }
-
-                else if (mapGenerator.drawMode == MapGenerator.DrawMode.NoiseMap)
-                {
-                    mapGenerator.DrawMapInEditor();
-                }
+                    terrainChunk.UpdateTerrainChunk();
+                }               
             }
-        }
+        
     }
 
     void InitializeChunks()
