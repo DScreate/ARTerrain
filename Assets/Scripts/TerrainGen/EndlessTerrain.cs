@@ -37,13 +37,13 @@ public class EndlessTerrain : MonoBehaviour
 
     void Start()
     {
-        mapGenerator = FindObjectOfType<MapGenerator>();
-        webcamController = gameObject.GetComponent<WebcamTextureController>();
+        mapGenerator = gameObject.GetComponent(typeof(MapGenerator)) as MapGenerator;
+        webcamController = gameObject.GetComponent(typeof(WebcamTextureController)) as WebcamTextureController;
 
         chunkWidth = mapGenerator.MapChunkWidth - 1;
         chunkHeight = mapGenerator.MapChunkHeight - 1;
 
-        _face = FindObjectOfType<FaceDetection>();
+        _face = gameObject.GetComponent(typeof(FaceDetection)) as FaceDetection;
 
         numChunkWidth = mapGenerator.NumChunkWidth;
         numChunkHeight = mapGenerator.NumChunkHeight;
@@ -71,6 +71,7 @@ public class EndlessTerrain : MonoBehaviour
 
     void InitializeChunks()
     {
+        Debug.Log("Number of chunks for y = " + numChunkHeight + ". Number of chunks for x = " + numChunkWidth);
         for (int y = 0; y < numChunkHeight; y++)
         {
             for (int x = 0; x < numChunkWidth; x++)

@@ -15,6 +15,7 @@ public class MapGenerator : MonoBehaviour
     public Material terrainMaterial;
 
     public static WebcamTextureController webcamController;
+    private static FaceDetection face;
     public GameObject Water;
 
 
@@ -94,51 +95,54 @@ public class MapGenerator : MonoBehaviour
     {       
         webcamController = gameObject.GetComponent(typeof(WebcamTextureController)) as WebcamTextureController;
 
+        face = gameObject.GetComponent(typeof(FaceDetection)) as FaceDetection;
+
         webcamController.Initialize();
 
-        InitializeMapDimensions();
+        InitializeMapSizes();
+
+        InitializeChunkSizes();
+
+        InitializeNumOfChunks();
 
         fullNoiseMap = NoiseGenerator.GenerateNoiseMap(mapWidth, mapHeight, noiseData.seed, noiseData.noiseScale, noiseData.octaves, noiseData.persistance, noiseData.lacunarity, noiseData.offset, noiseData.normalizeMode);
 
         textureData.ApplyToMaterial(terrainMaterial);        
     }
 
-    //I forget why, but Sebastion explains in a video that these variables need to be chunk size + 1
-    private void InitializeMapDimensions()
-    {                      
-        InitializeWidthData();
-        InitializeHeightData();
-    }
-
-    private void InitializeWidthData()
+    private void InitializeMapSizes()
     {
         mapWidth = webcamController.WebcamWidth;
-
-        mapChunkWidth = InitializeChunkData(mapWidth);
-
-        numChunkWidth = mapWidth / mapChunkWidth;
-    }
-    private void InitializeHeightData()
-    {
         mapHeight = webcamController.WebcamHeight;
-
-        mapChunkHeight = InitializeChunkData(mapHeight);
-
-        numChunkHeight = mapHeight / mapChunkHeight;
     }
 
-    private int InitializeChunkData(int chunkSize)
+    private void InitializeChunkSizes()
     {
-        while (chunkSize > 250)
-        {
-            if (chunkSize % 2 != 0)
-                Debug.Log("Chunk size " + chunkSize + " is not evenly divisble by 2");
+        mapChunkWidth = mapWidth;
+        mapChunkHeight = mapHeight;
 
-            chunkSize /= 2;
+        while (mapChunkWidth > 250 || mapChunkHeight > 250)
+        {
+            if (mapChunkWidth % 2 != 0)
+                Debug.Log("Width " + mapChunkWidth + " is not evenly divisble by 2");
+
+            mapChunkWidth /= 2;
+
+            if (mapChunkHeight % 2 != 0)
+                Debug.Log("Height " + mapChunkHeight + " is not evenly divisble by 2");
+
+            mapChunkHeight /= 2;
         }
 
         //I forget why, but Sebastion explains in a video that these variables need to be chunk size + 1
-        return chunkSize++;
+        mapChunkWidth++;
+        mapChunkHeight++;        
+    }
+
+    private void InitializeNumOfChunks()
+    {
+        numChunkWidth = mapWidth / (mapChunkWidth - 1);
+        numChunkHeight = mapHeight / (mapChunkHeight - 1);
     }
 
     public MeshData RequestMeshData(Vector2 chunkPosition)
@@ -152,7 +156,7 @@ public class MapGenerator : MonoBehaviour
     {
         if (Application.isPlaying)
         {   
-            chunkNoiseMap = NoiseGenerator.LerpNoiseMapWithTextureToNoiseChunk(FindObjectOfType<FaceDetection>().FaceTexture, fullNoiseMap, noiseWeight, minGreyValue, mapChunkWidth, mapChunkHeight, chunkPosition);
+            chunkNoiseMap = NoiseGenerator.LerpNoiseMapWithTextureToNoiseChunk(face.FaceTexture, fullNoiseMap, noiseWeight, minGreyValue, mapChunkWidth, mapChunkHeight, chunkPosition);
         }
 
         else
