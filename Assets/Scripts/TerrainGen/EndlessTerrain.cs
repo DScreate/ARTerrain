@@ -71,7 +71,6 @@ public class EndlessTerrain : MonoBehaviour
 
     void InitializeChunks()
     {
-        Debug.Log("Number of chunks for y = " + numChunkHeight + ". Number of chunks for x = " + numChunkWidth);
         for (int y = 0; y < numChunkHeight; y++)
         {
             for (int x = 0; x < numChunkWidth; x++)
