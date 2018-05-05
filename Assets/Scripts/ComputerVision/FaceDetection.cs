@@ -45,7 +45,7 @@ public class FaceDetection : MonoBehaviour
 
     public bool DenoiseTexture;
 
-    /*
+    
     public OpenCVForUnity.Rect[] FaceLocations
     {
         get
@@ -59,7 +59,7 @@ public class FaceDetection : MonoBehaviour
             else
                 return faceLocations;
         }
-    } */
+    }
 
     void Start()
     {
@@ -106,13 +106,16 @@ public class FaceDetection : MonoBehaviour
                 cascade.detectMultiScale(grayscale, faces, 1.1, 2, 2, // TODO: objdetect.CV_HAAR_SCALE_IMAGE
                     new Size(grayscale.cols() * 0.2, grayscale.rows() * 0.2), new Size());
 
+
             faceLocations = faces.toArray();
 
             if (DenoiseTexture)
                 Photo.fastNlMeansDenoising(grayscale, grayscale);
 
+            Debug.Log(faceLocations.Length);
             for (int i = 0; i < faceLocations.Length; i++)
             {
+                ///Debug.Log(faceLocations[i]);
                 if (EqualizeTexture)
                     Imgproc.rectangle(grayscale, new Point(faceLocations[i].x, faceLocations[i].y), new Point(faceLocations[i].x + faceLocations[i].width, faceLocations[i].y + faceLocations[i].height), new Scalar(255, 255, 255, 255), 5);
 
@@ -126,5 +129,6 @@ public class FaceDetection : MonoBehaviour
             else
                 Utils.matToTexture2D(rgbaMat, faceTexture, webcamController.Colors);
         }
+
     }
 }

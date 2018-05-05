@@ -9,6 +9,7 @@ public class MapGenerator : MonoBehaviour
 
     public enum DrawMode { NoiseMap, Mesh };
     public enum ImageMode { PureNoise, FromImage, FromWebcam }
+    public Boolean FaceOnly = false;
     [TooltipAttribute("Set the name of the device to use.")]
 
     public DrawMode drawMode;
@@ -179,8 +180,9 @@ public class MapGenerator : MonoBehaviour
 
         else if (imageMode == ImageMode.FromWebcam && Application.isPlaying)
         {
-            //noiseMap = TextureGenerator.WebcamTextureToNoiseChunk(webcamController.WebcamTex, coord, mapChunkWidth, mapChunkHeight);           
-            chunkNoiseMap = NoiseGenerator.LerpNoiseMapWithTextureToNoiseChunk(FindObjectOfType<FaceDetection>().FaceTexture, fullNoiseMap, noiseWeight, minGreyValue, mapChunkWidth, mapChunkHeight, chunkPosition);
+            //noiseMap = TextureGenerator.WebcamTextureToNoiseChunk(webcamController.WebcamTex, coord, mapChunkWidth, mapChunkHeight);
+            FaceDetection fd = FindObjectOfType<FaceDetection>();
+            chunkNoiseMap = NoiseGenerator.LerpNoiseMapWithTextureToNoiseChunk(fd, fullNoiseMap, noiseWeight, minGreyValue, mapChunkWidth, mapChunkHeight, chunkPosition, FaceOnly);
             //chunkNoiseMap = TextureGenerator.TextureToNoiseChunk(textureForNoise, coord, mapChunkWidth, mapChunkHeight);
         }
 

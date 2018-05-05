@@ -92,12 +92,17 @@ public static class NoiseGenerator
         return noiseMap;
     }
 
-    public static float[,] LerpNoiseMapWithTextureToNoiseChunk(Texture2D texture, float[,] noiseMap, float noiseWeight, float minGreyValue, int chunkWidth, int chunkHeight, Vector2 offset)
+    public static float[,] LerpNoiseMapWithTextureToNoiseChunk(FaceDetection faceDetection, float[,] noiseMap, float noiseWeight, float minGreyValue, int chunkWidth, int chunkHeight, Vector2 offset, Boolean FaceOnly)
     {
         //Color[] noisePixels = new Color[noiseMap.GetLength(0) * noiseMap.GetLength(1)];
         float[,] noiseChunk = new float[chunkWidth, chunkHeight];
         float noiseSample;
         float texSample;
+        OpenCVForUnity.Rect[] square = new OpenCVForUnity.Rect[0];
+        Texture2D texture = faceDetection.FaceTexture;
+
+        if (FaceOnly)
+            square = faceDetection.FaceLocations;
 
         //int chunkWidth = texture.width <= noiseMap.GetLength(0) ? texture.width : noiseMap.GetLength(0);
         //int chunkheight = texture.height <= noiseMap.GetLength(1) ? texture.height : noiseMap.GetLength(1);
@@ -130,16 +135,49 @@ public static class NoiseGenerator
                         noiseSample = texSample;
                     }
 
-                    noiseChunk[x, y] = Mathf.Lerp(texSample, noiseSample, noiseWeight);
+                    if (FaceOnly)
+                    {
+                        noiseChunk[x,y] = ContainsFace(square, Lerpator(texSample, noiseSample, noiseWeight), x, y, offsetX, offsetY);
+                    }
+                    else
+                    {
+                        noiseChunk[x,y] = Lerpator(texSample, noiseSample, noiseWeight);
+                    }
+
                 }
                 else
                 {
-                    noiseChunk[x, y] = texSample;
+                    if (FaceOnly)
+                    {
+                        noiseChunk[x,y] = ContainsFace(square, texSample, x, y, offsetX, offsetY);
+                    }
+                    else
+                    {
+                        noiseChunk[x, y] = texSample;
+
+                    }
+
                 }
             }
         }
 
         return noiseChunk;
+    }
+
+    private static float ContainsFace( OpenCVForUnity.Rect[] rect, float heightNumber, int x, int y, int offsetX, int offsetY)
+    {
+        float num = 0.0f;
+        if (rect.Length > 0)
+        {
+            if (rect[0].contains(x + offsetX, y + offsetY))
+                num = heightNumber;
+        }
+        return num;
+    }
+
+    private static float Lerpator(float texSample, float noiseSample, float noiseWeight)
+    {
+        return Mathf.Lerp(texSample, noiseSample, noiseWeight);
     }
     /*
         public static float[,] TextureToNoiseChunk(Texture2D texture, Vector2 offset, int width, int height)
