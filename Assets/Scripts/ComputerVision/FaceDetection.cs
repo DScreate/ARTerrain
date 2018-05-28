@@ -1,19 +1,20 @@
 ﻿using UnityEngine;
 using OpenCVForUnity;
-
+/// <summary>
+/// This class is used to detect and outline faces in the webcam image. 
+/// It also equalizes its histograms and (optionally) denoises the image.
+/// </summary>
+/// <remarks>
+/// This is the only part of the project that uses OpenCVForUnity.
+/// Code is modified from OpenCVForUnity example class FaceDetectionWebCamTextureExample.cs.
+/// </remarks>
 public class FaceDetection : MonoBehaviour
 {
-
     WebcamTextureController webcamController;
-
-    /// <summary>
-    /// The gray mat.
-    /// </summary>
+ 
+    //Class variable to reduce garbage collection.
     Mat grayscale;
 
-    /// <summary>
-    /// The texture.
-    /// </summary>
     private Texture2D faceTexture;
 
     public Texture2D FaceTexture
@@ -29,38 +30,20 @@ public class FaceDetection : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// The cascade.
-    /// </summary>
     CascadeClassifier cascade;
 
-    /// <summary>
-    /// The faces.
-    /// </summary>
     MatOfRect faces;
 
     private OpenCVForUnity.Rect[] faceLocations;
 
+    [Tooltip("Should WebcamTexture be equalized?")]
     public bool EqualizeTexture;
-
+    [Tooltip("Should WebcamTexture be denoised? Greatly reduces fps.")]
     public bool DenoiseTexture;
 
-    /*
-    public OpenCVForUnity.Rect[] FaceLocations
-    {
-        get
-        {
-            if (faceLocations == null)
-            {
-                Debug.Log("No faces tracked");
-                return new OpenCVForUnity.Rect[0];
-            }
-
-            else
-                return faceLocations;
-        }
-    } */
-
+    /// <summary>
+    /// Initializes the class variables.
+    /// </summary>
     void Start()
     {
         InitializeCascade();
@@ -92,7 +75,10 @@ public class FaceDetection : MonoBehaviour
 
         webcamController.Initialize();
     }
-
+    /// <summary>
+    /// Detects and outlines faces in the WebcamTexture and stored as a Mat.
+    /// Optionally equalizes and denoises WebcamTexture.
+    /// </summary>
     public void UpdateFaceTexture()
     {
         if (webcamController.DidUpdateThisFrame())
@@ -103,7 +89,7 @@ public class FaceDetection : MonoBehaviour
             Imgproc.equalizeHist(grayscale, grayscale);
 
             if (cascade != null)
-                cascade.detectMultiScale(grayscale, faces, 1.1, 2, 2, // TODO: objdetect.CV_HAAR_SCALE_IMAGE
+                cascade.detectMultiScale(grayscale, faces, 1.1, 2, 2,
                     new Size(grayscale.cols() * 0.2, grayscale.rows() * 0.2), new Size());
 
             faceLocations = faces.toArray();

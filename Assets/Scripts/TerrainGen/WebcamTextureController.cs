@@ -3,6 +3,14 @@ using UnityEngine;
 using OpenCVForUnity;
 using System.Collections;
 
+/// <summary>
+/// Used to handle and store the WebcamTexture. Also used to convert WebCamTexture to OpenCV mat.
+/// </summary>
+/// <remarks>
+/// Class needs to be initialized by another class before it is ready to be used.
+/// Use this class to retrieve the WebcamTexture that will be used to help create the program's height map.
+/// </remarks>
+
 public class WebcamTextureController : MonoBehaviour
 {
     [Tooltip("Set the name of the device to use.")]
@@ -15,7 +23,7 @@ public class WebcamTextureController : MonoBehaviour
     public int webcamRequestedWidth;
     [Tooltip("Set the width of WebCamTexture.")]
     public int webcamRequestedHeight;
-
+    /// <value>Height of the texture in pixels.</value>
     public int WebcamHeight
     {
         get
@@ -23,7 +31,7 @@ public class WebcamTextureController : MonoBehaviour
             return webcamTexture.height;
         }
     }
-
+    ///<value>Width of the texture in pixels.</value>
     public int WebcamWidth
     {
         get
@@ -43,12 +51,12 @@ public class WebcamTextureController : MonoBehaviour
 
     //used to save memory
     private Color32[] colors;
-
+    /// <value>WebcamTexture this class handles.</value>
     public WebCamTexture WebcamTex
     {
         get { return webcamTexture; }
     }
-
+    /// <value>OpenCV Mat of WebcamTexture.</value>
     public Mat WebcamMat
     {
         get
@@ -59,12 +67,14 @@ public class WebcamTextureController : MonoBehaviour
             return webcamMat;
         }
     }
-
+    ///<value>Can be used for OpenCV functions that require Color32[] to reduce garbage collection.</value>
     public Color32[] Colors
     {
         get { return colors; }
     }
-
+    /// <summary>
+    /// Should be called before using this class to initialize class properties and start webcam. Class only needs to be initialized once.
+    /// </summary>
     public void Initialize()
     {
         if (!initialized)
@@ -136,7 +146,9 @@ public class WebcamTextureController : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
     }
-
+    /// <summary>
+    /// Will initialize a new WebcamTexture using the next available Webcam device.
+    /// </summary>
     public void ChangeWebcamTextureToNextAvailable()
     {        
         string nextWebcamDeviceName = GetNextWebCamDevice().name;
@@ -187,7 +199,9 @@ public class WebcamTextureController : MonoBehaviour
 
         StartCoroutine(WaitForWebcamToInitialize());        
     }
-
+    /// <summary>
+    /// Did the video buffer update this frame?
+    /// </summary>
     public bool DidUpdateThisFrame()
     {
         return (initialized) ? webcamTexture.didUpdateThisFrame : false;
