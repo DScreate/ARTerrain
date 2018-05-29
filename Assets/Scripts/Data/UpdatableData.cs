@@ -1,7 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/// <summary>
+/// Class <c>UpdatableData</c> handles automatic updates for terrain generation data. 
+/// </summary>
+/// <remark> 
+/// Inherits from <see cref="ScriptableObject"/>
+/// </remark>
 namespace TerrainGenData
 {
     public class UpdatableData : ScriptableObject{

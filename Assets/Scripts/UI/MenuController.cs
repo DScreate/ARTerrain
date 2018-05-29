@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using CameraMovement;
 using TerrainGenData;
 using UnityEngine;
-
+/// <summary>
+/// Class <c>MenuConrtoller</c> provides structured layout for a user friendly interface. 
+/// </summary>
 public class MenuController : MonoBehaviour {
 
     WebcamTextureController webcamController;
@@ -13,7 +15,7 @@ public class MenuController : MonoBehaviour {
     public TextureData textureData;
     public MapGenerator mapGen;
     public CameraMover cameraMover;
-
+    
 	void Start () {
         webcamController = MapGenerator.webcamController;
 	}

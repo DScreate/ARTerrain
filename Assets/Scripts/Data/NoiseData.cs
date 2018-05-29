@@ -1,5 +1,13 @@
 ﻿using UnityEngine;
-
+/// <summary>
+/// Class <c>NoiseData</c> handles data from <see cref="NoiseGenerator.NormalizeMode"/>
+/// </summary>
+/// <remark>
+/// Octave: One of the coherent-noise functions in a series of coherent-noise functions that are added together to form Perlin noise.
+/// Persistance: A multiplier that determines how quickly the amplitudes diminish for each successive octave in a Perlin-noise function.
+/// Lacunarity: A multiplier that determines how quickly the frequency increases for each successive octave in a Perlin-noise function.
+/// Inherits from <see cref="UpdatableData"/>
+/// </remark>
 namespace TerrainGenData
 {
     [CreateAssetMenu()]
