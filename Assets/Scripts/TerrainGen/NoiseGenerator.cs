@@ -3,11 +3,34 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// This class is responsible for the calculations needed to generate a float[,] representing a perlin noise map.
+/// It is additionally responsible for blending a <c>Texture2D</c> object (that in most cases represents a webcam image or some still image) with a noiseMap
+/// before then returning it as a float"[,].
+/// In both cases, the float[,] represents a heightMap containing values at each point that represent the height of a given x,y coordinate. This is then used
+/// to determine how "tall" that point should be in the 3D Unity worldspace as part of the mesh.
+/// </summary>
 public static class NoiseGenerator
 {
-
+    /// <summary>
+    /// 
+    /// </summary>
     public enum NormalizeMode { Local, Global };
 
+    /// <summary>
+    /// Generates the noise map based upon perlin noise. This creates a smooth transition between minimum and maximum value boundaries and allows for a more realistic overall look.
+    /// <seealso href="https://en.wikipedia.org/wiki/Perlin_noise"/>
+    /// </summary>
+    /// <param name="mapWidth">Width of the map.</param>
+    /// <param name="mapHeight">Height of the map. This is the "y" component of a 2D map, not the actual height of how "tall" something on the 3D mesh would be</param>
+    /// <param name="seed">The seed used for the pseudo-random number generator</param>
+    /// <param name="scale">The scale. This can be thought of "zooming" in and out of sections of the noise map</param>
+    /// <param name="octaves">The octaves. This controls the large troughs and peaks on the noise map. This is akin to mountains and valleys</param>
+    /// <param name="persistance">The persistance. This controls the medium level details on the noiseMap and can be thought of as ridges, hills or crevices</param>
+    /// <param name="lacunarity">The lacunarity. This controls the small level details on the noiseMap and can be thought of as individual rocks/boulders or other small details</param>
+    /// <param name="offset">The offset.</param>
+    /// <param name="normalizeMode">The normalize mode.</param>
+    /// <returns>A float[,] representing a NoiseMap generated via the method. In particular, values within the float[,] will range from 0 to a value controlled by the maxPossibleHeight variable</returns>
     public static float[,] GenerateNoiseMap(int mapWidth, int mapHeight, int seed, float scale, int octaves, float persistance, float lacunarity, Vector2 offset, NormalizeMode normalizeMode)
     {
         float[,] noiseMap = new float[mapWidth, mapHeight];
@@ -92,6 +115,19 @@ public static class NoiseGenerator
         return noiseMap;
     }
 
+    /// <summary>
+    /// Lerps the noise map with texture to noise chunk. This method is used to blend a texture with a generated noiseMap linearly in order to provide a controllable and uniform
+    /// semi-randomization to the texture. This method combines a noiseMap with a Texture2D by sampling each x,y point and taking the linearly interpolated value generated based upon
+    /// a weight and then places that new value into a new float[,] which is then returned once all points have been sampled
+    /// </summary>
+    /// <param name="texture">The texture.</param>
+    /// <param name="noiseMap">The noise map.</param>
+    /// <param name="noiseWeight">The noise weight.</param>
+    /// <param name="minGreyValue">The minimum grey value.</param>
+    /// <param name="chunkWidth">Width of the chunk.</param>
+    /// <param name="chunkHeight">Height of the chunk.</param>
+    /// <param name="offset">The offset.</param>
+    /// <returns>A float[,] representing a heightMap that has been generated via the combination of the Texture2D and the noiseMap after the two have been blended together</returns>
     public static float[,] LerpNoiseMapWithTextureToNoiseChunk(Texture2D texture, float[,] noiseMap, float noiseWeight, float minGreyValue, int chunkWidth, int chunkHeight, Vector2 offset)
     {
         //Color[] noisePixels = new Color[noiseMap.GetLength(0) * noiseMap.GetLength(1)];
