@@ -9,11 +9,11 @@ namespace CameraMovement
     /// This class deals with the movement of the camera in the unity engine. 
     /// It uses the RailSystem which contains the references to the section of the Rail object that
     /// the in-engine camera will move. 
-    /// 
+    /// </summary>
+    /// <remarks>
     /// The Rail System must have a RailSystem Script to run the operations.
     /// The playMode which dictates how the camera will move when project is playing but one must be selected to run.
-    /// 
-    /// </summary>
+    /// </remarks>
     public class CameraMover : MonoBehaviour
     {
 

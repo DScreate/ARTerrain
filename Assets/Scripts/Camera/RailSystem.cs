@@ -18,9 +18,10 @@ namespace CameraMovement
     /// Rail System Script is how the CameraMover script interacts with the railNodes.
     /// The CameraMover will do the calculations to find out how far it should move the camera
     /// and where to do it here it give it where to go and how to get there.
-    /// 
-    /// This Script must be attacted to the GameObjects to be used as a Rail System.
     /// </summary>
+    /// <remarks>
+    ///  This Script must be attacted to the GameObjects to be used as a Rail System.
+    /// </remarks>
     public class RailSystem : MonoBehaviour
     {
 
