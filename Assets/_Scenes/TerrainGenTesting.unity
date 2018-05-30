@@ -88,6 +88,7 @@ LightmapSettings:
     m_PVRFilteringAtrousPositionSigmaDirect: 0.5
     m_PVRFilteringAtrousPositionSigmaIndirect: 2
     m_PVRFilteringAtrousPositionSigmaAO: 1
+    m_ShowResolutionOverlay: 1
   m_LightingDataAsset: {fileID: 0}
   m_UseShadowmask: 1
 --- !u!196 &4
@@ -452,7 +453,13 @@ Prefab:
       propertyPath: Water
       value: 
       objectReference: {fileID: 215900179}
-    m_RemovedComponents: []
+    - target: {fileID: 114077141770475036, guid: 7d4af787aadbad741842d2f850d26132,
+        type: 2}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 114077141770475036, guid: 7d4af787aadbad741842d2f850d26132, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 7d4af787aadbad741842d2f850d26132, type: 2}
   m_IsPrefabParent: 0
 --- !u!1001 &886333221
@@ -573,6 +580,7 @@ Camera:
   m_TargetEye: 3
   m_HDR: 1
   m_AllowMSAA: 1
+  m_AllowDynamicResolution: 0
   m_ForceIntoRT: 0
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
@@ -901,6 +909,7 @@ Mesh:
     firstByte: 0
     indexCount: 0
     topology: 0
+    baseVertex: 0
     firstVertex: 0
     vertexCount: 0
     localAABB:
@@ -918,6 +927,7 @@ Mesh:
   m_IsReadable: 1
   m_KeepVertices: 1
   m_KeepIndices: 1
+  m_IndexFormat: 0
   m_IndexBuffer: 
   m_Skin: []
   m_VertexData:
