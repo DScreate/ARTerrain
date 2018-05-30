@@ -29,6 +29,9 @@ namespace TerrainGenData
 
         public bool Updated { get; set; }
 
+        /// <summary>
+        /// Method <c>OnValidate</c> checks values of lacunarity and octaves, then updates then and calls super OnValidate().
+        /// </summary>
         protected override void OnValidate()
         {
             if (lacunarity < 1)
