@@ -2,12 +2,9 @@
 /// <summary>
 /// Class <c>NoiseData</c> handles data from <see cref="NoiseGenerator.NormalizeMode"/>
 /// </summary>
-/// <remark>
-/// Octave: One of the coherent-noise functions in a series of coherent-noise functions that are added together to form Perlin noise.
-/// Persistance: A multiplier that determines how quickly the amplitudes diminish for each successive octave in a Perlin-noise function.
-/// Lacunarity: A multiplier that determines how quickly the frequency increases for each successive octave in a Perlin-noise function.
+/// <remarks>
 /// Inherits from <see cref="UpdatableData"/>
-/// </remark>
+/// </remarks>
 namespace TerrainGenData
 {
     [CreateAssetMenu()]
@@ -17,11 +14,20 @@ namespace TerrainGenData
 
         public float noiseScale;
 
+        /// <summary> 
+        /// Octave: One of the coherent-noise functions in a series of coherent-noise functions that are added together to form Perlin noise.
+        /// </summary>
         [Range(0, 100)]
         public int octaves;
 
         [Range(0, 1)]
+        /// <summary> 
+        /// Persistance: A multiplier that determines how quickly the amplitudes diminish for each successive octave in a Perlin-noise function.
+        /// </summary>
         public float persistance;
+        /// <summary> 
+        /// Lacunarity: A multiplier that determines how quickly the frequency increases for each successive octave in a Perlin-noise function.
+        /// </summary>
         public float lacunarity;
 
         public int seed;

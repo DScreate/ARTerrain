@@ -6,7 +6,7 @@ using UnityEngine;
 /// <summary>
 /// This class is responsible for the calculations needed to generate a float[,] representing a perlin noise map.
 /// It is additionally responsible for blending a <c>Texture2D</c> object (that in most cases represents a webcam image or some still image) with a noiseMap
-/// before then returning it as a float"[,].
+/// before then returning it as a float[,].
 /// In both cases, the float[,] represents a heightMap containing values at each point that represent the height of a given x,y coordinate. This is then used
 /// to determine how "tall" that point should be in the 3D Unity worldspace as part of the mesh.
 /// </summary>

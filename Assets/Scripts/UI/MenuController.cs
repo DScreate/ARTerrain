@@ -75,7 +75,7 @@ public class MenuController : MonoBehaviour {
 
     #region Noise
     /// <summary>
-    /// Method <c>SetNoiseBlending</c> sets noise blending. 
+    /// Method <c>SetNoiseBlending</c> sets noise blending value. 
     /// </summary>
     /// <param name="vin"></param>
     public void SetNoiseBlending(float vin)
@@ -142,7 +142,7 @@ public class MenuController : MonoBehaviour {
     }
 
     /// <summary>
-    /// Method <c>StringToTexture0</c> takes a value of type String and sets it as texture.
+    /// Method <c>StringToTexture0</c> takes a value of type String and sets it as texture 0.
     /// </summary>
     /// <param name="text">String value to be parsed into texture</param>
     public void StringToTexture0(String text)
@@ -153,7 +153,7 @@ public class MenuController : MonoBehaviour {
     }
     
     /// <summary>
-    /// Method <c>StringToTexture1</c> takes a value of type String and sets it as texture.
+    /// Method <c>StringToTexture1</c> takes a value of type String and sets it as texture 1.
     /// </summary>
     /// <param name="text">String value to be parsed into texture</param>
     public void StringToTexture1(String text)
@@ -164,7 +164,7 @@ public class MenuController : MonoBehaviour {
     }
     
     /// <summary>
-    /// Method <c>StringToTexture2</c> takes a value of type String and sets it as texture.
+    /// Method <c>StringToTexture2</c> takes a value of type String and sets it as texture 2.
     /// </summary>
     /// <param name="text">String value to be parsed into texture</param>
     public void StringToTexture2(String text)
@@ -175,7 +175,7 @@ public class MenuController : MonoBehaviour {
     }
     
     /// <summary>
-    /// Method <c>StringToTexture3</c> takes a value of type String and sets it as texture.
+    /// Method <c>StringToTexture3</c> takes a value of type String and sets it as texture 3.
     /// </summary>
     /// <param name="text">String value to be parsed into texture</param>
     public void StringToTexture3(String text)
@@ -186,7 +186,7 @@ public class MenuController : MonoBehaviour {
     }
     
     /// <summary>
-    /// Method <c>StringToTexture4</c> takes a value of type String and sets it as texture.
+    /// Method <c>StringToTexture4</c> takes a value of type String and sets it as texture 4.
     /// </summary>
     /// <param name="text">String value to be parsed into texture</param>
     public void StringToTexture4(String text)
@@ -197,7 +197,7 @@ public class MenuController : MonoBehaviour {
     }
     
     /// <summary>
-    /// Method <c>StringToTexture5</c> takes a value of type String and sets it as texture.
+    /// Method <c>StringToTexture5</c> takes a value of type String and sets it as texture 5.
     /// </summary>
     /// <param name="text">String value to be parsed into texture</param>
     public void StringToTexture5(String text)

@@ -14,13 +14,13 @@ namespace CameraMovement
     }
 
     /// <summary>
-    /// railNodes: List of positions from GameObject, which is known as Rails in the editor.
     /// Rail System Script is how the CameraMover script interacts with the railNodes.
     /// The CameraMover will do the calculations to find out how far it should move the camera
     /// and where to do it here it give it where to go and how to get there.
     /// </summary>
     /// <remarks>
     ///  This Script must be attacted to the GameObjects to be used as a Rail System.
+    ///  railNodes: List of positions from GameObject, which is known as Rails in the editor.
     /// </remarks>
     public class RailSystem : MonoBehaviour
     {
@@ -54,7 +54,7 @@ namespace CameraMovement
         /// <param name="seg">Is the list segment the currently on in the railNode list</param>
         /// <param name="ratio"></param>
         /// <param name="playMode">Tells what Type of movement the camera will do</param>
-        /// <returns>tThis returns the position the camera from the given playMode</returns>
+        /// <returns>This returns the position the camera from the given playMode</returns>
         public Vector3 PositionOnRailSystem(int seg, float ratio, Mode playMode)
         {
             switch (playMode)

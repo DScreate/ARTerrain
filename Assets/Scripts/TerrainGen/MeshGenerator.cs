@@ -9,14 +9,14 @@
 public static class MeshGenerator {
 
     /// <summary>
-    /// Generates the terrain mesh. The key process of this method is the iteration through the heightMap and the regular sampling that takes place
+    /// Generates the terrain mesh. The key process of this method is the iteration through the heightMap and the regular sampling that takes place.
     /// The heightMap is iterated for every combination point x,y at an interval equal to the meshSimplificationIncremement. This means that as the level
     /// of detail decreases, the granularity and resolution of the sampling will decrease and the generated mesh will contain less detail/vertices.
     /// </summary>
-    /// <param name="heightMap">The height map.</param>
-    /// <param name="heightMultiplier">The height multiplier.</param>
-    /// <param name="heightCurve">The height curve.</param>
-    /// <param name="levelOfDetail">The level of detail.</param>
+    /// <param name="heightMap">The height map value.</param>
+    /// <param name="heightMultiplier">The height multiplier value.</param>
+    /// <param name="heightCurve">The height curve value.</param>
+    /// <param name="levelOfDetail">The level of detail value.</param>
     /// <returns></returns>
     public static MeshData GenerateTerrainMesh(float[,] heightMap, float heightMultiplier, AnimationCurve heightCurve, int levelOfDetail)
     {
@@ -98,9 +98,9 @@ public class MeshData
     /// <summary>
     /// Adds the triangle.
     /// </summary>
-    /// <param name="a">a.</param>
-    /// <param name="b">The b.</param>
-    /// <param name="c">The c.</param>
+    /// <param name="a">side a.</param>
+    /// <param name="b">side  b.</param>
+    /// <param name="c">side c.</param>
     public void AddTriangle(int a, int b, int c)
     {
         triangles[triangleIndex] = c;
@@ -129,7 +129,7 @@ public class MeshData
     /// <summary>
     /// Updates the mesh.
     /// </summary>
-    /// <param name="mesh">The mesh.</param>
+    /// <param name="mesh">The mesh to be updated.</param>
     public void UpdateMesh(Mesh mesh)
     {
         mesh.vertices = vertices;

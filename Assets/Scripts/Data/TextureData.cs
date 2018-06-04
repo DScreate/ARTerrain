@@ -2,13 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-///<summary>
+/// <summary>
 /// Class <c>TextureData</c> handles data to generate and apply texture onto terrain.
 /// <see cref="TextureFormat"/>
-///</summary>
-/// <remark> 
+/// </summary>
+/// <remarks> 
 /// Inherits from <see cref="UpdatableData"/>
-/// </remark>
+/// </remarks>
 namespace TerrainGenData
 {
     [CreateAssetMenu()]
@@ -22,9 +22,9 @@ namespace TerrainGenData
         float savedMinHeight;
         float savedMaxHeight;
 
-        ///<summary> 
+        /// <summary> 
         /// Method <c>ApplyToMaterial</c> takes a material and applies texture to it. 
-        ///</summary>
+        /// </summary>
         /// <param name="material">the material of type <see cref="Material"/> that we apply texture to</param>
         public void ApplyToMaterial(Material material)
         {
@@ -40,9 +40,9 @@ namespace TerrainGenData
             UpdateMeshHeights(material , savedMinHeight,savedMaxHeight);
         }
 
-        ///<summary> 
+        /// <summary> 
         /// Method <c>UpdateMeshHeights</c> updates the min and max height for mesh. 
-        ///</summary>
+        /// </summary>
         /// <param name="material">the material of type <see cref="Material"/> that we update its height data</param>
         /// <param name="minHeight">the min value for height of type float</param>
         /// <param name="maxHeight">the max value for height of type float</param>
@@ -55,11 +55,11 @@ namespace TerrainGenData
             material.SetFloat("maxHeight",maxHeight);
         }
 
-        ///<summary> 
+        /// <summary> 
         /// Method <c>GenerateTextureArray</c> generates new texture array of type <see cref="Texture2DArray"/>. 
-        ///</summary>
+        /// </summary>
         /// <param name="textures">the material of type <see cref="Texture2D[]"/> </param>
-        ///<returns> A texture array of type <see cref="Texture2DArray"/>.
+        /// <returns> A texture array of type <see cref="Texture2DArray"/>.
         Texture2DArray GenerateTextureArray(Texture2D[] textures)
         {
             Texture2DArray textureArray = new Texture2DArray(textureSize, textureSize, textures.Length, textureFormat, true);

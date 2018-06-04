@@ -5,9 +5,9 @@ using UnityEngine;
 /// Class <c>DataForTerrain</c> Calculates min and max height values for terrain generation. 
 /// <see cref="AnimationCurve"/>
 /// </summary>
-/// <remark> 
+/// <remarks> 
 /// Inherits from <see cref="UpdatableData"/>
-/// </remark>
+/// </remarks>
 namespace TerrainGenData
 {
     [CreateAssetMenu()]

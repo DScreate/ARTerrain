@@ -4,7 +4,7 @@ using OpenCVForUnity;
 using System.Collections;
 
 /// <summary>
-/// Used to handle and store the WebcamTexture. Also used to convert WebCamTexture to OpenCV mat.
+/// Handles and stores the WebcamTexture. Also converts WebCamTexture to OpenCV mat.
 /// </summary>
 /// <remarks>
 /// Class needs to be initialized by another class before it is ready to be used.
@@ -31,7 +31,7 @@ public class WebcamTextureController : MonoBehaviour
             return webcamTexture.height;
         }
     }
-    ///<value>Width of the texture in pixels.</value>
+    /// <value>Width of the texture in pixels.</value>
     public int WebcamWidth
     {
         get
@@ -67,7 +67,7 @@ public class WebcamTextureController : MonoBehaviour
             return webcamMat;
         }
     }
-    ///<value>Can be used for OpenCV functions that require Color32[] to reduce garbage collection.</value>
+    /// <value>Can be used for OpenCV functions that require Color32[] to reduce garbage collection.</value>
     public Color32[] Colors
     {
         get { return colors; }
@@ -200,8 +200,9 @@ public class WebcamTextureController : MonoBehaviour
         StartCoroutine(WaitForWebcamToInitialize());        
     }
     /// <summary>
-    /// Did the video buffer update this frame?
+    /// Checks if the video buffer updated this frame
     /// </summary>
+    /// <returns> True if the video buffer updated this frame; false if not.
     public bool DidUpdateThisFrame()
     {
         return (initialized) ? webcamTexture.didUpdateThisFrame : false;

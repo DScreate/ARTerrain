@@ -4,9 +4,9 @@ using UnityEngine;
 /// <summary>
 /// Class <c>UpdatableData</c> handles automatic updates for terrain generation data. 
 /// </summary>
-/// <remark> 
+/// <remarks> 
 /// Inherits from <see cref="ScriptableObject"/>
-/// </remark>
+/// </remarks>
 namespace TerrainGenData
 {
     public class UpdatableData : ScriptableObject{
