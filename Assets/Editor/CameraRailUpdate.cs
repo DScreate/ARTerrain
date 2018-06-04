@@ -14,8 +14,8 @@ using UnityEditor;
     {
 
         /// <summary>
-        /// This is the method used to add the button to the editor.
-        /// When pressed it will update the railNode List of the rails Object current list of child node.
+        /// This method is used to add the button to the editor.
+        /// When pressed, it will update the railNode List of the rails Object current list of child node.
         /// </summary>
         public override void OnInspectorGUI()
         {

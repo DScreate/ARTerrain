@@ -13,7 +13,7 @@ using TerrainGenData;
 public class UpdateDataEditor : Editor {
 
     /// <summary>
-    /// This is the method used to add the button to the editor.
+    /// This method is sed to add the button to the editor.
     /// When pressed it will update the UpdatableData new values to the Asset.
     /// </summary>
     public override void OnInspectorGUI()
