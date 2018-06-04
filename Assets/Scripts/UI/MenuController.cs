@@ -20,8 +20,9 @@ public class MenuController : MonoBehaviour {
     /// Method <c>Start</c> initializes webcamController object. 
     /// <see cref="webcamController"/>.
     /// </summary>
-	void Start () {
-        webcamController = MapGenerator.webcamController;
+	void Update () {
+        if(webcamController == null)
+            webcamController = MapGenerator.webcamController;
 	}
 
     /// <summary>
@@ -46,7 +47,10 @@ public class MenuController : MonoBehaviour {
     /// </summary>
     public void OnChangeCameraButtonClick()
     {
-        webcamController.ChangeWebcamTextureToNextAvailable();
+        if(webcamController != null)
+            webcamController.ChangeWebcamTextureToNextAvailable();
+        else
+            Debug.Log("null webcamController");
     }
     #endregion
     
