@@ -10,7 +10,6 @@ using System.Collections;
 /// Class needs to be initialized by another class before it is ready to be used.
 /// Use this class to retrieve the WebcamTexture that will be used to help create the program's height map.
 /// </remarks>
-
 public class WebcamTextureController : MonoBehaviour
 {
     [Tooltip("Set the name of the device to use.")]

@@ -9,6 +9,7 @@ using TerrainGenData;
 /// the different objects that combine to form a map. This map will then be passed to the MeshGenerator class to
 /// be converted into a 3D mesh
 /// </summary>
+[RequireComponent(typeof(WebcamTextureController), typeof(FaceDetection))]
 public class MapGenerator : MonoBehaviour
 {
     //[Tooltip("Set the name of the device to use.")]

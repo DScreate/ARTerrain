@@ -8,6 +8,7 @@ using OpenCVForUnity;
 /// This is the only part of the project that uses OpenCVForUnity.
 /// Code is modified from OpenCVForUnity example class FaceDetectionWebCamTextureExample.cs.
 /// </remarks>
+[RequireComponent(typeof(WebcamTextureController))]
 public class FaceDetection : MonoBehaviour
 {
     WebcamTextureController webcamController;

@@ -9,6 +9,7 @@ using System.Collections.Generic;
 /// This class acts similar to a driver for the classes of the program that are involved in generating the terrain.
 /// It has references to and calls updates to other classes. 
 /// <remarks/>
+[RequireComponent(typeof(WebcamTextureController), typeof(MapGenerator), typeof(FaceDetection))]
 public class EndlessTerrain : MonoBehaviour
 {
     [Tooltip("Assign the material to be used by the meshes.")]
