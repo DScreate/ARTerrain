@@ -1,234 +1,340 @@
 ﻿using UnityEngine;
-using System;
 using TerrainGenData;
 
 
-//I think we can delete colormap?
+/// <summary>
+/// This class is used to generate various "map" objects that are needed for processing images.
+/// Key features include the various processes used to validate mapData objects, the calls to the other
+/// generators for combining maps together and then the Start method which begins the various initializers for
+/// the different objects that combine to form a map. This map will then be passed to the MeshGenerator class to
+/// be converted into a 3D mesh
+/// </summary>
+[RequireComponent(typeof(WebcamTextureController), typeof(FaceDetection))]
 public class MapGenerator : MonoBehaviour
 {
+    //[Tooltip("Set the name of the device to use.")]
 
-    public enum DrawMode { NoiseMap, Mesh };
-    public enum ImageMode { PureNoise, FromImage, FromWebcam }
-    [TooltipAttribute("Set the name of the device to use.")]
-
-    public DrawMode drawMode;
-
+    /// <summary>
+    /// The terrain data
+    /// </summary>
     public DataForTerrain terrainData;
+
+    /// <summary>
+    /// The noise data
+    /// </summary>
     public NoiseData noiseData;
+
+    /// <summary>
+    /// The texture data
+    /// </summary>
     public TextureData textureData;
 
+    /// <summary>
+    /// The terrain material
+    /// </summary>
     public Material terrainMaterial;
 
-    public ImageMode imageMode = ImageMode.FromWebcam;
-    public Texture2D imageTex;
+    /// <summary>
+    /// The webcam controller
+    /// </summary>
+    public static WebcamTextureController webcamController;
 
+    /// <summary>
+    /// The face
+    /// </summary>
+    private static FaceDetection face;
+
+    /// <summary>
+    /// The water
+    /// </summary>
+    public GameObject Water;
+
+
+    /// <summary>
+    /// The minimum grey value used in assigning data to a given greyscale image
+    /// This is possibly a legacy implementation but its use is to be assigned a float between
+    /// 0 and 1 in which any given pixel in the greyscale image will be ignored if its calculated
+    /// value for the height map is below that number. This allows for a "minimum" brightness level
+    /// to be designated for generating a mesh with
+    /// </summary>
     [Range(0, 1)]
     public float minGreyValue;
+    /// <summary>
+    /// The noise weight
+    /// </summary>
     [Range(0, 1)]
     public float noiseWeight;
 
+    /// <summary>
+    /// The level of detail
+    /// </summary>
     [Range(0, 6)]
     public int levelOfDetail;
 
-    //need to create getters? need to make it so these values can't be changed once they're set in Start()
+    // need to create getters? need to make it so these values can't be changed once they're set in Start()    
 
-    private int mapChunkWidth = 241;
-    private int mapChunkHeight = 241;
-
+    /// <summary>
+    /// The map width
+    /// </summary>
     private int mapWidth;
+
+    /// <summary>
+    /// The map height
+    /// </summary>
     private int mapHeight;
 
+    /// <summary>
+    /// The map chunk width
+    /// </summary>
+    private int mapChunkWidth;
+
+    /// <summary>
+    /// The map chunk height
+    /// </summary>
+    private int mapChunkHeight;
+
+    /// <summary>
+    /// The number chunk width
+    /// </summary>
+    private int numChunkWidth;
+
+    /// <summary>
+    /// The number chunk height
+    /// </summary>
+    private int numChunkHeight;
+
+    /// <summary>
+    /// Gets the width of the map chunk.
+    /// </summary>
+    /// <value>
+    /// The width of the map chunk.
+    /// </value>
     public int MapChunkWidth
     {
-        get { return mapChunkWidth; }
+        get
+        {
+            return this.mapChunkWidth;
+        }
     }
 
+    /// <summary>
+    /// Gets the height of the map chunk.
+    /// </summary>
+    /// <value>
+    /// The height of the map chunk.
+    /// </value>
     public int MapChunkHeight
     {
-        get { return mapChunkHeight; }
+        get
+        {
+            return this.mapChunkHeight;
+        }
     }
 
-    public int MapWidth
+    /// <summary>
+    /// Gets the width of the number chunk.
+    /// </summary>
+    /// <value>
+    /// The width of the number chunk.
+    /// </value>
+    public int NumChunkWidth
     {
-        get { return mapWidth; }
+        get
+        {
+            return this.numChunkWidth;
+        }
     }
 
-    public int MapHeight
+    /// <summary>
+    /// Gets the height of the number chunk.
+    /// </summary>
+    /// <value>
+    /// The height of the number chunk.
+    /// </value>
+    public int NumChunkHeight
     {
-        get { return mapHeight; }
+        get
+        {
+            return this.numChunkHeight;
+        }
     }
 
-    public bool autoUpdate;
-
-    public static WebcamTextureController webcamController;
-    //public Texture2D textureForNoise;
-
-    public float[,] chunkNoiseMap;
-    public float[,] fullNoiseMap;
+    /// <summary>
+    /// The chunk noise map
+    /// </summary>
+    private float[,] chunkNoiseMap;
+    /// <summary>
+    /// The full noise map
+    /// </summary>
+    private float[,] fullNoiseMap;
+    /// <summary>
+    /// The height map
+    /// </summary>
     private float[,] heightMap;
 
-    public GameObject Water;
 
-    void OnValuesUpdate()
-    {
-        //if(Application.isPlaying)
-            UpdateWaterHeight();
-
-        if (!Application.isPlaying)
-        {
-            DrawMapInEditor();
-        }
-    }
-    public void OnTextureValuesUpdated()
-    {
-        textureData.ApplyToMaterial(terrainMaterial);
-
-        if (Application.isPlaying)
-            UpdateWaterHeight();
-    }
-
+    /// <summary>
+    /// The start method used by Unity.
+    /// This mostly contains calls to the various initializers for the different components used together to c
+    /// </summary>
     private void Start()
-    {
-        if (imageMode == ImageMode.FromImage || imageMode == ImageMode.FromWebcam)
-        {
-            if (imageMode == ImageMode.FromWebcam)
-            {
-                webcamController = gameObject.GetComponent(typeof(WebcamTextureController)) as WebcamTextureController;
+    {       
+        webcamController = this.gameObject.GetComponent(typeof(WebcamTextureController)) as WebcamTextureController;
 
-                webcamController.Initialize();
+        face = this.gameObject.GetComponent(typeof(FaceDetection)) as FaceDetection;
 
-                mapChunkWidth = webcamController.webcamRequestedWidth;
-                mapChunkHeight = webcamController.webcamRequestedHeight;
+        webcamController.Initialize();
 
-                mapWidth = webcamController.webcamRequestedWidth;
-                mapHeight = webcamController.webcamRequestedHeight;
+        this.InitializeMapSizes();
 
-                fullNoiseMap = NoiseGenerator.GenerateNoiseMap(webcamController.WebcamTex.width, webcamController.WebcamTex.height, noiseData.seed, noiseData.noiseScale, noiseData.octaves, noiseData.persistance, noiseData.lacunarity, noiseData.offset, noiseData.normalizeMode);
-                //textureForNoise = new Texture2D(webcamController.WebcamTex.width, webcamController.WebcamTex.height);
-            }
+        this.InitializeChunkSizes();
 
-            else
-            {
-                mapChunkWidth = imageTex.width;
-                mapChunkHeight = imageTex.height;
+        this.InitializeNumOfChunks();
 
-                mapWidth = imageTex.width;
-                mapHeight = imageTex.height;
-            }
+        this.fullNoiseMap = NoiseGenerator.GenerateNoiseMap(this.mapWidth, this.mapHeight, this.noiseData.seed, this.noiseData.noiseScale, this.noiseData.octaves, this.noiseData.persistance, this.noiseData.lacunarity, this.noiseData.offset, this.noiseData.normalizeMode);
 
-            while (mapChunkWidth > 250 || mapChunkHeight > 250)
-            {
-                if (mapChunkWidth % 2 != 0)
-                    Debug.Log("Width " + mapChunkWidth + " is not evenly divisble by 2");
-
-                mapChunkWidth /= 2;
-
-                if (mapChunkHeight % 2 != 0)
-                    Debug.Log("Height " + mapChunkHeight + " is not evenly divisble by 2");
-
-                mapChunkHeight /= 2;
-            }
-
-            //I forget why, but Sebastion explains in a video that these variables need to be chunk size + 1
-            mapChunkWidth = mapChunkWidth + 1;
-            mapChunkHeight = mapChunkHeight + 1;
-
-            textureData.ApplyToMaterial(terrainMaterial);
-        }
+        this.textureData.ApplyToMaterial(this.terrainMaterial);        
     }
 
-    public void DrawMapInEditor()
+    /// <summary>
+    /// Initializes the map sizes.
+    /// </summary>
+    private void InitializeMapSizes()
     {
-        heightMap = GenerateMapData(Vector2.zero);
-        MapDisplay display = FindObjectOfType<MapDisplay>();
-
-        if (drawMode == DrawMode.NoiseMap)
-        {
-            if (imageMode == ImageMode.FromWebcam)
-            {
-                heightMap = TextureGenerator.TextureToNoise(FindObjectOfType<FaceDetection>().FaceTexture, mapWidth, mapHeight);
-            }
-            display.DrawTexture(TextureGenerator.TextureFromHeightMap(heightMap));
-        }
-        else if (drawMode == DrawMode.Mesh)
-        {
-            display.DrawMesh(MeshGenerator.GenerateTerrainMesh(heightMap, terrainData.meshHeightMultiplier, terrainData.meshHeightCurve, levelOfDetail)/*, TextureGenerator.TextureFromColorMap(colorMap, mapChunkSize, mapChunkSize)*/);
-        }
+        this.mapWidth = webcamController.WebcamWidth;
+        this.mapHeight = webcamController.WebcamHeight;
     }
 
+    /// <summary>
+    /// Initializes the map chunk sizes. The while loop is used to determine divisibility by 2. This was
+    /// done to avoid bugs in which non-standard camera sizes would cause improper mesh generation
+    /// </summary>
+    private void InitializeChunkSizes()
+    {
+        this.mapChunkWidth = this.mapWidth;
+        this.mapChunkHeight = this.mapHeight;
+
+        while (this.mapChunkWidth > 250 || this.mapChunkHeight > 250)
+        {
+            if (this.mapChunkWidth % 2 != 0)
+                Debug.Log("Width " + this.mapChunkWidth + " is not evenly divisble by 2");
+
+            this.mapChunkWidth /= 2;
+
+            if (this.mapChunkHeight % 2 != 0)
+                Debug.Log("Height " + this.mapChunkHeight + " is not evenly divisble by 2");
+
+            this.mapChunkHeight /= 2;
+        }
+
+        //I forget why, but Sebastion explains in a video that these variables need to be chunk size + 1
+        this.mapChunkWidth++;
+        this.mapChunkHeight++;        
+    }
+
+    /// <summary>
+    /// Initializes the number of chunks.
+    /// </summary>
+    private void InitializeNumOfChunks()
+    {
+        this.numChunkWidth = this.mapWidth / (this.mapChunkWidth - 1);
+        this.numChunkHeight = this.mapHeight / (this.mapChunkHeight - 1);
+    }
+
+    /// <summary>
+    /// Requests the mesh data. Note that this sets the local heightMap object to a generated float[,] based on the current chunkPosition.
+    /// </summary>
+    /// <param name="chunkPosition">The chunk position.</param>
+    /// <returns>MeshData object created via a combination of the heightmap, the meshHeightMultiplier, sample points from the meshHeightCurve and a specified level of detail</returns>
     public MeshData RequestMeshData(Vector2 chunkPosition)
     {
-        heightMap = GenerateMapData(chunkPosition);
+        this.heightMap = this.GenerateMapData(chunkPosition);
 
-        return MeshGenerator.GenerateTerrainMesh(heightMap, terrainData.meshHeightMultiplier, terrainData.meshHeightCurve, levelOfDetail);
+        return MeshGenerator.GenerateTerrainMesh(this.heightMap, this.terrainData.meshHeightMultiplier, this.terrainData.meshHeightCurve, this.levelOfDetail);
     }
 
-    float[,] GenerateMapData(Vector2 chunkPosition)
+    /// <summary>
+    /// Generates the map data.
+    /// </summary>
+    /// <param name="chunkPosition">The chunk position.</param>
+    /// <returns></returns>
+    private float[,] GenerateMapData(Vector2 chunkPosition)
     {
-        if (imageMode == ImageMode.PureNoise)
+        if (Application.isPlaying)
         {
-            chunkPosition.x *= mapChunkWidth;
-            chunkPosition.y *= mapChunkHeight;
-            chunkNoiseMap = NoiseGenerator.GenerateNoiseMap(mapChunkWidth, mapChunkHeight, noiseData.seed, noiseData.noiseScale, noiseData.octaves, noiseData.persistance, noiseData.lacunarity, chunkPosition + noiseData.offset, noiseData.normalizeMode);
-        }
-
-        else if (imageMode == ImageMode.FromImage && Application.isPlaying)
-        {
-            chunkNoiseMap = TextureGenerator.TextureToNoiseChunk(imageTex, chunkPosition, mapChunkWidth, mapChunkHeight);
-        }
-
-        else if (imageMode == ImageMode.FromWebcam && Application.isPlaying)
-        {
-            //noiseMap = TextureGenerator.WebcamTextureToNoiseChunk(webcamController.WebcamTex, coord, mapChunkWidth, mapChunkHeight);           
-            chunkNoiseMap = NoiseGenerator.LerpNoiseMapWithTextureToNoiseChunk(FindObjectOfType<FaceDetection>().FaceTexture, fullNoiseMap, noiseWeight, minGreyValue, mapChunkWidth, mapChunkHeight, chunkPosition);
-            //chunkNoiseMap = TextureGenerator.TextureToNoiseChunk(textureForNoise, coord, mapChunkWidth, mapChunkHeight);
+            this.chunkNoiseMap = NoiseGenerator.LerpNoiseMapWithTextureToNoiseChunk(face.FaceTexture, this.fullNoiseMap, this.noiseWeight, this.minGreyValue, this.mapChunkWidth, this.mapChunkHeight, chunkPosition);
         }
 
         else
         {
-            chunkNoiseMap = NoiseGenerator.GenerateNoiseMap(1, 1, 1, 1, 1, 1, 1, new Vector2(1, 1), noiseData.normalizeMode);
+            this.chunkNoiseMap = NoiseGenerator.GenerateNoiseMap(1, 1, 1, 1, 1, 1, 1, new Vector2(1, 1), this.noiseData.normalizeMode);
             Debug.Log("Generate map data error");
         }
 
-        textureData.UpdateMeshHeights(terrainMaterial, terrainData.minHeight, terrainData.maxHeight);
+        this.textureData.UpdateMeshHeights(this.terrainMaterial, this.terrainData.minHeight, this.terrainData.maxHeight);
 
-        return chunkNoiseMap;
+        return this.chunkNoiseMap;
     }
+
+    /// <summary>
+    /// Called when [values update].
+    /// </summary>
+    private void OnValuesUpdate()
+    {
+        this.UpdateWaterHeight();
+    }
+    /// <summary>
+    /// Called when [texture values updated].
+    /// </summary>
+    public void OnTextureValuesUpdated()
+    {
+        this.textureData.ApplyToMaterial(this.terrainMaterial);
+
+        this.UpdateWaterHeight();
+    }
+    /// <summary>
+    /// Updates the height of the water.
+    /// </summary>
     public void UpdateWaterHeight()
     {
-        if (Water == null)
-            Water = GameObject.Find("WaterProDaytime");
+        if (this.Water == null) this.Water = GameObject.Find("WaterProDaytime");
 
-        float newHeight = textureData.layers[1].startHeight * terrainData.meshHeightMultiplier * terrainData.uniformScale;
-        Vector3 curPos = Water.transform.position;
-        Water.transform.position = new Vector3(curPos.x, newHeight, curPos.z);
+        var newHeight = this.textureData.layers[1].startHeight * this.terrainData.meshHeightMultiplier * this.terrainData.uniformScale;
+        var curPos = this.Water.transform.position;
+        this.Water.transform.position = new Vector3(curPos.x, newHeight, curPos.z);
     }
 
+    /// <summary>
+    /// Updates the full noise map.
+    /// </summary>
     public void UpdateFullNoiseMap()
     {
-        if (noiseData.Updated)
+        if (this.noiseData.Updated)
         {
-            fullNoiseMap = NoiseGenerator.GenerateNoiseMap(webcamController.WebcamTex.width, webcamController.WebcamTex.height, noiseData.seed, noiseData.noiseScale, noiseData.octaves, noiseData.persistance, noiseData.lacunarity, noiseData.offset, noiseData.normalizeMode);
-            noiseData.Updated = false;
+            this.fullNoiseMap = NoiseGenerator.GenerateNoiseMap(webcamController.WebcamTex.width, webcamController.WebcamTex.height, this.noiseData.seed, this.noiseData.noiseScale, this.noiseData.octaves, this.noiseData.persistance, this.noiseData.lacunarity, this.noiseData.offset, this.noiseData.normalizeMode);
+            this.noiseData.Updated = false;
         }
     }
 
+    /// <summary>
+    /// Called when [validate].
+    /// </summary>
     private void OnValidate()
     {
-        if (terrainData != null)
+        if (this.terrainData != null)
         {
-            terrainData.OnValuesUpdated -= OnValuesUpdate;
-            terrainData.OnValuesUpdated += OnValuesUpdate;
+            this.terrainData.OnValuesUpdated -= this.OnValuesUpdate;
+            this.terrainData.OnValuesUpdated += this.OnValuesUpdate;
         }
-        if (noiseData != null)
+        if (this.noiseData != null)
         {
-            noiseData.OnValuesUpdated -= OnValuesUpdate;
-            noiseData.OnValuesUpdated += OnValuesUpdate;
+            this.noiseData.OnValuesUpdated -= this.OnValuesUpdate;
+            this.noiseData.OnValuesUpdated += this.OnValuesUpdate;
         }
-        if (textureData != null)
+        if (this.textureData != null)
         {
-            textureData.OnValuesUpdated -= OnTextureValuesUpdated;
-            textureData.OnValuesUpdated += OnTextureValuesUpdated;
+            this.textureData.OnValuesUpdated -= this.OnTextureValuesUpdated;
+            this.textureData.OnValuesUpdated += this.OnTextureValuesUpdated;
         }
     }
 }

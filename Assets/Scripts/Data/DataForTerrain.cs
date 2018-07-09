@@ -1,7 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/// <summary>
+/// Class <c>DataForTerrain</c> Calculates min and max height values for terrain generation. 
+/// <see cref="AnimationCurve"/>
+/// </summary>
+/// <remarks> 
+/// Inherits from <see cref="UpdatableData"/>
+/// </remarks>
 namespace TerrainGenData
 {
     [CreateAssetMenu()]

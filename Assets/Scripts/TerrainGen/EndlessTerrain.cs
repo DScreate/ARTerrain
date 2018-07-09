@@ -1,110 +1,84 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-
+/// <summary>
+/// Handles the creation and update of all the meshes by delegating to a collection of TerrainChunk.
+/// </summary>
+/// <remarks>
+/// Code modified from Sebastian Lague's video, Procedural Landmass Generation.
+/// This class acts similar to a driver for the classes of the program that are involved in generating the terrain.
+/// It has references to and calls updates to other classes. 
+/// <remarks/>
+[RequireComponent(typeof(WebcamTextureController), typeof(MapGenerator), typeof(FaceDetection))]
 public class EndlessTerrain : MonoBehaviour
 {
-
-    //determines number of mesh's created around origin
-    public const float pureNoiseChunks = 2;
-
-    //this needs to change, maybe removed. It's used to attach a origin tranform to the script but we don't have a viwer
-    public Transform origin;
-    public static Vector2 viewerPosition;
-
+    [Tooltip("Assign the material to be used by the meshes.")]
     public Material mapMaterial;
 
     static MapGenerator mapGenerator;
 
-    int chunkWidth;
-    int chunkHeight;
+    private int chunkWidth;
+    private int chunkHeight;
+
+    private int numChunkWidth;
+    private int numChunkHeight;
 
     private FaceDetection _face;
 
-    //int chunksVisibleInViewDst;
-
-    public Vector2 numberOfChunks;
-
-    Dictionary<Vector2, TerrainChunk> terrainChunkDictionary = new Dictionary<Vector2, TerrainChunk>();
-
     TerrainChunk[,] terrainChunkArray;
 
-    //don't think we need, sebastion uses to remove chunks that are no longer visible
-    List<TerrainChunk> terrainChunksVisibleLastUpdate = new List<TerrainChunk>();
-
     WebcamTextureController webcamController;
-
+    /// <summary>
+    /// Initializes and assigns values to this class' data members.
+    /// </summary>
     void Start()
     {
-        mapGenerator = FindObjectOfType<MapGenerator>();
-        webcamController = gameObject.GetComponent<WebcamTextureController>();
+        mapGenerator = gameObject.GetComponent(typeof(MapGenerator)) as MapGenerator;
+        webcamController = gameObject.GetComponent(typeof(WebcamTextureController)) as WebcamTextureController;
 
         chunkWidth = mapGenerator.MapChunkWidth - 1;
         chunkHeight = mapGenerator.MapChunkHeight - 1;
 
-        _face = FindObjectOfType<FaceDetection>();
+        _face = gameObject.GetComponent(typeof(FaceDetection)) as FaceDetection;
 
-        if (mapGenerator.imageMode == MapGenerator.ImageMode.PureNoise)
-        {
-            numberOfChunks.x = pureNoiseChunks;
-            numberOfChunks.y = pureNoiseChunks;
-        }
+        numChunkWidth = mapGenerator.NumChunkWidth;
+        numChunkHeight = mapGenerator.NumChunkHeight;
 
-        else if (mapGenerator.imageMode == MapGenerator.ImageMode.FromImage)
-        {
-            numberOfChunks.x = mapGenerator.imageTex.width / chunkWidth;
-            numberOfChunks.y = mapGenerator.imageTex.height / chunkHeight;
-        }
-
-        else if (mapGenerator.imageMode == MapGenerator.ImageMode.FromWebcam)
-        {
-            numberOfChunks.x = mapGenerator.MapWidth / chunkWidth;
-            numberOfChunks.y = mapGenerator.MapHeight / chunkHeight;
-        }
-
-        terrainChunkArray = new TerrainChunk[(int)numberOfChunks.y, (int)numberOfChunks.x];
+        terrainChunkArray = new TerrainChunk[numChunkWidth, numChunkHeight];
 
         InitializeChunks();
-
     }
-
+    /// <summary>
+    /// Calls the updates to the FaceTexture, MapGenerator and TerrainChunks if WebcamTexture updated this frame.
+    /// </summary>
     void Update()
     {
-        if (mapGenerator.imageMode == MapGenerator.ImageMode.FromWebcam)
-        {
             if (webcamController.DidUpdateThisFrame())
             {
                 _face.UpdateFaceTexture();
 
                 mapGenerator.UpdateFullNoiseMap();
 
-                if (mapGenerator.drawMode == MapGenerator.DrawMode.Mesh)
+                foreach (TerrainChunk terrainChunk in terrainChunkArray)
                 {
-                    foreach (TerrainChunk terrainChunk in terrainChunkArray)
-                    {
-                        terrainChunk.UpdateTerrainChunk();
-                    }
-                }
-
-                else if (mapGenerator.drawMode == MapGenerator.DrawMode.NoiseMap)
-                {
-                    mapGenerator.DrawMapInEditor();
-                }
-            }
-        }
+                    terrainChunk.UpdateTerrainChunk();
+                }               
+            }        
     }
 
     void InitializeChunks()
     {
-        for (int y = 0; y < numberOfChunks.y; y++)
+        for (int y = 0; y < numChunkHeight; y++)
         {
-            for (int x = 0; x < numberOfChunks.x; x++)
+            for (int x = 0; x < numChunkWidth; x++)
             {
                 terrainChunkArray[y, x] = new TerrainChunk(new Vector2(x, y), chunkWidth, chunkHeight, transform, mapMaterial);
             }
         }
     }
-
+    /// <summary>
+    /// This class handles the dynamic creation and update of an individual mesh.
+    /// </summary>
     public class TerrainChunk
     {
         GameObject meshObject;
@@ -113,6 +87,14 @@ public class EndlessTerrain : MonoBehaviour
         MeshRenderer meshRenderer;
         MeshFilter meshFilter;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="coord">Used to determine where chunk should be generated. Uses positive (x,y) coordinates.</param>
+        /// <param name="width">Width of chunk.</param>
+        /// <param name="height">Height of chunk.</param>
+        /// <param name="parent">Transform of class creating TerrainChunk.</param>
+        /// <param name="material">Used by MeshRenderer.</param>
         public TerrainChunk(Vector2 coord, int width, int height, Transform parent, Material material)
         {
             this.coord = coord;
@@ -129,14 +111,16 @@ public class EndlessTerrain : MonoBehaviour
             meshObject.transform.position = new Vector3(position.x, 0, position.y);
             meshObject.transform.parent = parent;
 
-            //Something might be off with what I did. I'm not sure why I have to rotate the mesh atm but if I don't it's incorrect.
+            //If we don't rotate the mesh, it will be upside down.
             meshObject.transform.Rotate(new Vector3(0, 180, 0));
 
             MeshData meshData = mapGenerator.RequestMeshData(coord);
 
             meshFilter.mesh = meshData.CreateMesh();
         }
-
+        /// <summary>
+        /// Gets updated MeshData and delegates update of mesh to MeshData class.
+        /// </summary>
         public void UpdateTerrainChunk()
         {
             MeshData meshData = mapGenerator.RequestMeshData(coord);
