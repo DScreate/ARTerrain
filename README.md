@@ -13,7 +13,7 @@ How to Run:
 A webcam IS required in order for this project to operate properly.
 To run this project, first download the currently available working release
 
-It should be a zip file that contain's the project exe file, a Unity generated NAME_data folder and a Unity generated .dll file.
+It should be a zip file that contains the project exe file, a Unity generated NAME_data folder and a Unity generated .dll file.
 
 Simply run the exe file and the software will run.
 
